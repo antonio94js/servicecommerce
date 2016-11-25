@@ -1,0 +1,18 @@
+{
+  "name": "Notifications-SC",
+  "version": "1.0.0",
+  "main": "server.js",
+  "author": "Antonio Mejias and Alonso Salas",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.2",
+    "mocha": "^3.2.0",
+    "moment": "^2.17.0",
+    "mongoose": "^4.7.0",
+    "morgan": "^1.7.0",
+    "nodemailer": "^2.6.4",
+    "request-promise": "^4.1.1",
+    "studio": "^0.13.3",
+    "studio-cluster": "^0.3.5"
+  }
+}
