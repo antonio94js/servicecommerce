@@ -1,24 +1,16 @@
-import env from 'dotenv';
+
 import mongodb from './config/db';
 import Studio from 'studio';
 import studioCluster from 'studio-cluster';
+import config from './config/config';
 
 
+Studio.use(Studio.plugin.retry());
 
-Studio.use(studioCluster());
-
-import "./components/";
-
+config.loadClusteringConfig();
 
 mongodb.connecToMongo();
 
-// let UserComponent = Studio.module('UserComponent');
-// // console.log(UserComponent);
-//
-// let loginUser  = UserComponent('loginUser')
-//
-// loginUser().then(function (message) {
-//     console.log(message);
-// }).catch(function (err) {
-//     console.log(err);
-// })
+
+//Load the Microservices
+require("./components");

@@ -1,4 +1,6 @@
 import mongoose , {Schema} from 'mongoose';
+import bcrypt from 'bcrypt';
+
 
 const UserSchema = new Schema({
     _id:{
@@ -26,6 +28,12 @@ const UserSchema = new Schema({
     address: {
         type:String,
     }
+});
+
+UserSchema.pre('save', function(next) {
+  this.password = bcrypt.hashSync(this.password, 10);
+  next();
+
 });
 
 export default mongoose.model('User',UserSchema);

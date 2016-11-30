@@ -1,6 +1,7 @@
 import Studio from 'studio';
 import MessageHandler from '../utils/MessageHandler';
-import {User} from '../models/User';
+import User from '../models/User';
+
 
 class UserComponent {
 
@@ -8,13 +9,14 @@ class UserComponent {
 
         return User
             .create(userData)
-            .exec(function(err, user) {
-                if (err) {
-                    throw new Error(err);
-                } else {
-                    return MessageHandler.MessageGenerator("User created succefully", true);
-                }
+            .then((user) => {
+                return MessageHandler.MessageGenerator("User created succefully", true);
+            })
+            .catch((err) => {
+                if(err.code === 11000)
+                    return MessageHandler.MessageGenerator("The user already exist", false);
 
+                throw new Error(err);
             });
 
     }
@@ -26,4 +28,8 @@ class UserComponent {
 
 }
 //return a new instance from your Microservices component
-Studio.serviceClass(UserComponent);
+var serviceObj = Studio.serviceClass(UserComponent);
+
+
+
+serviceObj.createUser.retry(3);
