@@ -1,8 +1,15 @@
+const messageGenerator = (message, success, name) => {
 
-const MessageGenerator = (message,success) => {
-    return {
-        message,success
-    };
-};
+    if (name) {
+        let obj = {};
+        obj[name] = message;
+        obj.success = success;
+        return obj;
+    }
 
-export default {MessageGenerator};
+
+    return {message, success}
+
+}
+
+export default {messageGenerator};
