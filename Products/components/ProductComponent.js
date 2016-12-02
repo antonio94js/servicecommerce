@@ -1,39 +1,58 @@
-import studio from 'studio';
-import Product from '../models/product';
-import MessageHandler from '../utils/MessageHandle';
+import Studio from 'studio';
+import MessageHandler from '../utils/MessageHandler';
+import User from '../models/product';
 
 
 class ProductComponent {
 
-    CreateProduct(ProductData) {
+    createProduct(productData) {
+
         return Product
-            .create(ProductData)
-            .exec(function(err, product) {
-                if (err) {
-                    throw new Error(err);
-                } else {
-                    return MessageHandler.MessageGenerator(
-                        'The product was created successfully',
-                        true);
-                }
+            .create(productData)
+            .then((product) => {
+                return MessageHandler.messageGenerator(
+                    "Product created succefully", true);
+            })
+            .catch((err) => {
+
+                throw new Error(err);
             });
-    }
-
-    UpdateProduct(ProductData) {
-
-        var product = Product
-            .findById(ProductData.id)
-            .exec(function(err, product) {
-                if (err) {
-                    throw new Error(err);
-                } else {
-                    return product;
-                }
-            });
-
 
     }
 
+    updateProduct(ProductData) {
 
+
+        return Product.findById(ProductData.id)
+            .then((product) => {
+
+                checkFalsy(ProductData, product);
+
+                return product.save();
+            }).then((product) => {
+                return MessageHandler.messageGenerator(
+                    "Product updated succefully", true);
+            })
+            .catch((err) => {
+                throw new Error(err);
+            });
+    }
+
+    deleteProduct(ProductData) {
+        return Product.findByIdAndRemove(ProductData.id)
+            .then(() => {
+                return MessageHandler.messageGenerator(
+                    "Product deleted succefully", true);
+            })
+            .catch((err) => {
+                throw new Error('Error deleting product');
+            });
+
+    }
 
 }
+//return a new instance from your Microservices component
+var serviceObj = Studio.serviceClass(ProductComponent);
+
+serviceObj.createProduct.retry(3);
+serviceObj.updateProduct.retry(3);

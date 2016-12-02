@@ -1,27 +1,15 @@
-//
-// const addUser = {"prueba":"hola","loca":1,"nimpora":2,"prueba2":"como","prueba3":"estas"};
-// const {prueba,prueba2,prueba3} =  addUser;
-//
-// console.log(`${prueba} ${prueba2} ${prueba3}`);
-
-import dotenv from 'dotenv';
-
 import mongodb from './config/db';
-// import router from './routes/';
-// import * as test from './utils/testExportEc6';
-// import whatever from './utils/testExportEc6';
+import Studio from 'studio';
+import studioCluster from 'studio-cluster';
+import config from './config/config';
 
-const port = process.env.PORT || 3000;
 
-/*Loading envioroment vars from .env file,  this file is not available in the repository,
-so if you need to test this ApiGateway in localhost you must create your own*/
+Studio.use(Studio.plugin.retry());
 
-dotenv.config({
-    silent: true
-});
+config.loadClusteringConfig();
 
-try {
-    mongodb.connecToMongo();
-} catch (e) {
-    console.error(e);
-}
+mongodb.connecToMongo();
+
+
+//Load the Microservices
+require("./components");
