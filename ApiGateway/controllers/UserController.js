@@ -32,4 +32,19 @@ const userCreate = (req, res) => {
 
 };
 
-export default {userLogin,userCreate}
+const userUpdateProfile = (req, res) => {
+    let updateUserProfile = UserComponent('updateUserProfile');
+    req.body.id = req.user.id;
+    console.log(req.body);
+    // console.log(req.query);
+    updateUserProfile(req.body)
+        .then((response) => {
+            res.status(200).json(response);
+        })
+        .catch((err) => {
+            res.status(500).json(err);
+        })
+
+};
+
+export default {userLogin,userCreate,userUpdateProfile}
