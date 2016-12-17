@@ -50,7 +50,7 @@ UserSchema.pre('save', function(next) {
 
 });
 
-UserSchema.set('toObject', { virtuals: true });
+// UserSchema.set('toObject', { virtuals: true });
 
 
 export default mongoose.model('User', UserSchema);
