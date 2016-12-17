@@ -6,12 +6,11 @@ import isAuthenticated from '../policies/isAuthenticated';
 
 const router = Router();
 
-const UserComponent = Studio.module('ProductComponent');
-
-/* The Base Path for this router is /user you can see it on index.js */
-router.use(isAuthenticated);
+/* The Base Path for this router is /product you can see it on index.js */
 router.post('/', ProductController.createProduct);
 router.put('/', ProductController.productUpdate);
 router.delete('/', ProductController.productDelete);
+router.get('/', ProductController.productDetail);
+router.get('/batch', ProductController.productBatch);
 
 export default router;

@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import Studio from 'studio';
 import studioCluster from 'studio-cluster';
 import util from '../utils';
-
+import Product from '../models/product';
 /*Loading envioroment vars from .env file,  this file is not available in the repository,
 so if you need to test this ApiGateway in localhost you must create your own*/
 

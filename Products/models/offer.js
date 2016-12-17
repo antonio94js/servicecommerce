@@ -9,7 +9,7 @@ const offerSchema = new Schema({
         required: true,
         unique: true,
     },
-    _idproduct: {
+    idproduct: {
         type: String,
         required: true,
         unique: true,
@@ -27,9 +27,10 @@ const offerSchema = new Schema({
         type: Number,
         required: true,
     },
-}, {
-    collection: 'offer'
+    __v: {
+       type: Number,
+       select: false
+   }
 });
-
 
 export default mongoose.model('Offer', offerSchema);

@@ -31,9 +31,12 @@ const loadClusteringConfig = () => {
                 percentLocal: 50
             }),
             publisher: studioCluster.publisher.redis(port,
-                'redis://redistogo:7b985a9e87e5289ad23e9c25173d47c2@crestfish.redistogo.com:9624')
+                'redis://redistogo:7b985a9e87e5289ad23e9c25173d47c2@crestfish.redistogo.com:9624'
+            )
         }));
     }
 };
 
-export default {getMongoString,getRedisString,getPrivateTokenKey,loadClusteringConfig};
+export default {
+    getMongoString, getRedisString, getPrivateTokenKey, loadClusteringConfig
+};

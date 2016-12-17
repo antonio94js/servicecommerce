@@ -20,7 +20,7 @@ const productSchema = new Schema({
     },
     date: {
         type: Date,
-        default: moment(new Date())
+        default: moment(new Date()),
     },
     status: {
         type: String,
@@ -39,7 +39,10 @@ const productSchema = new Schema({
         type: String,
         required: true,
     },
+    offer:{
+        type: String,
+        ref: 'Offer'
+    }
 });
-
 
 export default mongoose.model('Product', productSchema);
