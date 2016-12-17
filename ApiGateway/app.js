@@ -34,12 +34,23 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
+
 app.use(morgan('dev'));
 
 app.use("/api", router);
 
 app.get("/", function(req, res) {
     res.send("Api Gateway");
+});
+
+
+app.use(function(req, res, next) {
+  res.status(404).send({message:"The resource that you try to access doesn't found"});
+});
+
+app.use(function(err, req, res, next) {
+  // console.error(err.stack);
+  res.status(500).json(err);
 });
 
 
