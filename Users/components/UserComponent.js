@@ -42,7 +42,7 @@ class UserComponent {
             })
             .catch((err) => {
                 throw new Error(err);
-            })
+            });
     }
 
 }

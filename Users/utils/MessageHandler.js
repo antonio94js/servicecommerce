@@ -8,8 +8,12 @@ const messageGenerator = (message, success, name) => {
     }
 
 
-    return {message, success}
+    return {
+        message, success
+    };
 
-}
+};
 
-export default {messageGenerator};
+export default {
+    messageGenerator
+};
