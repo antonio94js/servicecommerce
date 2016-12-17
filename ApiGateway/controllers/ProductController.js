@@ -5,7 +5,7 @@ const ProductComponent = Studio.module('ProductComponent'); //Fetching the Produ
 const createProduct = (req, res) => {
     let createProduct = ProductComponent('createProduct');
 
-
+    req.body.iduser = req.user.id;
     createProduct(req.body)
         .then((response) => {
             res.status(200).json(response);

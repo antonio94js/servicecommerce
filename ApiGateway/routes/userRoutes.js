@@ -11,5 +11,6 @@ const UserComponent = Studio.module('UserComponent');
 
 router.post('/account', UserController.userCreate);
 router.put('/account', isAuthenticated, UserController.userUpdateProfile);
+router.get('/account', isAuthenticated, UserController.getUserProfile);
 
 export default router;

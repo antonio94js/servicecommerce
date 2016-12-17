@@ -1,4 +1,6 @@
-import mongoose, {Schema}
+import mongoose, {
+    Schema
+}
 from 'mongoose';
 
 const WishlistSchema = new Schema({
@@ -15,5 +17,11 @@ const WishlistSchema = new Schema({
     products: {
         type: Array,
         "default": []
+    },
+    __v: {
+        type: Number,
+        select: false
     }
 });
+
+export default mongoose.model('Wishlist', WishlistSchema);

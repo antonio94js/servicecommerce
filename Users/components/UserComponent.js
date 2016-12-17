@@ -1,81 +1,65 @@
 import Studio from 'studio';
-import MessageHandler from '../utils/MessageHandler';
+import MessageHandler from '../handler/MessageHandler';
 import User from '../models/User';
-import jwtHandler from '../utils/jwtHandler';
+import jwtHandler from '../handler/jwtHandler';
 import bcrypt from 'bcrypt';
 import UserService from '../bussiness/UserService';
+// import './WishlistComponent';
+
+
+const WishlistComponent = Studio.module('WishlistComponent');
+
+const ImageComponent = Studio.module('ImageComponent');
 
 
 class UserComponent {
 
-    createUser(userData) {
+    *createUser(userData) {
 
-        return User
-            .create(userData)
-            .then((user) => {
-                return MessageHandler.messageGenerator("User created succefully", true);
-            })
-            .catch((err) => {
-                if (err.code === 11000 || err.code === 11001)
-                    return MessageHandler.messageGenerator("The user already exist", false);
-
-                throw new Error(err);
-            });
-
+        return yield UserService.createNewUser(userData);
     }
 
-    loginUser(userData) {
+    *loginUser(userData) {
 
-        return User
-            .findOne({
-                email: userData.email
-            })
-            .then((user) => {
-                if (!user || !bcrypt.compareSync(userData.password, user.password))
-                    return MessageHandler.messageGenerator("The credentials are invalid, please check it out",
-                        false);
-
-                let payload = {
-                    "id": user._id
-                };
-
-                return MessageHandler.messageGenerator(jwtHandler.generateAccessToken(payload),
-                    true, 'token');
-
-            })
-            .catch((err) => {
-                throw new Error(err);
-            })
+        return yield UserService.userSignOn(userData);
     }
 
-    //You just can update only one value (email, password or address), otherwise this service(method) will return success:false
+    //You just can update only one value (email, password or address), otherwise this service(method) will return 400
 
-    updateUserProfile(userData) {
-        
-        if(UserService.validateUpdateField(userData)){
+    *updateUserProfile(userData, setWish) {
 
-            return User
-                .findByIdAndUpdate(userData.id, {
-                    $set: {
-                        [userData.fieldData()]: userData.value
-                    }
-                }).then((value) => {
-                    return MessageHandler.messageGenerator("User Updated successfully",true);
-                })
-                .catch((err) => {
-                    throw new Error("Error updating the user profile");
-                })
+        return yield UserService.updateUser(userData, setWish);
+    }
 
-        } else {
-            return MessageHandler.messageGenerator("The field or the value for this action is invalid",false);
+    * getUserProfile(userData) {
+
+        let user = yield User.findById(userData.id).lean().populate('wishlist').select('-password -_id -__v');
+
+        if(!user) {
+            return MessageHandler.messageGenerator('The user does not exist', false);
         }
+
+        let getObjectImage = ImageComponent('getObjectImage'); // Fetching a service from ImageMicroservice
+
+        return getObjectImage({
+                ObjectType: 'user',
+                ID: userData.id, // from the incoming request param
+                userid:userData.id // from the JWT token
+            })
+            .then((value) => {
+                // console.log("aqui");
+                user.SignedURL = value.SignedURL;
+                return MessageHandler.messageGenerator(user, true, 'data');
+
+            })
+            .catch((err) => {
+                // console.log(err);
+                // console.log("reject");
+                return MessageHandler.messageGenerator(user, true, 'data');
+            })
 
     }
 
 }
 //return a new instance from your Microservices component
-var serviceObj = Studio.serviceClass(UserComponent);
-
-serviceObj.createUser.retry(3);
-serviceObj.loginUser.retry(3);
-serviceObj.updateUserProfile.retry(3);
+Studio.serviceClass(UserComponent);

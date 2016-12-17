@@ -31,6 +31,11 @@ const UserSchema = new Schema({
     },
     address: {
         type: String,
+    },
+    wishlist: {
+        type: String,
+        ref: 'Wishlist'
+
     }
 });
 
@@ -44,6 +49,8 @@ UserSchema.pre('save', function(next) {
     // this.password = bcrypt.hashSync(this.password, 10);
 
 });
+
+UserSchema.set('toObject', { virtuals: true });
 
 
 export default mongoose.model('User', UserSchema);

@@ -6,17 +6,18 @@
     "author": "Antonio Mejias and Alonso Salas",
     "license": "MIT",
     "scripts": {
-      "build": "",
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "nodemon app.js --exec babel-node --presets es2015,stage-2"
+        "build": "",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon app.js --exec babel-node --presets es2015,stage-2"
     },
     "dependencies": {
         "bcrypt": "^0.8.7",
-        "lodash": "^4.17.2",
+        "co": "^4.6.0",
         "dotenv": "^2.0.0",
+        "jsonwebtoken": "^7.1.9",
+        "lodash": "^4.17.2",
         "moment": "^2.17.0",
         "mongoose": "^4.7.0",
-        "jsonwebtoken": "^7.1.9",
         "request-promise": "^4.1.1",
         "studio": "^0.13.3",
         "studio-cluster": "^0.3.5"

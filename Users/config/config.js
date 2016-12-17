@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import Studio from 'studio';
 import studioCluster from 'studio-cluster';
-import util from '../utils';
+import util from '../utils/Common';
 
 /*Loading envioroment vars from .env file,  this file is not available in the repository,
 so if you need to test this ApiGateway in localhost you must create your own*/
@@ -14,13 +14,14 @@ let { PRIVATE_TOKEN_KEY } = process.env;
 
 
 const getMongoString = () => `mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}`;
-const getRedisString = () => '';
+const getRedisString = () => ''; //NOT YET
 const getPrivateTokenKey = () => PRIVATE_TOKEN_KEY;
 
 const loadClusteringConfig = () => {
-    const port = util.getRandomPort();
+
 
     if(process.env.NETWORK_ENV === 'local') {
+        const port = util.getRandomPort();
         Studio.use(studioCluster({rpcPort:port}));
     } else {
         const port = 10120;
