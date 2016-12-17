@@ -1,39 +1,56 @@
-import mongoose , {Schema} from 'mongoose';
+import mongoose, {
+    Schema
+}
+from 'mongoose';
 import bcrypt from 'bcrypt';
+import moment from 'moment'
 
 
 const UserSchema = new Schema({
-    _id:{
-        type:String,
+    _id: {
+        type: String,
         required: true,
         unique: true,
     },
     firstname: {
-        type:String,
+        type: String,
         required: true,
     },
     lastname: {
-        type:String,
+        type: String,
         required: true,
     },
     password: {
-        type:String,
+        type: String,
         required: true,
     },
     email: {
-        type:String,
+        type: String,
         required: true,
         unique: true
     },
     address: {
-        type:String,
+        type: String,
+    },
+    wishlist: {
+        type: String,
+        ref: 'Wishlist'
+
     }
 });
 
 UserSchema.pre('save', function(next) {
-  this.password = bcrypt.hashSync(this.password, 10);
-  next();
+
+    bcrypt.hash(this.password, 10, (err, hash) => {
+        this.password = hash;
+        next();
+    });
+
+    // this.password = bcrypt.hashSync(this.password, 10);
 
 });
 
-export default mongoose.model('User',UserSchema);
+UserSchema.set('toObject', { virtuals: true });
+
+
+export default mongoose.model('User', UserSchema);

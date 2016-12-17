@@ -5,7 +5,7 @@ import studioCluster from 'studio-cluster';
 import config from './config/config';
 
 
-Studio.use(Studio.plugin.retry());
+Studio.use(Studio.plugin.retry({max:3}));
 
 config.loadClusteringConfig();
 

@@ -1,2 +1,6 @@
 npm-debug.log
 node_modules
+.env
+.jshintrc
+aws.json
+yarn.lock
