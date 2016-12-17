@@ -37,9 +37,13 @@ const deleteOffer = (req, res, next) => {
 
     deleteOffer(req.body)
         .then((response) => {
-            if(response.status === false)
+            
+            if(response.success === false) {
                 res.status(200).json(response);
-            res.status(201).json(response);
+            } else {
+                res.status(201).json(response);
+            }
+
         })
         .catch((err) => {
             ErrorHandler(err, res, next);

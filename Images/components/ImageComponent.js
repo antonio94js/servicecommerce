@@ -20,15 +20,15 @@ class ImageComponent {
     }
 
     getObjectImage(data) {
-        return {SignedUrl:'https://mockimageurl.com'}
-        return aws.getSignedUrl(data);
+        return {SignedURL:'https://mockimageurl.com'}
+        // return aws.getSignedUrl(data);
     }
 
     *getBatchImage(data) {
         let SignedUrls = [];
 
         for (const guid of data.guids) {
-            
+
             let response = yield aws.getSignedUrl(guid);
 
             if (response && response.success) {
