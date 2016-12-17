@@ -33,7 +33,7 @@ class UserComponent {
 
     * getUserProfile(userData) {
 
-        let user = yield User.findById(userData.id).lean().populate('wishlist').select('-password -_id -__v');
+        let user = yield User.findById(userData.id).lean(true).populate('wishlist').select('-password -_id -__v');
 
         if(!user) {
             return MessageHandler.messageGenerator('The user does not exist', false);
@@ -47,13 +47,12 @@ class UserComponent {
                 userid:userData.id // from the JWT token
             })
             .then((value) => {
-                // console.log("aqui");
                 user.SignedURL = value.SignedURL;
                 return MessageHandler.messageGenerator(user, true, 'data');
 
             })
             .catch((err) => {
-                // console.log(err);
+                console.log(err);
                 // console.log("reject");
                 return MessageHandler.messageGenerator(user, true, 'data');
             })

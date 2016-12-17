@@ -53,7 +53,7 @@ const remove = (offerData) => {
    return co.wrap(function*() {
       let product = yield ProductService.productBelongsToUser(offerData);
 
-      if (product.offer._id)
+      if (product && product.offer._id)
          return Offer.remove({ _id : product.offer._id })
          .then(() =>{
             return MessageHandler.messageGenerator('Offer deleted successfully',true);

@@ -3,11 +3,13 @@ import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
 const ImageComponent = Studio.module('ImageComponent');
 
-const productBelongsToUser = (ProductData) => {
+const productBelongsToUser = (ProductData, property) => {
+   let lean = property === 'getProductDetail';
     return Product.findById(ProductData.idproduct ? ProductData.idproduct : ProductData._id)
-        // .lean()
+        .lean(lean)
         .populate('offer')
         .where({ iduser: ProductData.iduser })
+        .select('-__v')
         .then((product) => {
             return product;
         })
@@ -74,6 +76,7 @@ const getDetail = (ProductData) => {
        })
        .then((value) => {
            ProductData.product.SignedURL = value.SignedURL;
+         console.log(ProductData.product);
            return MessageHandler.messageGenerator(ProductData.product, true, 'data');
 
        })
@@ -85,8 +88,7 @@ const getDetail = (ProductData) => {
 };
 
 const getBatch = (ProductData) => {
-
-   return Product.find({ iduser : ProductData.iduser })
+   return Product.find({ iduser : ProductData.iduser }).populate('offer').select('-__v')
       .then((products) => {
          return MessageHandler.messageGenerator(products, true, 'data');
       }).catch((err) => {

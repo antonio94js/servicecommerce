@@ -10,18 +10,18 @@ const CheckProductOwnership = (Component,...properties) => {
     }
 };
 
-const CheckProductOwnershipall = (Component) => {
-    for (let property in Component) {
-        if (Component.hasOwnProperty(property) && typeof Component[property] === 'function') {
-            _setfilter(Component, property);
-        }
-    }
-};
+// const CheckProductOwnershipall = (Component) => {
+//     for (let property in Component) {
+//         if (Component.hasOwnProperty(property) && typeof Component[property] === 'function') {
+//             _setfilter(Component, property);
+//         }
+//     }
+// };
 
 const _setfilter = (Component, property) => {
     // console.log(property);
     Component[property].filter((data) => {
-        return ProductService.productBelongsToUser(data).then((obj) => {
+        return ProductService.productBelongsToUser(data, property).then((obj) => {
             if (obj){
                 data.product = obj;
                 return true;
@@ -32,4 +32,4 @@ const _setfilter = (Component, property) => {
     });
 };
 
-export default { CheckProductOwnership, CheckProductOwnershipall };
+export default { CheckProductOwnership };
