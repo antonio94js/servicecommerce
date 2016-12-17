@@ -1,0 +1,2 @@
+import "./UserComponent";
+import './WishlistComponent';

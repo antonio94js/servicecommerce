@@ -1,0 +1,2 @@
+import "./ProductComponent";
+import "./OfferComponent";
