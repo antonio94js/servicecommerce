@@ -1,5 +1,5 @@
 import Studio from 'studio';
-
+import ErrorHandler from '../handler/ErrorHandler';
 const OfferComponent = Studio.module('OfferComponent'); //Fetching the Offer Microservice
 
 const createOffer = (req, res, next) => {

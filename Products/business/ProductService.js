@@ -41,7 +41,7 @@ const store = (productData) => {
             });
     };
 
-const update = (productData) => {
+const update = (ProductData) => {
     setData(ProductData, ProductData.product);
 
     return ProductData.product.save()
