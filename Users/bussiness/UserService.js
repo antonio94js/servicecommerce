@@ -28,6 +28,7 @@ const createNewUser = (userData) => {
 }
 
 const userSignOn = (userData) => {
+    // console.log(User.findOne);
 
     return User
         .findOne({

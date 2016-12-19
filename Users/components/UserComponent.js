@@ -7,7 +7,7 @@ import UserService from '../bussiness/UserService';
 // import './WishlistComponent';
 
 
-const WishlistComponent = Studio.module('WishlistComponent');
+// const WishlistComponent = Studio.module('WishlistComponent');
 
 const ImageComponent = Studio.module('ImageComponent');
 
@@ -31,7 +31,7 @@ class UserComponent {
         return yield UserService.updateUser(userData, setWish);
     }
 
-    * getUserProfile(userData) {
+    *getUserProfile(userData) {
 
         let user = yield User.findById(userData.id).lean().populate('wishlist').select('-password -_id -__v');
 

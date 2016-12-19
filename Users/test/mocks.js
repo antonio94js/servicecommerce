@@ -1,4 +1,6 @@
-const UserCreated = {
+import Promise from './Promise';
+
+const UserMock = {
     "firstname": 'PAPI RICO',
     "lastname": 'Commerce',
     "password": '$2a$10$mZ4Wf8h.M/g0zbSJLdV8KuX9tWaA2r3xStXavtLGlpRUVJnBq3fKW',
@@ -7,8 +9,7 @@ const UserCreated = {
 }
 
 const DuplicatedError = {
-    "code": 11001,
-    "value":"asdfas"
+    "code": 11001
 };
 
 
@@ -22,7 +23,19 @@ const StudioModule = function (serviceName) {
     }
 }
 
+const findOne = function (user) {
+
+    if(UserMock.email === user.email) {
+
+        return Promise.resolver(UserMock)
+    }
+    else {
+
+        return Promise.resolver(null)
+    }
+}
+
 
 export default {
-    UserCreated, DuplicatedError,UnhandledError,StudioModule
+    UserMock, DuplicatedError,UnhandledError,StudioModule,findOne
 };
