@@ -20,15 +20,12 @@ let sandboxUser;
 
 beforeEach(() => {
     sandboxUser = sinon.sandbox.create();
-    sinon.spy(MessageHandler,'errorGenerator');
-    sinon.spy(MessageHandler,'messageGenerator');
+
 
 });
 
 afterEach(() => {
     sandboxUser.restore();
-    MessageHandler.errorGenerator.restore();
-    MessageHandler.messageGenerator.restore();
 
 });
 
@@ -38,6 +35,11 @@ describe('#UserService', () => {
     describe('#CreateUser', () => {
 
         var userData;
+
+        before(() => {
+            sinon.spy(MessageHandler,'errorGenerator');
+            sinon.spy(MessageHandler,'messageGenerator');
+        });
 
         beforeEach(() => {
 
@@ -56,6 +58,11 @@ describe('#UserService', () => {
         afterEach(() => {
             Studio.module.restore(); // Restoring Studio module system
 
+        });
+
+        after(() => {
+            MessageHandler.errorGenerator.restore();
+            MessageHandler.messageGenerator.restore();
         });
 
         it('Should get success true when its resolve ', () => {
@@ -99,6 +106,16 @@ describe('#UserService', () => {
 
     describe('#LoginUser', () => {
         var useCredentials;
+        before(() => {
+            sinon.spy(MessageHandler,'errorGenerator');
+            sinon.spy(MessageHandler,'messageGenerator');
+        });
+
+        after(() => {
+            MessageHandler.errorGenerator.restore();
+            MessageHandler.messageGenerator.restore();
+        });
+
         beforeEach(() => {
 
             sandboxUser.stub(User, "findOne", MongoMocks.findOne);
@@ -142,6 +159,17 @@ describe('#UserService', () => {
 
     describe('#updateUser', () => {
         var userField;
+
+        before(() => {
+            sinon.spy(MessageHandler,'errorGenerator');
+            sinon.spy(MessageHandler,'messageGenerator');
+        });
+
+        after(() => {
+            MessageHandler.errorGenerator.restore();
+            MessageHandler.messageGenerator.restore();
+        });
+
         beforeEach(() => {
 
             sandboxUser.stub(User, "findByIdAndUpdate").returns(PromiseHandler.resolver(true));
