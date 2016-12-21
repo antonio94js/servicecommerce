@@ -18,7 +18,8 @@ const updateUserWishlist = (action, payload) => {
 
                 yield Wishlist.findByIdAndUpdate(wishlist._id, {$set: {'products': wishlist.products}});
 
-                let message = action === 'add' ? "Publications added successfully" : "Publications deleted successfully"
+                let message = action === 'add' ? "Publication added successfully" : "Publication deleted successfully"
+
                 return MessageHandler.messageGenerator(message, true);
 
             } else {
@@ -27,26 +28,31 @@ const updateUserWishlist = (action, payload) => {
             }
 
         } else {
-            return result;
+            return MessageHandler.messageGenerator("The Wishlist does not exist", false);
         }
     })();
 
 }
 
 const _proccessPublicationsArray = (action, publicationsList, item) => {
-    switch (action) {
-        case 'add':
 
+    switch (action) {
+
+        case 'add':
             for (const publicationItem of publicationsList) {
                 if (publicationItem.publicationID === item.publicationID) {
+
                     return MessageHandler.messageGenerator("The publication already exist in your wishlist", false);
                 }
             }
-            return publicationsList.concat(item);
-            // return publicationsList
+            publicationsList.push(item);
+            return publicationsList; // Return the PublicationsList with the new added element;
+            // return publicationsList.concat(item);
+
 
         case 'delete':
-            return _.filter(publicationsList, (publicationItem) => publicationItem.publicationID !== item.publicationID);
+            // Return the PublicationsList filtering the publication to delete;
+            return _.filter(publicationsList, publicationItem => publicationItem.publicationID !== item.publicationID);
 
         default:
             return MessageHandler.errorGenerator("This operation is invalid", 400);
