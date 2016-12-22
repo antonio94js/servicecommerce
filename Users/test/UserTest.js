@@ -152,7 +152,10 @@ describe('#UserService', () => {
                 .then(function(response) {
                     expect(MessageHandler.messageGenerator).to.have.been.called;
                     expect(response.success).to.be.true;
-                });
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
 
         });
     });

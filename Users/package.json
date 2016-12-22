@@ -11,7 +11,7 @@
         "start": "nodemon app.js --exec babel-node --presets es2015,stage-2"
     },
     "dependencies": {
-        "bcrypt": "^0.8.7",
+        "bcryptjs": "^2.4.0",
         "co": "^4.6.0",
         "dotenv": "^2.0.0",
         "jsonwebtoken": "^7.1.9",
