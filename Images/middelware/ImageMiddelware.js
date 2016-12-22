@@ -18,7 +18,7 @@ const setMiddelware = (ImageObject) => {
 
         if (ImageObject.hasOwnProperty(property) && typeof ImageObject[property] === 'function') {
 
-            ImageObject[property].filter((data) => {
+            ImageObject[property].filter((data) => { //Setting Studio filter like a middelware
 
                 if (!ImageService.checkObjectType(data.ObjectType)) {
                     throw MessagaeHandler.errorGenerator("The ObjectType is invalid", 400);
@@ -49,7 +49,7 @@ const setMiddelware = (ImageObject) => {
                 if (property !== 'getBatchImage') {
                     data.ID = Common.cryptoID(data.ID, 'encrypt');
                 } else {
-                    data.guids = _.map(data.guids, function(guid) {
+                    data.guids = _.map(data.guids,(guid) => {
                         return {
                             original: guid,
                             ID: Common.cryptoID(guid, 'encrypt'),
