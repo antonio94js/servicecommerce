@@ -20,9 +20,9 @@ const createNewUser = (userData) => {
         })
         .catch((err) => {
             if (err.code === 11000 || err.code === 11001)
-                return MessageHandler.errorGenerator("The user already exist", 409); //reject the promise
+                throw MessageHandler.errorGenerator("The user already exist", 409); //reject the promise
             // console.log("aqui" + err);
-            return MessageHandler.errorGenerator("Something wrong happened creating user", 500); //reject the promise
+            throw MessageHandler.errorGenerator("Something wrong happened creating user", 500); //reject the promise
         });
 
 }
@@ -67,7 +67,13 @@ const updateUser = (userData, setWish) => {
                     resolve(MessageHandler.messageGenerator("User Updated successfully", true));
                 })
                 .catch((err) => {
-                    reject(new Error("Error updating the user profile"));
+                    if (err.code === 11000 || err.code === 11001) {
+                        resolve(MessageHandler.messageGenerator("This email is already in use",false));
+                        // return;
+                    } else {
+                        reject(new Error("Error updating the user profile"));
+                    }
+                    //reject the promise
                 })
 
         } else {
@@ -80,7 +86,9 @@ const updateUser = (userData, setWish) => {
 
 const _isValidateField = (data, setWish) => {
 
-    let {field, value} = data;
+    let {
+        field, value
+    } = data;
 
     if (setWish) {
 
@@ -110,4 +118,6 @@ const _isValidateField = (data, setWish) => {
     // return true;
 };
 
-export default {createNewUser, userSignOn,updateUser}
+export default {
+    createNewUser, userSignOn, updateUser
+}

@@ -17,7 +17,7 @@ const getMongoString = () => `mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST
 const getRedisString = () => ''; //NOT YET
 const getPrivateTokenKey = () => PRIVATE_TOKEN_KEY;
 
-const loadClusteringConfig = () => {
+const loadClusterConfig = () => {
 
 
     if(process.env.NETWORK_ENV === 'local') {
@@ -38,5 +38,5 @@ const loadClusteringConfig = () => {
 };
 
 export default {
-    getMongoString, getRedisString, getPrivateTokenKey, loadClusteringConfig
+    getMongoString, getRedisString, getPrivateTokenKey, loadClusterConfig
 };
