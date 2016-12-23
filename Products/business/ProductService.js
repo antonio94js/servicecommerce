@@ -86,6 +86,13 @@ const store = (productData) => {
          };
 
          const getBatch = (ProductData) => {
+            return co.wrap(function*() {
+               let products = yield Product.find({ iduser : ProductData.iduser });
+
+               console.log(products);
+
+            });
+
             //todo, send array of ids to imagecomponent getbatchimages, to retrieve images and set them to the batch
             // ImageComponent.getbatchimages()
             //
