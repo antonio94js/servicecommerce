@@ -25,6 +25,9 @@ const setMiddelware = (ImageObject) => {
                 }
 
                 if (data.ObjectType === 'user' && data.ID !== data.userid) {
+                    console.log(data.ID)
+
+                    console.log(data.userid)
                     throw MessagaeHandler.errorGenerator("You are not allowed to do this action", 403);
                 }
 

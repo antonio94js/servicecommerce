@@ -75,7 +75,8 @@ const deleteImage = (req, res, next) => {
     let deleteObjectImage = ImageComponent('deleteObjectImage');
     let payload = {
         ObjectType: req.params.ObjectType,
-        ID: req.params.ID
+        ID: req.params.ID,
+        userid: req.user.id
     }
 
     deleteObjectImage(payload)

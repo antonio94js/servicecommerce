@@ -1,7 +1,13 @@
 import studio from 'studio';
 import config from './config';
 
+
+
 studio.use(studio.plugin.retry({max:3}));
+studio.use(studio.plugin.timer(function(res){
+    console.log('The receiver %s took %d ms to execute', res.receiver, res.time);
+}));
+
 
 config.loadClusterConfig();
 
