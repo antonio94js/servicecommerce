@@ -1,7 +1,7 @@
 import studio from 'studio';
 import aws from '../handler/awsHandler';
 import _ from 'lodash';
-import ImageService from '../bussiness/ImageService';
+import ImageService from '../business/ImageService';
 import MessagaeHandler from '../handler/MessageHandler'
 import ImageMiddelware from '../middelware/ImageMiddelware';
 

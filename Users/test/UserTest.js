@@ -3,7 +3,7 @@ import Studio from 'studio';
 import chai, {expect} from 'chai';
 import SinonChai from 'sinon-chai';
 
-import UserService from '../bussiness/UserService';
+import UserService from '../business/UserService';
 import User from '../models/User';
 import MessageHandler from '../handler/MessageHandler';
 

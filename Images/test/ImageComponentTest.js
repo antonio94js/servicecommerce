@@ -6,7 +6,7 @@ import chai, {
 from 'chai';
 import SinonChai from 'sinon-chai';
 import AwsMockSinon from 'mock-aws-sinon';
-// import UserService from '../bussiness/UserService';
+// import UserService from '../business/UserService';
 // import User from '../models/User';
 import MessageHandler from '../handler/MessageHandler';
 

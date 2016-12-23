@@ -1,4 +1,4 @@
-import ImageService from '../bussiness/ImageService';
+import ImageService from '../business/ImageService';
 import MessagaeHandler from '../handler/MessageGenerator';
 import Common from '../utils/Common';
 import studio from 'studio'
