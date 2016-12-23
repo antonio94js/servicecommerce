@@ -18,7 +18,7 @@ const PublicationSchema = new Schema({
     },
     date: {
         type: Date,
-        default: moment(new Date()),
+        default: Date.now(),
     },
     status: {
         type: Number,
