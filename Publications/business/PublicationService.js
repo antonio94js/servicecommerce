@@ -4,7 +4,6 @@ import Publication from '../models/Publication';
 
 
 
-
 const createNewPublication = (publicationData) => {
 
     return Publication //return a promise
@@ -22,7 +21,34 @@ const createNewPublication = (publicationData) => {
 
 }
 
+const removePublication = (publicationData) => {
+    return Publication //return a promise
+        .remove({
+                _id: publicationData._id
+            })
+        .then((publication) => {
+            return MessageHandler.messageGenerator("Publication deleted succefully", true); //resolve the promise
+        })
+        .catch((err) => {
+            throw MessageHandler.errorGenerator("Something wrong happened deleted publication", 500); //reject the promise
+        });
+}
+
+/*HELPERS*/
+
+const publicationBelongsToUser = (publicationData, property) => {
+    // let lean = property === 'getProductDetail';
+    return Publication.findById(publicationData._id)
+        .where({
+            userID: publicationData.userID
+        })
+        .then((product) => {
+            return product;
+        })
+};
+
+
 
 export default {
-    createNewPublication
+    createNewPublication,publicationBelongsToUser,removePublication
 }

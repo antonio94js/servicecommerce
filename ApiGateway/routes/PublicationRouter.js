@@ -7,6 +7,7 @@ const router = Router();
 /* The Base Path for this router is /user you can see it on index.js */
 
 router.post('/', PublicationController.publicationCreate);
+router.delete('/', PublicationController.publicationDelete);
 // router.put('/account', isAuthenticated, UserController.userUpdateProfile);
 // router.get('/account', isAuthenticated, UserController.getUserProfile);
 
