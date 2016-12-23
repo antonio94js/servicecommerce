@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
 import User from '../models/User';
@@ -6,29 +6,29 @@ import jwtHandler from '../handler/jwtHandler';
 import Promise from 'bluebird';
 
 
-const WishlistComponent = Studio.module('WishlistComponent');
-
-
 
 const createNewUser = (userData) => {
+
+    const WishlistComponent = Studio.module('WishlistComponent'); // Fetching the Whislist Microservice
 
     return User //return a promise
         .create(userData)
         .then((user) => {
 
-            WishlistComponent('createWishlist')(user.id);
+            WishlistComponent('createWishlist')(user.id); // Create a new Wishlist Ascinchronously
             return MessageHandler.messageGenerator("User created succefully", true); //resolve the promise
         })
         .catch((err) => {
             if (err.code === 11000 || err.code === 11001)
                 return MessageHandler.errorGenerator("The user already exist", 409); //reject the promise
-
+            // console.log("aqui" + err);
             return MessageHandler.errorGenerator("Something wrong happened creating user", 500); //reject the promise
         });
 
 }
 
 const userSignOn = (userData) => {
+    // console.log(User.findOne);
 
     return User
         .findOne({
@@ -54,7 +54,7 @@ const userSignOn = (userData) => {
 
 const updateUser = (userData, setWish) => {
 
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
 
         if (_isValidateField(userData, setWish)) {
 
@@ -80,9 +80,7 @@ const updateUser = (userData, setWish) => {
 
 const _isValidateField = (data, setWish) => {
 
-    let {
-        field, value
-    } = data;
+    let {field, value} = data;
 
     if (setWish) {
 

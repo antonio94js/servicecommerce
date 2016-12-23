@@ -2,12 +2,12 @@ import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
 import User from '../models/User';
 import jwtHandler from '../handler/jwtHandler';
-import bcrypt from 'bcrypt';
-import UserService from '../bussiness/UserService';
+import bcrypt from 'bcryptjs';
+import UserService from '../business/UserService';
 // import './WishlistComponent';
 
 
-const WishlistComponent = Studio.module('WishlistComponent');
+// const WishlistComponent = Studio.module('WishlistComponent');
 
 const ImageComponent = Studio.module('ImageComponent');
 
@@ -31,7 +31,7 @@ class UserComponent {
         return yield UserService.updateUser(userData, setWish);
     }
 
-    * getUserProfile(userData) {
+    *getUserProfile(userData) {
 
         let user = yield User.findById(userData.id).lean(true).populate('wishlist').select('-password -_id -__v');
 
