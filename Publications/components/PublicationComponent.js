@@ -17,6 +17,13 @@ class PublicationComponent {
         return yield PublicationService.createNewPublication(publicationData);
     }
 
+    *updatePublication(publicationData) {
+        return yield PublicationService.updatePublication(PublicationData);
+    }
+
+    *deletePublication(publicationData) {
+        return yield PublicationService.remove(PublicationData);
+    }
 
 
 }

@@ -19,5 +19,19 @@ const publicationCreate = (req, res, next) => {
 
 };
 
+const publicationUpdate = (req, res, next) => {
+    let updatePublication = ProductComponent('updatePublication');
+    req.body.userID = req.user.id;
+    updateProduct(req.body)
+        .then((response) => {
+            res.status(200).json(response);
+        })
+        .catch((err) => {
+            ErrorHandler(err, res, next);
+            // res.status(500).json(err);
+        });
+
+};
+
 
 export default {publicationCreate}
