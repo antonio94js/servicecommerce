@@ -1,0 +1,8 @@
+language: node_js
+node_js:
+ - "6.1"
+notifications:
+ slack:
+   rooms:
+     - servicecommerce:4r2h2HAIBA1oUT5G5CCXxpwj#development
+     - servicecommerce:4r2h2HAIBA1oUT5G5CCXxpwj#general
