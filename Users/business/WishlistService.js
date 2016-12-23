@@ -55,7 +55,7 @@ const _proccessPublicationsArray = (action, publicationsList, item) => {
             return _.filter(publicationsList, publicationItem => publicationItem.publicationID !== item.publicationID);
 
         default:
-            return MessageHandler.errorGenerator("This operation is invalid", 400);
+            throw MessageHandler.errorGenerator("This operation is invalid", 400);
 
     }
 };

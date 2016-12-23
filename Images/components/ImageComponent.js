@@ -28,7 +28,7 @@ class ImageComponent {
         let SignedUrls = [];
 
         for (const guid of data.guids) {
-
+            console.log(guid.original);
             let response = yield aws.getSignedUrl(guid);
 
             if (response && response.success) {
