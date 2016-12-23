@@ -1,7 +1,7 @@
 import studio from 'studio';
 import aws from '../handler/awsHandler';
 import _ from 'lodash';
-import ImageService from '../bussiness/ImageService';
+import ImageService from '../business/ImageService';
 import MessagaeHandler from '../handler/MessageHandler'
 import ImageMiddelware from '../middelware/ImageMiddelware';
 
@@ -20,8 +20,8 @@ class ImageComponent {
     }
 
     getObjectImage(data) {
-        return {SignedURL:'https://mockimageurl.com'}
-        // return aws.getSignedUrl(data);
+        // return {SignedURL:'https://mockimageurl.com'}
+        return aws.getSignedUrl(data);
     }
 
     *getBatchImage(data) {
@@ -50,7 +50,8 @@ class ImageComponent {
 
 let ImageObject = studio.serviceClass(ImageComponent);
 
-ImageMiddelware.setMiddelware(ImageObject);
+process.env.NODE_ENV !== 'test' ? ImageMiddelware.setMiddelware(ImageObject) : null;
+ // console.log(log);
 
 /*tomar en cuanta la posibilida de manejar una base de datos para llevar el control de los usuarios y/o productos
 junto con el nombre de la imagen que se les fue generado, para poder recueperar la imagen desde aws S3, esto con

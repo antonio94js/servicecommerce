@@ -3,7 +3,7 @@ import Studio from 'studio';
 import chai, {expect} from 'chai';
 import SinonChai from 'sinon-chai';
 
-import UserService from '../bussiness/UserService';
+import UserService from '../business/UserService';
 import User from '../models/User';
 import MessageHandler from '../handler/MessageHandler';
 
@@ -152,7 +152,10 @@ describe('#UserService', () => {
                 .then(function(response) {
                     expect(MessageHandler.messageGenerator).to.have.been.called;
                     expect(response.success).to.be.true;
-                });
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
 
         });
     });

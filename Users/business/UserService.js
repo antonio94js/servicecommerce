@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
 import User from '../models/User';

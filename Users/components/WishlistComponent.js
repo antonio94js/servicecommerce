@@ -2,7 +2,7 @@ import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
 import Wishlist from '../models/Whislist';
 import Common from '../utils/Common';
-import WishlistService from '../bussiness/WishlistService';
+import WishlistService from '../business/WishlistService';
 
 
 const UserComponent = Studio.module('UserComponent');

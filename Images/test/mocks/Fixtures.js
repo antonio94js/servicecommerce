@@ -26,3 +26,7 @@ export const WishlistMock = {
 	]
 
 }
+
+
+
+// export default {UserMock};

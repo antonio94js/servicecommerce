@@ -2,8 +2,8 @@ import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
 import User from '../models/User';
 import jwtHandler from '../handler/jwtHandler';
-import bcrypt from 'bcrypt';
-import UserService from '../bussiness/UserService';
+import bcrypt from 'bcryptjs';
+import UserService from '../business/UserService';
 // import './WishlistComponent';
 
 

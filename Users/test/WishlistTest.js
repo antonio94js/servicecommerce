@@ -3,7 +3,7 @@ import Studio from 'studio';
 import chai, {expect} from 'chai';
 import SinonChai from 'sinon-chai';
 import _ from 'lodash';
-import WishlistService from '../bussiness/WishlistService';
+import WishlistService from '../business/WishlistService';
 import Wishlist from '../models/Whislist';
 import MessageHandler from '../handler/MessageHandler';
 
