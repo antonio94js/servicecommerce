@@ -5,12 +5,11 @@ import MessageHandler from '../handler/MessageHandler';
 import co from 'co';
 
 const store = (offerData) => {
-
    return co.wrap(function*() {
       let product = yield ProductService.productBelongsToUser(offerData);
 
       if(product){
-         yield Offer.create(offerData);
+         let x = yield Offer.create(offerData);
          return yield ProductService.assignOffer(offerData);
       }
       return MessageHandler.messageGenerator('Product not found',false);
@@ -51,8 +50,8 @@ const update = (offerData) => {
 
 const remove = (offerData) => {
    return co.wrap(function*() {
-      let product = yield ProductService.productBelongsToUser(offerData);
 
+      let product = yield ProductService.productBelongsToUser(offerData);
       if (product && product.offer._id)
          return Offer.remove({ _id : product.offer._id })
          .then(() =>{
