@@ -1,9 +1,10 @@
-import bcrypt from 'bcryptjs'
 import Studio from 'studio';
+import bcrypt from 'bcryptjs'
+import Promise from 'bluebird';
 import MessageHandler from '../handler/MessageHandler';
 import User from '../models/User';
 import jwtHandler from '../handler/jwtHandler';
-import Promise from 'bluebird';
+
 
 
 
@@ -39,11 +40,11 @@ const userSignOn = (userData) => {
                 return MessageHandler.messageGenerator("The credentials are invalid, please check it out",
                     false);
 
-            let payload = {
+            let userID = {
                 "id": user._id
             };
 
-            return MessageHandler.messageGenerator(jwtHandler.generateAccessToken(payload),
+            return MessageHandler.messageGenerator(jwtHandler.generateAccessToken(userID),
                 true, 'token');
 
         })
@@ -61,7 +62,7 @@ const updateUser = (userData, setWish) => {
             User
                 .findByIdAndUpdate(userData.id, {
                     $set: {
-                        [userData.fieldData()]: userData.value
+                        [userData.fieldName()]: userData.value
                     }
                 }).then((value) => {
                     resolve(MessageHandler.messageGenerator("User Updated successfully", true));
@@ -86,13 +87,10 @@ const updateUser = (userData, setWish) => {
 
 const _isValidateField = (data, setWish) => {
 
-    let {
-        field, value
-    } = data;
+    let {field, value} = data;
 
-    if (setWish) {
-
-        data.fieldData = () => field;
+    if (setWish) { // to set new Wishlist into a user model
+        data.fieldName = () => field;
         return true;
     }
 
@@ -105,10 +103,8 @@ const _isValidateField = (data, setWish) => {
             data.value = bcrypt.hashSync(value, 10);
         }
 
-        data.fieldData = () => field;
-        // data.fieldData = function() {
-        //     return field;
-        // };
+        data.fieldName = () => field;
+
         return true;
 
     }

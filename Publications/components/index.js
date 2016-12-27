@@ -1,1 +1,2 @@
 import './PublicationComponent';
+import './CommentComponent';

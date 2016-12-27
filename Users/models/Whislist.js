@@ -9,12 +9,12 @@ const WishlistSchema = new Schema({
         required: true,
         unique: true
     },
-    iduser: {
+    userID: {
         type: String,
         required: true,
         unique: true
     },
-    products: {
+    publications: {
         type: Array,
         "default": []
     },

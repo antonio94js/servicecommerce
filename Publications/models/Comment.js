@@ -27,6 +27,10 @@ const CommentSchema = new Schema({
     response: {
         type: String,
         ref: "Comment"
+    },
+    __v: {
+        type: Number,
+        select: false
     }
 });
 

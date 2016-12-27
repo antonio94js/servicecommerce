@@ -4,6 +4,7 @@ import ErrorHandler from '../handler/ErrorHandler';
 
 
 const PublicationComponent = Studio.module('PublicationComponent'); //Fetching the Publication Microservice
+const CommentComponent = Studio.module('CommentComponent');
 
 const publicationCreate = (req, res, next) => {
 
@@ -37,5 +38,73 @@ const publicationDelete = (req, res, next) => {
 
 };
 
+const publicationDetail = (req, res, next) => {
 
-export default {publicationCreate,publicationDelete}
+    let getDetail = PublicationComponent('getDetail');
+    let publicationData = {
+        '_id': req.params.publicationID
+    }
+    console.log(publicationData);
+    getDetail(publicationData)
+        .then((response) => {
+            res.status(200).json(response);
+        })
+        .catch((err) => {
+            ErrorHandler(err, res, next);
+            // res.status(500).json(err);
+        })
+
+};
+
+const publicationCreateResponse = (req, res, next) => {
+
+    let createCommentResponse = CommentComponent('createCommentResponse');
+    req.body.userID = req.user.id;
+
+    createCommentResponse(req.body)
+        .then((response) => {
+            res.status(200).json(response);
+        })
+        .catch((err) => {
+            ErrorHandler(err, res, next);
+            // res.status(500).json(err);
+        })
+
+};
+
+const publicationCreateComment = (req, res, next) => {
+
+    let createComment = CommentComponent('createComment');
+    req.body.userID = req.user.id;
+    // console.log(req.body);
+    createComment(req.body)
+        .then((response) => {
+            res.status(200).json(response);
+        })
+        .catch((err) => {
+            ErrorHandler(err, res, next);
+            // res.status(500).json(err);
+        })
+
+};
+
+const publicationDeleteComment = (req, res, next) => {
+
+    let deleteComment = CommentComponent('deleteComment');
+    req.body.userID = req.user.id;
+
+    deleteComment(req.body)
+        .then((response) => {
+            res.status(200).json(response);
+        })
+        .catch((err) => {
+            ErrorHandler(err, res, next);
+            // res.status(500).json(err);
+        })
+
+};
+
+
+export default {
+    publicationCreate, publicationDelete, publicationCreateResponse, publicationCreateComment, publicationDeleteComment,publicationDetail
+}
