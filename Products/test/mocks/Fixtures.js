@@ -8,8 +8,8 @@ export const ProductMock = {
     "userID": "2697bd30-1fbd-4d79-8cc5-26e052141f35",
   	"offer": {
 	     "_id": 'g5hf5th-c436-4894-832c-aaqd8c714b87',
-       "start_date": "2016-09-16",
-       "end_date": "2016-11-16",
+       "startDate": "2016-09-16",
+       "endDate": "2016-11-16",
        "price": 30,
        "productID": '5erfefa-c427-4894-832c-ee1e8c714b80'
  	   },
@@ -17,8 +17,8 @@ export const ProductMock = {
 };
 
 export const OfferMock = {
-	"start_date": "2016-09-16",
-	"end_date": "2016-11-16",
+	"startDate": "2016-09-16",
+	"endDate": "2016-11-16",
 	"price": 30,
 	"productID": "5erfefa-c427-4894-832c-ee1e8c714b80",
 	"_id": "g5hf5th-c436-4894-832c-aaqd8c714b87"

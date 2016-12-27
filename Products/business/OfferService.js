@@ -28,8 +28,8 @@ const update = (offerData) => {
          let offer = yield Offer.findById(offerData._id);
 
          if (offer){
-            offer.start_date = offerData.start_date;
-            offer.end_date = offerData.price;
+            offer.startDate = offerData.startDate;
+            offer.endDate = offerData.price;
             offer.price = offerData.price;
 
             return offer.save()

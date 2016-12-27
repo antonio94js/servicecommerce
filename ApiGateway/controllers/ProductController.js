@@ -45,10 +45,10 @@ const productDelete = (req, res, next) => {
 };
 
 const productDetail = (req, res, next) => {
-    let getproductDetail = ProductComponent('getproductDetail');
+    let getProductDetail = ProductComponent('getProductDetail');
     req.body.userID = req.user.id;
     req.body._id = req.query.id;
-    getproductDetail(req.body)
+    getProductDetail(req.body)
         .then((response) => {
             res.status(200).json(response);
         })
