@@ -4,7 +4,7 @@ const ProductComponent = Studio.module('ProductComponent'); //Fetching the Produ
 
 const createProduct = (req, res, next) => {
     let createProduct = ProductComponent('createProduct');
-    req.body.iduser = req.user.id;
+    req.body.userID = req.user.id;
 
     createProduct(req.body)
         .then((response) => {
@@ -18,7 +18,7 @@ const createProduct = (req, res, next) => {
 
 const productUpdate = (req, res, next) => {
     let updateProduct = ProductComponent('updateProduct');
-    req.body.iduser = req.user.id;
+    req.body.userID = req.user.id;
     updateProduct(req.body)
         .then((response) => {
             res.status(200).json(response);
@@ -32,7 +32,7 @@ const productUpdate = (req, res, next) => {
 
 const productDelete = (req, res, next) => {
     let deleteProduct = ProductComponent('deleteProduct');
-    req.body.iduser = req.user.id;
+    req.body.userID = req.user.id;
     deleteProduct(req.body)
         .then((response) => {
             res.status(200).json(response);
@@ -45,10 +45,10 @@ const productDelete = (req, res, next) => {
 };
 
 const productDetail = (req, res, next) => {
-    let getProductDetail = ProductComponent('getProductDetail');
-    req.body.iduser = req.user.id;
+    let getproductDetail = ProductComponent('getproductDetail');
+    req.body.userID = req.user.id;
     req.body._id = req.query.id;
-    getProductDetail(req.body)
+    getproductDetail(req.body)
         .then((response) => {
             res.status(200).json(response);
         })
@@ -61,7 +61,7 @@ const productDetail = (req, res, next) => {
 
 const productBatch  = (req, res, next) => {
     let getProductBatch = ProductComponent('getProductBatch');
-    req.body.iduser = req.user.id;
+    req.body.userID = req.user.id;
 
     getProductBatch(req.body)
         .then((response) => {

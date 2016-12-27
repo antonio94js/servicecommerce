@@ -9,7 +9,7 @@ const offerSchema = new Schema({
         required: true,
         unique: true,
     },
-    idproduct: {
+    productID: {
         type: String,
         required: true,
         unique: true,

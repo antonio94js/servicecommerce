@@ -18,8 +18,11 @@ class PublicationComponent {
         return yield PublicationService.createNewPublication(publicationData);
     }
 
-    *deletePublication(publicationData) {
+    *updatePublication(publicationData) {
+        return yield PublicationService.updatePublication(publicationData);
+    }
 
+    *deletePublication(publicationData) {
         return yield PublicationService.removePublication(publicationData);
     }
 
@@ -43,4 +46,4 @@ class PublicationComponent {
 //return a new instance from your Microservices component
 let publication = Studio.serviceClass(PublicationComponent);
 
-PublicationMiddelware.CheckPublicationOwnership(publication,'deletePublication','CheckOwnership')
+PublicationMiddelware.CheckPublicationOwnership(publication,'deletePublication','updatePublication','createPublication','CheckOwnership');

@@ -11,8 +11,7 @@ router.post('/comment/', PublicationController.publicationCreateComment);
 router.post('/comment/response', PublicationController.publicationCreateResponse);
 router.delete('/', PublicationController.publicationDelete);
 router.delete('/comment/', PublicationController.publicationDeleteComment);
-
-
+router.put('/', PublicationController.publicationUpdate);
 // router.get('/account', isAuthenticated, UserController.getUserProfile);
 
 export default router;

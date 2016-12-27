@@ -12,14 +12,28 @@ const publicationCreate = (req, res, next) => {
     req.body.userID = req.user.id;
 
     createPublication(req.body)
-        .then((response) => {
-            res.status(201).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, next);
-            // res.status(500).json(err);
-        })
+    .then((response) => {
+        res.status(201).json(response);
+    })
+    .catch((err) => {
+        ErrorHandler(err, res, next);
+        // res.status(500).json(err);
+    });
 
+};
+
+const publicationUpdate = (req, res, next) => {
+
+    let updatePublication = PublicationComponent('updatePublication');
+    req.body.userID = req.user.id;
+    updatePublication(req.body)
+    .then((response) => {
+        res.status(200).json(response);
+    })
+    .catch((err) => {
+        ErrorHandler(err, res, next);
+        // res.status(500).json(err);
+    });
 };
 
 const publicationDelete = (req, res, next) => {
@@ -28,14 +42,14 @@ const publicationDelete = (req, res, next) => {
     req.body.userID = req.user.id;
 
     deletePublication(req.body)
-        .then((response) => {
-            res.status(200).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, next);
-            // res.status(500).json(err);
-        })
 
+    .then((response) => {
+        res.status(200).json(response);
+    })
+    .catch((err) => {
+        ErrorHandler(err, res, next);
+        // res.status(500).json(err);
+    });
 };
 
 const publicationDetail = (req, res, next) => {
@@ -106,5 +120,5 @@ const publicationDeleteComment = (req, res, next) => {
 
 
 export default {
-    publicationCreate, publicationDelete, publicationCreateResponse, publicationCreateComment, publicationDeleteComment,publicationDetail
+    publicationCreate, publicationDelete, publicationCreateResponse,publicationUpdate, publicationCreateComment, publicationDeleteComment,publicationDetail
 }
