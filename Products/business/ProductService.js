@@ -16,7 +16,7 @@ const store = (productData) => {
                 "The product was created successfully", true);
         })
         .catch((err) => {
-            console.log(err);
+            // console.log(err);
             if (err.code === 11000 || err.code === 11001)
                 return MessageHandler.errorGenerator("The product already exist", 409);
 
@@ -76,6 +76,7 @@ const getBatch = (ProductData) => {
         let products = yield Product.find({
             userID: ProductData.userID
         });
+        
         let data = {
             'guids': _.map(products, product => product._id),
             'ObjectType': 'product'
