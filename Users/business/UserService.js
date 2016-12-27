@@ -15,7 +15,8 @@ const createNewUser = (userData) => {
     return User //return a promise
         .create(userData)
         .then((user) => {
-
+            // console.log(user);
+            //
             WishlistComponent('createWishlist')(user.id); // Create a new Wishlist Ascinchronously
             return MessageHandler.messageGenerator("User created succefully", true); //resolve the promise
         })

@@ -27,6 +27,8 @@ const setMiddelware = (ImageObject) => {
 
         if (ImageObject.hasOwnProperty(property) && typeof ImageObject[property] === 'function') {
 
+            ImageObject[property].timeout(3000);
+
             ImageObject[property].filter((data) => { //Setting Studio filter like a middelware
 
                 if (!ImageService.checkObjectType(data.ObjectType)) {
@@ -49,11 +51,11 @@ const setMiddelware = (ImageObject) => {
                             data.ID = Common.cryptoID(data.ID, 'encrypt');
                             return true; // resolve the promise with true
                         }).catch((err) => {
+                            console.log(err);
                             if (err.statusCode === 400)
                                 throw err;
                             else {
-                                throw MessagaeHandler.errorGenerator(
-                                    "Actualmente no esta disponible este servicio", 500);
+                                throw MessagaeHandler.errorGenerator("Actually this service is not enabled", 500);
                             }
                             //reject the promise with the specific error
                         });

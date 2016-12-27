@@ -13,37 +13,37 @@ const ImageComponent = Studio.module('ImageComponent');
 
 class UserComponent {
 
-    *createUser(userData) {
+    * createUser(userData) {
 
         return yield UserService.createNewUser(userData);
     }
 
-    *loginUser(userData) {
+    * loginUser(userData) {
 
         return yield UserService.userSignOn(userData);
     }
 
     //You just can update only one value (email, password or address), otherwise this service(method) will return 400
 
-    *updateUserProfile(userData, setWish) {
+    * updateUserProfile(userData, setWish) {
 
         return yield UserService.updateUser(userData, setWish);
     }
 
-    *getUserProfile(userData) {
+    * getUserProfile(userData) {
 
         let user = yield User.findById(userData.id).lean(true).populate('wishlist').select('-password -_id -__v');
 
-        if(!user) {
+        if (!user) {
             return MessageHandler.messageGenerator('The user does not exist', false);
         }
 
         let getObjectImage = ImageComponent('getObjectImage'); // Fetching a service from ImageMicroservice
-
+// console.log("super hola");
         return getObjectImage({
                 ObjectType: 'user',
                 ID: userData.id, // from the incoming request param
-                userid:userData.id // from the JWT token
+                userID: userData.id // from the JWT token
             })
             .then((value) => {
                 user.SignedURL = value.SignedURL;
@@ -60,4 +60,6 @@ class UserComponent {
 
 }
 //return a new instance from your Microservices component
-Studio.serviceClass(UserComponent);
+let UserObject = Studio.serviceClass(UserComponent);
+
+// UserObject.getUserProfile.timeout(3000);

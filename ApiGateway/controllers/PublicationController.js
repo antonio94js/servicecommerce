@@ -4,6 +4,8 @@ import ErrorHandler from '../handler/ErrorHandler';
 
 
 const PublicationComponent = Studio.module('PublicationComponent'); //Fetching the Publication Microservice
+const ProductComponent = Studio.module('ProductComponent'); //Fetching the Product Microservice
+const UserComponent = Studio.module('UserComponent'); //Fetching the User Microservice
 const CommentComponent = Studio.module('CommentComponent');
 
 const publicationCreate = (req, res, next) => {
@@ -12,13 +14,13 @@ const publicationCreate = (req, res, next) => {
     req.body.userID = req.user.id;
 
     createPublication(req.body)
-    .then((response) => {
-        res.status(201).json(response);
-    })
-    .catch((err) => {
-        ErrorHandler(err, res, next);
-        // res.status(500).json(err);
-    });
+        .then((response) => {
+            res.status(201).json(response);
+        })
+        .catch((err) => {
+            ErrorHandler(err, res, next);
+            // res.status(500).json(err);
+        });
 
 };
 
@@ -27,13 +29,13 @@ const publicationUpdate = (req, res, next) => {
     let updatePublication = PublicationComponent('updatePublication');
     req.body.userID = req.user.id;
     updatePublication(req.body)
-    .then((response) => {
-        res.status(200).json(response);
-    })
-    .catch((err) => {
-        ErrorHandler(err, res, next);
-        // res.status(500).json(err);
-    });
+        .then((response) => {
+            res.status(200).json(response);
+        })
+        .catch((err) => {
+            ErrorHandler(err, res, next);
+            // res.status(500).json(err);
+        });
 };
 
 const publicationDelete = (req, res, next) => {
@@ -44,26 +46,50 @@ const publicationDelete = (req, res, next) => {
     deletePublication(req.body)
 
     .then((response) => {
-        res.status(200).json(response);
-    })
-    .catch((err) => {
-        ErrorHandler(err, res, next);
-        // res.status(500).json(err);
-    });
+            res.status(200).json(response);
+        })
+        .catch((err) => {
+            ErrorHandler(err, res, next);
+            // res.status(500).json(err);
+        });
 };
 
 const publicationDetail = (req, res, next) => {
 
     let getDetail = PublicationComponent('getDetail');
+    let getProductDetail = ProductComponent('getProductDetail');
+    let getUserProfile = UserComponent('getUserProfile');
     let publicationData = {
         '_id': req.params.publicationID
     }
-    console.log(publicationData);
+    let publicationDetail = {};
     getDetail(publicationData)
-        .then((response) => {
-            res.status(200).json(response);
+        .then((publication) => {
+            publicationDetail.publication = publication;
+            console.log(publication);
+            let product = {
+                'productID': publication.productID,
+                'userID': publication.userID
+
+            }
+
+
+            return getProductDetail(product)
+                // res.status(200).json(response);
+        })
+        .then((product) => {
+            publicationDetail.publication.product = product.data;
+            let user = {
+                'id': publicationDetail.publication.userID
+            };
+            return getUserProfile(user)
+        })
+        .then((user) => {
+            publicationDetail.publication.user = user;
+            res.status(200).json(publicationDetail);
         })
         .catch((err) => {
+            console.log(err);
             ErrorHandler(err, res, next);
             // res.status(500).json(err);
         })
@@ -120,5 +146,6 @@ const publicationDeleteComment = (req, res, next) => {
 
 
 export default {
-    publicationCreate, publicationDelete, publicationCreateResponse,publicationUpdate, publicationCreateComment, publicationDeleteComment,publicationDetail
+    publicationCreate, publicationDelete, publicationCreateResponse, publicationUpdate, publicationCreateComment,
+    publicationDeleteComment, publicationDetail
 }

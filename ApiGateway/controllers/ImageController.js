@@ -11,7 +11,7 @@ const saveImage = (req, res, next) => {
     let payload = {
         ObjectType: req.params.ObjectType,
         ID: req.params.ID,
-        userid: req.user.id,
+        userID: req.user.id,
         file: req.body.file
     };
 
@@ -34,7 +34,7 @@ const getImage = (req, res, next) => {
     let payload = {
         ObjectType: req.params.ObjectType,
         ID: req.params.ID,
-        userid: req.user.id,
+        userID: req.user.id,
     };
 
     getObjectImage(payload)
@@ -76,7 +76,7 @@ const deleteImage = (req, res, next) => {
     let payload = {
         ObjectType: req.params.ObjectType,
         ID: req.params.ID,
-        userid: req.user.id
+        userID: req.user.id
     }
 
     deleteObjectImage(payload)
