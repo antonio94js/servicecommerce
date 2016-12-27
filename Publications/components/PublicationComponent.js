@@ -1,6 +1,7 @@
 import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
 import PublicationService from '../business/PublicationService';
+import PublicationMiddelware from '../middelware/PublicationMiddelware';
 
 // import './WishlistComponent';
 
@@ -22,10 +23,12 @@ class PublicationComponent {
     }
 
     *deletePublication(publicationData) {
-        return yield PublicationService.remove(PublicationData);
+        return yield PublicationService.removePublication(PublicationData);
     }
 
 
 }
 //return a new instance from your Microservices component
-Studio.serviceClass(PublicationComponent);
+let publication = Studio.serviceClass(PublicationComponent);
+
+PublicationMiddelware.CheckPublicationOwnership(publication,'deletePublication')

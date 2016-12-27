@@ -14,7 +14,7 @@ const messageGenerator = (message, success, name) => {
 }
 
 const errorGenerator = (message,status) => {
-    throw new ErrorHandler('CustomError',message,status);
+    return new ErrorHandler('CustomError',message,status);
 }
 
 

@@ -5,13 +5,22 @@ import studio from 'studio'
 import _ from 'lodash';
 
 
-const ProductComponent = studio.module('ProductComponent'); //Fetching the Image Microservice
+const ProductComponent = studio.module('ProductComponent'); //Fetching the Product Microservice
 
 /*
 This filter / middelware allow us to filter all the bad request model sending to our
 ImageMicroservice and also check if the user can do a specific action like upload or delete
 a Product image or his own photo
 */
+
+// const ToImprove = () => {
+//     for (let property in ImageObject) {
+//
+//         if (ImageObject.hasOwnProperty(property) && typeof ImageObject[property] === 'function') {
+//             setMiddelware();
+//         }
+//     }
+// }
 
 const setMiddelware = (ImageObject) => {
     for (let property in ImageObject) {
@@ -25,9 +34,7 @@ const setMiddelware = (ImageObject) => {
                 }
 
                 if (data.ObjectType === 'user' && data.ID !== data.userid) {
-                    console.log(data.ID)
 
-                    console.log(data.userid)
                     throw MessagaeHandler.errorGenerator("You are not allowed to do this action", 403);
                 }
 
@@ -42,8 +49,12 @@ const setMiddelware = (ImageObject) => {
                             data.ID = Common.cryptoID(data.ID, 'encrypt');
                             return true; // resolve the promise with true
                         }).catch((err) => {
-                            throw MessagaeHandler.errorGenerator(
-                                "You are not allowed to do this action", 403);
+                            if (err.statusCode === 400)
+                                throw err;
+                            else {
+                                throw MessagaeHandler.errorGenerator(
+                                    "Actualmente no esta disponible este servicio", 500);
+                            }
                             //reject the promise with the specific error
                         });
                 }
@@ -52,7 +63,7 @@ const setMiddelware = (ImageObject) => {
                 if (property !== 'getBatchImage') {
                     data.ID = Common.cryptoID(data.ID, 'encrypt');
                 } else {
-                    data.guids = _.map(data.guids,(guid) => {
+                    data.guids = _.map(data.guids, (guid) => {
                         return {
                             original: guid,
                             ID: Common.cryptoID(guid, 'encrypt'),
