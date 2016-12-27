@@ -2,13 +2,6 @@ import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
 import Publication from '../models/Publication';
 
-
-const setData = (publicationData, publication) => {
-   let { publicationDetail, name } = publicationData;
-   publication.publicationDetail = !publicationDetail ? publication.publicationDetail : publicationDetail;
-   publication.name = !name ? publication.name : name;
-};
-
 const createNewPublication = (publicationData) => {
 
     return Publication //return a promise
@@ -18,6 +11,7 @@ const createNewPublication = (publicationData) => {
             return MessageHandler.messageGenerator("Publication created succefully", true); //resolve the promise
         })
         .catch((err) => {
+           console.log(err);
             if (err.code === 11000 || err.code === 11001)
                 throw MessageHandler.errorGenerator("The publication already exist", 409); //reject the promise
             // console.log("aqui" + err);
@@ -27,7 +21,8 @@ const createNewPublication = (publicationData) => {
 };
 
 const updatePublication = (publicationData) => {
-   setData(publicationData, publicationData.product);
+
+   setData(publicationData, publicationData.publication);
 
    return publicationData.publication.save()
       .then((product) => {
@@ -49,7 +44,7 @@ const removePublication = (publicationData) => {
         .catch((err) => {
             throw MessageHandler.errorGenerator("Something wrong happened deleted publication", 500); //reject the promise
         });
-}
+};
 
 /*HELPERS*/
 
@@ -61,11 +56,16 @@ const publicationBelongsToUser = (publicationData, property) => {
         })
         .then((product) => {
             return product;
-        })
+        });
+};
+
+const setData = (publicationData, publication) => {
+   let { publicationDetail, name } = publicationData;
+   publication.publicationDetail = !publicationDetail ? publication.publicationDetail : publicationDetail;
+   publication.name = !name ? publication.name : name;
 };
 
 
-
 export default {
-    createNewPublication,publicationBelongsToUser,removePublication
-}
+    createNewPublication,publicationBelongsToUser,removePublication, updatePublication
+};

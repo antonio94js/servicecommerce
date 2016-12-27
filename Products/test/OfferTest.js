@@ -46,9 +46,9 @@ describe('#OfferService', () => {
                 "start_date" : "2016-09-16",
                 "end_date" : "2016-11-16",
                 "price" : 30,
-                "idproduct" : "5erfefa-c427-4894-832c-ee1e8c714b80",
+                "productID" : "5erfefa-c427-4894-832c-ee1e8c714b80",
                 "_id" : "g5hf5th-c436-4894-832c-aaqd8c714b87",
-                "iduser" : "2697bd30-1fbd-4d79-8cc5-26e052141f35"
+                "userID" : "2697bd30-1fbd-4d79-8cc5-26e052141f35"
             };
 
         });
@@ -101,9 +101,9 @@ describe('#OfferService', () => {
                 "start_date" : "2016-09-16",
                 "end_date" : "2016-11-16",
                 "price" : 30,
-                "idproduct" : "5erfefa-c427-4894-832c-ee1e8c714b80",
+                "productID" : "5erfefa-c427-4894-832c-ee1e8c714b80",
                 "_id" : "g5hf5th-c436-4894-832c-aaqd8c714b87",
-                "iduser" : "2697bd30-1fbd-4d79-8cc5-26e052141f35"
+                "userID" : "2697bd30-1fbd-4d79-8cc5-26e052141f35"
             };
 
         });
@@ -164,8 +164,8 @@ describe('#OfferService', () => {
         beforeEach(() => {
 
             offerData = {
-                "iduser": "2697bd30-1fbd-4d79-8cc5-26e052141f35",
-                "idproduct": "5erfefa-c427-4894-832c-ee1e8c714b80"
+                "userID": "2697bd30-1fbd-4d79-8cc5-26e052141f35",
+                "productID": "5erfefa-c427-4894-832c-ee1e8c714b80"
             }
 
 

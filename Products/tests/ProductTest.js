@@ -46,7 +46,7 @@ describe('#ProductService', () => {
 
             productData = {
               "_id": "5erfefa-c427-4894-832c-ee1e8c714b80",
-              "productdetail": "Here should be a detail",
+              "productDetail": "Here should be a detail",
               "status":"New",
               "price": 40,
               "quantity": 5,
@@ -123,7 +123,7 @@ describe('#ProductService', () => {
 
             ProductData = {
                 "_id": "5erfefa-c427-4894-832c-ee1e8c714b80",
-                "productdetail": "Here should be a detail",
+                "productDetail": "Here should be a detail",
                 "status":"New",
                 "price": 40,
                 "quantity": 6,

@@ -11,40 +11,46 @@ const publicationCreate = (req, res, next) => {
     req.body.userID = req.user.id;
 
     createPublication(req.body)
-        .then((response) => {
-            res.status(201).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, next);
-            // res.status(500).json(err);
-        })
+    .then((response) => {
+        res.status(201).json(response);
+    })
+    .catch((err) => {
+        ErrorHandler(err, res, next);
+        // res.status(500).json(err);
+    });
 
 };
 
 const publicationUpdate = (req, res, next) => {
-    let updatePublication = ProductComponent('updatePublication');
+
+    let updatePublication = PublicationComponent('updatePublication');
     req.body.userID = req.user.id;
-    updateProduct(req.body)
-=======
+    updatePublication(req.body)
+    .then((response) => {
+        res.status(200).json(response);
+    })
+    .catch((err) => {
+        ErrorHandler(err, res, next);
+        // res.status(500).json(err);
+    });
+};
+
 const publicationDelete = (req, res, next) => {
 
     let deletePublication = PublicationComponent('deletePublication');
     req.body.userID = req.user.id;
 
     deletePublication(req.body)
->>>>>>> 83a743f19e7f2076eced1d776a5b51a090723c57
-        .then((response) => {
-            res.status(200).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, next);
-            // res.status(500).json(err);
-<<<<<<< HEAD
-        });
-=======
-        })
 
+    .then((response) => {
+        res.status(200).json(response);
+    })
+    .catch((err) => {
+        ErrorHandler(err, res, next);
+        // res.status(500).json(err);
+    });
 };
 
 
-export default {publicationCreate,publicationDelete}
+
+export default {publicationCreate,publicationDelete,publicationUpdate};

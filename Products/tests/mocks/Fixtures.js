@@ -1,18 +1,18 @@
 export const ProductMock = {
 	"_id": "5erfefa-c427-4894-832c-ee1e8c714b80",
-    "productdetail": "Here should be a detail",
+    "productDetail": "Here should be a detail",
     "status": "New",
     "price": 40,
     "quantity": 5,
     "name": "MackBook Pro",
-    "iduser": "2697bd30-1fbd-4d79-8cc5-26e052141f35",
+    "userID": "2697bd30-1fbd-4d79-8cc5-26e052141f35",
     "date": "2016-12-21T22:44:20.956Z"
 };
 
 
 export const WishlistMock = {
 	"_id" : "dad50524-0938-1596-273c-b207e2793496",
-	"iduser" : "2697bd30-1fbd-4d79-8cc5-26e052141235",
+	"userID" : "2697bd30-1fbd-4d79-8cc5-26e052141235",
 	"products" : [
 		{
 			"publicationName" : "A New MackBook Air 13 inch 8 gb Ram Intel i3",

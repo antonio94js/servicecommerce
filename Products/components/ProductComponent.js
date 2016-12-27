@@ -16,7 +16,7 @@ class ProductComponent {
         return yield ProductService.remove(ProductData);
     }
 
-    *getProductDetail(ProductData) {
+    *getproductDetail(ProductData) {
         return yield ProductService.getDetail(ProductData);
     }
 
@@ -36,4 +36,4 @@ class ProductComponent {
 //return a new instance from your Microservices component
 var serviceObj = Studio.serviceClass(ProductComponent);
 
-Check.CheckProductOwnership(serviceObj, 'updateProduct', 'deleteProduct', 'getProductDetail', 'checkOwnership');
+Check.CheckProductOwnership(serviceObj, 'updateProduct', 'deleteProduct', 'getproductDetail', 'checkOwnership');

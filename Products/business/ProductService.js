@@ -16,7 +16,7 @@ const store = (productData) => {
                 "The product was created successfully", true);
         })
         .catch((err) => {
-            // console.log(err);
+            console.log(err);
             if (err.code === 11000 || err.code === 11001)
                 return MessageHandler.errorGenerator("The product already exist", 409);
 
@@ -55,7 +55,7 @@ const getDetail = (ProductData) => {
     return getObjectImage({
             ObjectType: 'product',
             ID: ProductData.product._id,
-            userid: ProductData.product.iduser
+            userid: ProductData.product.userID
         })
         .then((value) => {
             ProductData.product.SignedURL = value.SignedURL;
@@ -74,7 +74,7 @@ const getBatch = (ProductData) => {
         let ImageBatch = ImageComponent('getBatchImage');
 
         let products = yield Product.find({
-            iduser: ProductData.iduser
+            userID: ProductData.userID
         });
         let data = {
             'guids': _.map(products, product => product._id),
@@ -99,7 +99,7 @@ const getBatch = (ProductData) => {
 
 const assignOffer = (OfferData) => {
 
-    return Product.findByIdAndUpdate(OfferData.idproduct, {
+    return Product.findByIdAndUpdate(OfferData.productID, {
             $set: {
                 offer: OfferData._id
             }
@@ -119,12 +119,12 @@ const assignOffer = (OfferData) => {
 
 
 const productBelongsToUser = (ProductData, property) => {
-    let lean = property === 'getProductDetail';
-    return Product.findById(ProductData.idproduct ? ProductData.idproduct : ProductData._id)
+    let lean = property === 'getproductDetail';
+    return Product.findById(ProductData.productID ? ProductData.productID : ProductData._id)
         .lean(lean)
         .populate('offer')
         .where({
-            iduser: ProductData.iduser
+            userID: ProductData.userID
         })
         .select('-__v')
         .then((product) => {
@@ -136,9 +136,9 @@ const productBelongsToUser = (ProductData, property) => {
 };
 
 const setData = (productData, product) => {
-    let {productdetail, status, price, quantity, name} = productData;
+    let {productDetail, status, price, quantity, name} = productData;
 
-    product.productdetail = !productdetail ? product.productdetail : productdetail;
+    product.productDetail = !productDetail ? product.productDetail : productDetail;
     product.status = !status ? product.status : status;
     product.price = !price ? product.price : price;
     product.quantity = !quantity ? product.quantity : quantity;

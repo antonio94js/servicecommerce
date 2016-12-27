@@ -8,7 +8,7 @@ const router = Router();
 
 router.post('/', PublicationController.publicationCreate);
 router.delete('/', PublicationController.publicationDelete);
-// router.put('/account', isAuthenticated, UserController.userUpdateProfile);
+router.put('/', PublicationController.publicationUpdate);
 // router.get('/account', isAuthenticated, UserController.getUserProfile);
 
 export default router;
