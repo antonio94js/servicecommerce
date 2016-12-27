@@ -17,10 +17,11 @@ const store = (productData) => {
                 "The product was created successfully", true);
         })
         .catch((err) => {
-            // console.log(err);
+            console.log(err);
             if (err.code === 11000 || err.code === 11001)
                 return MessageHandler.errorGenerator("The product already exist", 409);
-
+            if(err.name === 'ValidationError')
+                return MessageHandler.errorGenerator("Some fields on the request are invalid", 400);
             return MessageHandler.errorGenerator("Something wrong happened creating product", 500);
         });
 };
@@ -41,26 +42,28 @@ const remove = (ProductData) => {
 
     let checkPublicationStatus = PublicationComponent('checkPublicationStatus');
 
-    return checkPublicationStatus({
-                userID: ProductData.product.userID,
-                productID : ProductData.product._id
-            }).then((value) => {
-                if(value){
-                    return Product.remove({
-                            _id: ProductData._id
-                        }).then(
-                            () => {
-                                return MessageHandler.messageGenerator("Product deleted succefully", true);
-                            })
-                        .catch((err) => {
-                            return MessageHandler.errorGenerator("Something wrong happened deleting product", 500);
-                        });
-                }else
-                    return MessageHandler.messageGenerator("Product can not be deleted", false);
-            })
-            .catch((err) => {
-                return MessageHandler.messageGenerator("Product can not be deleted at the momment, Try again later", false);
-            });
+    return new Promise((resolve, reject) => {
+        checkPublicationStatus({
+                    userID: ProductData.product.userID,
+                    productID : ProductData.product._id
+                }).then((value) => {
+                    if(value){
+                        Product.remove({
+                                _id: ProductData._id
+                            }).then(
+                                () => {
+                                    resolve(MessageHandler.messageGenerator("Product deleted succefully", true));
+                                })
+                            .catch((err) => {
+                                reject(MessageHandler.errorGenerator("Something wrong happened deleting product", 500));
+                            });
+                    }else
+                        resolve(MessageHandler.messageGenerator("Product can not be deleted", false));
+                })
+                .catch((err) => {
+                    resolve(MessageHandler.messageGenerator("Product can not be deleted at the momment, Try again later", false));
+                });
+    });
 };
 
 const getDetail = (ProductData) => {
@@ -90,15 +93,18 @@ const getBatch = (ProductData) => {
 
         let products = yield Product.find({
             userID: ProductData.userID
-        });
+        }).lean(true).populate('offer');
 
         let data = {
             'guids': _.map(products, product => product._id),
             'ObjectType': 'product'
         };
         return ImageBatch(data).then((images) => {
+            console.log(images);
+            console.log('hola');
             for (const product of products) {
                 let img = _.find(images, image => image.id === product._id);
+                // console.log(img);
                 if (img) {
                     product.SignedUrl = img.SignedUrl;
                 }
@@ -144,6 +150,7 @@ const productBelongsToUser = (ProductData, property) => {
         })
         .select('-__v')
         .then((product) => {
+            console.log(product);
             return product;
         })
         .catch((err) => {
