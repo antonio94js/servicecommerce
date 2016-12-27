@@ -64,7 +64,7 @@ const getPublicationDetail = (publicationData) => {
         .lean(true)
         .then((product) => {
             return product;
-        })
+        });
 }
 
 const checkPublicationStatus = (productData) => {
@@ -78,8 +78,8 @@ const checkPublicationStatus = (productData) => {
             } else {
                 return true;
             }
-        })
-}
+        });
+};
 
 const makeNewComment = (commentData) => {
     console.log(commentData);
@@ -98,7 +98,7 @@ const makeNewComment = (commentData) => {
             throw MessageHandler.errorGenerator("The publication does not exist");
         }
     })();
-}
+};
 
 
 /*HELPERS*/
@@ -123,4 +123,4 @@ const setData = (publicationData, publication) => {
 
 export default {
     createNewPublication, publicationBelongsToUser, removePublication,checkPublicationStatus, makeNewComment,getPublicationDetail,updatePublication
-}
+};
