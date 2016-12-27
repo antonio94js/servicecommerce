@@ -6,6 +6,7 @@ import _ from 'lodash';
 import Promise from 'bluebird';
 
 const ImageComponent = Studio.module('ImageComponent');
+const PublicationComponent = Studio.module('PublicationComponent');
 
 const store = (productData) => {
 
@@ -16,7 +17,7 @@ const store = (productData) => {
                 "The product was created successfully", true);
         })
         .catch((err) => {
-            console.log(err);
+            // console.log(err);
             if (err.code === 11000 || err.code === 11001)
                 return MessageHandler.errorGenerator("The product already exist", 409);
 
@@ -37,15 +38,29 @@ const update = (ProductData) => {
 };
 
 const remove = (ProductData) => {
-    return Product.remove({
-            _id: ProductData._id
-        }).then(
-            () => {
-                return MessageHandler.messageGenerator("Product deleted succefully", true);
+
+    let checkPublicationStatus = PublicationComponent('checkPublicationStatus');
+
+    return checkPublicationStatus({
+                userID: ProductData.product.userID,
+                productID : ProductData.product._id
+            }).then((value) => {
+                if(value){
+                    return Product.remove({
+                            _id: ProductData._id
+                        }).then(
+                            () => {
+                                return MessageHandler.messageGenerator("Product deleted succefully", true);
+                            })
+                        .catch((err) => {
+                            return MessageHandler.errorGenerator("Something wrong happened deleting product", 500);
+                        });
+                }else
+                    return MessageHandler.messageGenerator("Product can not be deleted", false);
             })
-        .catch((err) => {
-            return MessageHandler.errorGenerator("Something wrong happened deleting product", 500);
-        });
+            .catch((err) => {
+                return MessageHandler.messageGenerator("Product can not be deleted at the momment, Try again later", false);
+            });
 };
 
 const getDetail = (ProductData) => {
@@ -55,7 +70,7 @@ const getDetail = (ProductData) => {
     return getObjectImage({
             ObjectType: 'product',
             ID: ProductData.product._id,
-            userid: ProductData.product.userID
+            userID: ProductData.product.userID
         })
         .then((value) => {
             ProductData.product.SignedURL = value.SignedURL;
@@ -76,6 +91,7 @@ const getBatch = (ProductData) => {
         let products = yield Product.find({
             userID: ProductData.userID
         });
+
         let data = {
             'guids': _.map(products, product => product._id),
             'ObjectType': 'product'
