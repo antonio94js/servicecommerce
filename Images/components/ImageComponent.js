@@ -12,11 +12,11 @@ class ImageComponent {
 
         let imageData = ImageService.processImage(data);
 
-        if(!imageData) throw MessagaeHandler.errorGenerator("The image's type is not valid",400);
+        if (!imageData) throw MessagaeHandler.errorGenerator("The image's type is not valid", 400);
 
         let success = yield aws.saveImage(...imageData);
 
-        return MessagaeHandler.messageGenerator('Image uploaded successfully',success);
+        return MessagaeHandler.messageGenerator('Image uploaded successfully', success);
     }
 
     getObjectImage(data) {
@@ -24,15 +24,17 @@ class ImageComponent {
         return aws.getSignedUrl(data);
     }
 
-    *getBatchImage(data) {
+    * getBatchImage(data) {
         let SignedUrls = [];
 
         for (const guid of data.guids) {
-            console.log(guid.original);
             let response = yield aws.getSignedUrl(guid);
 
             if (response && response.success) {
-                SignedUrls.push({id:guid.original,SignedUrl:response.SignedURL});
+                SignedUrls.push({
+                    id: guid.original,
+                    SignedUrl: response.SignedURL
+                });
             }
         }
 
@@ -50,8 +52,11 @@ class ImageComponent {
 
 let ImageObject = studio.serviceClass(ImageComponent);
 
-process.env.NODE_ENV !== 'test' ? ImageMiddelware.setMiddelware(ImageObject) : null;
- // console.log(log);
+if (process.env.NODE_ENV !== 'test') {
+    ImageMiddelware.setMiddelware(ImageObject)
+}
+
+// console.log(log);
 
 /*tomar en cuanta la posibilida de manejar una base de datos para llevar el control de los usuarios y/o productos
 junto con el nombre de la imagen que se les fue generado, para poder recueperar la imagen desde aws S3, esto con

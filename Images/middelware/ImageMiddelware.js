@@ -33,7 +33,7 @@ const setMiddelware = (ImageObject) => {
                     throw MessagaeHandler.errorGenerator("The ObjectType is invalid", 400);
                 }
 
-                if (data.ObjectType === 'user' && data.ID !== data.userid) {
+                if (data.ObjectType === 'user' && data.ID !== data.userID) {
 
                     throw MessagaeHandler.errorGenerator("You are not allowed to do this action", 403);
                 }
@@ -42,8 +42,8 @@ const setMiddelware = (ImageObject) => {
                     // console.log(data.userid);
                     let checkOwnership = ProductComponent('checkOwnership');
                     return checkOwnership({ // return a promise
-                            idproduct: data.ID,
-                            iduser: data.userid
+                            productID: data.ID,
+                            userID: data.userID
                         })
                         .then((value) => {
                             data.ID = Common.cryptoID(data.ID, 'encrypt');
