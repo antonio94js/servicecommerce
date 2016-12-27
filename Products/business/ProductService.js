@@ -141,7 +141,7 @@ const assignOffer = (OfferData) => {
 
 
 const productBelongsToUser = (ProductData, property) => {
-    let lean = property === 'getproductDetail';
+    let lean = property === 'getProductDetail';
     return Product.findById(ProductData.productID ? ProductData.productID : ProductData._id)
         .lean(lean)
         .populate('offer')
