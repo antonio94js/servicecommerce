@@ -67,6 +67,20 @@ const getPublicationDetail = (publicationData) => {
         })
 }
 
+const checkPublicationStatus = (productData) => {
+    return Publication.findOne({'productID':productData._id})
+        // .where({'status':0})
+        .select('-__v')
+        .lean(true)
+        .then((product) => {
+            if(product && product.status === 1) {
+                return false;
+            } else {
+                return true;
+            }
+        })
+}
+
 const makeNewComment = (commentData) => {
     console.log(commentData);
     return co.wrap(function*() {
@@ -108,5 +122,5 @@ const setData = (publicationData, publication) => {
 
 
 export default {
-    createNewPublication, publicationBelongsToUser, removePublication, makeNewComment,getPublicationDetail,updatePublication
+    createNewPublication, publicationBelongsToUser, removePublication,checkPublicationStatus, makeNewComment,getPublicationDetail,updatePublication
 }

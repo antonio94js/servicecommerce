@@ -37,6 +37,11 @@ class PublicationComponent {
         return yield PublicationService.getPublicationDetail(publicationData);
     }
 
+    *checkPublicationStatus(producData) {
+
+        return yield PublicationService.checkPublicationStatus(producData);
+    }
+
     CheckOwnership(publicationData) {
 
         return true;
