@@ -1,10 +1,9 @@
 import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
 import User from '../models/User';
-import jwtHandler from '../handler/jwtHandler';
-import bcrypt from 'bcryptjs';
+// import jwtHandler from '../handler/jwtHandler';
+// import bcrypt from 'bcryptjs';
 import UserService from '../business/UserService';
-// import './WishlistComponent';
 
 
 // const WishlistComponent = Studio.module('WishlistComponent');

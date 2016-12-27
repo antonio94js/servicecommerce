@@ -8,7 +8,7 @@ const WishlistComponent = Studio.module('WishlistComponent'); //Fetching the Use
 const addPublication = (req, res, next) => {
     let addPublication = WishlistComponent('addPublication');
     let payload = {
-        iduser: req.user.id,
+        userID: req.user.id,
 
         data: {
             publicationID: req.params.publicationID,
@@ -31,7 +31,7 @@ const addPublication = (req, res, next) => {
 const deletePublication = (req, res, next) => {
     let deletePublication = WishlistComponent('deletePublication');
     let payload = {
-        iduser: req.user.id,
+        userID: req.user.id,
 
         data: {
             publicationID: req.params.publicationID,

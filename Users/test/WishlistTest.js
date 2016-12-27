@@ -35,7 +35,7 @@ describe('#WishlistService', () => {
         sandboxWishlist.stub(Wishlist, "findByIdAndUpdate").returns(PromiseHandler.resolver(true));
 
         WishlistPayload = {
-            "iduser": '2697bd30-1fbd-4d79-8cc5-26e052141235',
+            "userID": '2697bd30-1fbd-4d79-8cc5-26e052141235',
             "data": {
                 "publicationID": '3e4e029f-db54-459b-bf0b-624796bb0c9e',
                 "publicationName": 'Newest Dell Inspiron i3558-5500BLK 15.6"'
@@ -58,16 +58,16 @@ describe('#WishlistService', () => {
         afterEach(() => {
             //restoring the original array
             WishlistPayload.data.publicationID = '3e4e029f-db54-459b-bf0b-624796bb0c9e';
-            WishlistMock.products = _.filter(WishlistMock.products, product => product.publicationID !==
+            WishlistMock.publications = _.filter(WishlistMock.publications, product => product.publicationID !==
                 WishlistPayload.data.publicationID)
 
         })
 
         it('Should add new element to Publications List', (done) => {
-            expect(WishlistMock.products).to.have.lengthOf(3); // Original length
+            expect(WishlistMock.publications).to.have.lengthOf(3); // Original length
             WishlistService.updateUserWishlist('add', WishlistPayload)
                 .then((response) => {
-                    expect(WishlistMock.products).to.have.lengthOf(4); // Adding new element
+                    expect(WishlistMock.publications).to.have.lengthOf(4); // Adding new element
                     done();
 
                 })
@@ -95,7 +95,7 @@ describe('#WishlistService', () => {
 
                 WishlistService.updateUserWishlist('add', WishlistPayload)
                     .then((response) => {
-                        expect(WishlistMock.products).to.have.lengthOf(3); // Keep the original length
+                        expect(WishlistMock.publications).to.have.lengthOf(3); // Keep the original length
                         expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("The publication already exist in your wishlist", false);
                         expect(response.success).to.be.false;
                         done();
@@ -130,17 +130,17 @@ describe('#WishlistService', () => {
 
         afterEach(() => {
             //restoring the original array
-            WishlistMock.products.push(WishlistPayload.data);
+            WishlistMock.publications.push(WishlistPayload.data);
 
         })
 
         it('Should delete a element from the Publications List', (done) => {
 
-            expect(WishlistMock.products).to.have.lengthOf(3); // Original length
+            expect(WishlistMock.publications).to.have.lengthOf(3); // Original length
             WishlistService.updateUserWishlist('delete', WishlistPayload)
                 .then((response) => {
                     expect(MessageHandler.messageGenerator).to.have.been.called;
-                    expect(WishlistMock.products).to.have.lengthOf(2); // Adding new element
+                    expect(WishlistMock.publications).to.have.lengthOf(2); // Adding new element
                     done();
 
                 })
