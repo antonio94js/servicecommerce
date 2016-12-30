@@ -4,15 +4,15 @@ import OfferService from '../business/OfferService';
 class OfferComponent {
 
     *createOffer(offerData) {
-        return yield OfferService.store(offerData);
+        return yield OfferService.createNewOffer(offerData);
     }
 
     *updateOffer(offerData) {
-        return yield OfferService.update(offerData);
+        return yield OfferService.updateOffer(offerData);
     }
 
     *deleteOffer(offerData) {
-        return yield OfferService.remove(offerData);
+        return yield OfferService.removeOffer(offerData);
     }
 
 }

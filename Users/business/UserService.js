@@ -1,0 +1,167 @@
+import Studio from 'studio';
+import bcrypt from 'bcryptjs'
+import Promise from 'bluebird';
+import co from 'co';
+import MessageHandler from '../handler/MessageHandler';
+import User from '../models/User';
+import jwtHandler from '../handler/jwtHandler';
+
+
+
+const createNewUser = (userData) => {
+
+    const WishlistComponent = Studio.module('WishlistComponent'); // Fetching the Whislist Microservice
+
+    return User //return a promise
+        .create(userData)
+        .then((user) => {
+            WishlistComponent('createWishlist')(user.id); // Create a new Wishlist Ascinchronously
+            return MessageHandler.messageGenerator("User created succefully", true); //resolve the promise
+        })
+        .catch((err) => {
+            // console.log(err);
+            if (err.code === 11000 || err.code === 11001)
+                throw MessageHandler.errorGenerator("The user already exist", 409); //reject the promise
+
+            if (err.name === 'ValidationError')
+                throw MessageHandler.errorGenerator("Some fields on the request are invalid or missing", 400);
+
+            throw MessageHandler.errorGenerator("Something wrong happened creating user", 500); //reject the promise
+        });
+
+}
+
+const userSignOn = (userData) => {
+
+    return User
+        .findOne({
+            $or: [{
+                email: userData.account
+            }, {
+                username: userData.account
+            }]
+        })
+        .then((user) => {
+            if (!user || !bcrypt.compareSync(userData.password, user.password))
+                return MessageHandler.messageGenerator("The credentials are invalid, please check it out",
+                    false);
+
+            let userID = {
+                "id": user._id,
+                "username": user.username
+            };
+
+            return MessageHandler.messageGenerator(jwtHandler.generateAccessToken(userID), true, 'token');
+
+        })
+        .catch((err) => {
+            throw new Error(err);
+        });
+}
+
+const updateUser = (userData, setWish) => {
+
+    return new Promise((resolve, reject) => {
+
+        if (_isValidateField(userData, setWish)) {
+
+            User
+                .findByIdAndUpdate(userData.id, {
+                    $set: {
+                        [userData.fieldName()]: userData.value
+                    }
+                }).then((value) => {
+                    resolve(MessageHandler.messageGenerator("User Updated successfully", true));
+                })
+                .catch((err) => {
+                    if (err.code === 11000 || err.code === 11001) {
+                        resolve(MessageHandler.messageGenerator("This email is already in use", false));
+                        // return;
+                    } else {
+                        reject(new Error("Error updating the user profile"));
+                    }
+                    //reject the promise
+                })
+
+        } else {
+            reject(MessageHandler.errorGenerator("The field or the value for this action is invalid", 400));
+        }
+
+    })
+
+}
+
+const getUserAccount = (userData) => {
+    const ImageComponent = Studio.module('ImageComponent');
+    return co.wrap(function*() {
+        let user = yield User.findById(userData.id).lean(true).populate('wishlist').select(
+            '-password -_id -__v');
+
+        if (!user) {
+            return MessageHandler.messageGenerator('The user does not exist', false);
+        }
+
+        let getObjectImage = ImageComponent('getObjectImage'); // Fetching a service from ImageMicroservice
+
+        return getObjectImage({
+                ObjectType: 'user',
+                ID: userData.id, // from the incoming request param
+                userID: userData.id // from the JWT token
+            })
+            .then((value) => {
+                user.SignedURL = value.SignedURL;
+                return MessageHandler.messageGenerator(user, true, 'data');
+
+            })
+            .catch((err) => {
+                console.log(err);
+                return MessageHandler.messageGenerator(user, true, 'data');
+            })
+    })();
+
+}
+
+
+const getUserDetail = (userData) => {
+
+    return User
+        .findById(userData.id)
+        .lean(true)
+        .select('address username -_id'); //By the moment We will only select the user's address and username
+
+}
+
+const _isValidateField = (data, setWish) => {
+
+    let {
+        field, value
+    } = data;
+
+    if (setWish) { // to set new Wishlist into a user model
+        data.fieldName = () => field;
+        return true;
+    }
+
+    if (['email', 'password', 'address'].includes(field)) {
+        if (!value || value === '') {
+            return false;
+        }
+
+        if (field === 'password') {
+            data.value = bcrypt.hashSync(value, 10);
+        }
+
+        data.fieldName = () => field;
+
+        return true;
+
+    }
+
+    return false;
+
+    // return true;
+};
+
+export default {
+    createNewUser, userSignOn, updateUser, getUserAccount, getUserDetail
+}

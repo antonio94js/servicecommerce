@@ -1,20 +1,19 @@
-import mongoose, {
-    Schema
-}
-from 'mongoose';
+import mongoose, {Schema} from 'mongoose';
+import validator from '../utils/Validator';
 
 const WishlistSchema = new Schema({
     _id: {
         type: String,
         required: true,
+
         unique: true
     },
-    iduser: {
+    userID: {
         type: String,
         required: true,
         unique: true
     },
-    products: {
+    publications: {
         type: Array,
         "default": []
     },

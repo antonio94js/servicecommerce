@@ -1,0 +1,2 @@
+import './PublicationComponent';
+import './CommentComponent';

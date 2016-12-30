@@ -21,8 +21,6 @@ const saveImage = (mimeType, fileBuffer, ImageData) => {
         ContentType: mimeType
     }
 
-    // console.log(`${ImageData.ObjectType}/${ImageData.ID}`);
-
     return new Promise(function(resolve, reject) {
         s3.putObject(data, function(err, response) {
             if (err) {
@@ -37,22 +35,18 @@ const saveImage = (mimeType, fileBuffer, ImageData) => {
 };
 
 const getSignedUrl = (data) => {
+
     let urlParams = {
         Bucket: BUCKET_NAME,
         Key: `${data.ObjectType}/${data.ID}`
     };
 
-    console.log(`${data.ObjectType}/${data.ID}`);
-
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
 
         s3.headObject(urlParams, function(err, data) {
-            if (err && err.code === 'NotFound')
-                // reject({
-                //     success: false,
-                //     message: "The image doesn't exist"
-                // })
-                resolve(MessageHanlder.messageGenerator("The image doesn't exist", false))
+            if (err && err.code === 'NotFound') {
+                resolve(MessageHanlder.messageGenerator("The image does not exist", false))
+            }
             else {
                 urlParams.Expires = 43200; //Expires in 12 hours
                 s3.getSignedUrl('getObject', urlParams, function(err, url) {
@@ -78,12 +72,10 @@ const removeImage = (data) => {
             }]
         }
     };
-    // return true;
-
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         s3.deleteObjects(params, function(err, data) {
             if (err) reject(err);
-            else resolve(data);
+            else resolve(MessageHanlder.messageGenerator('Image deleted successfully', true));
         });
     });
 

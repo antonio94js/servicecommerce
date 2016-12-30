@@ -1,4 +1,4 @@
-import jwtHandler from '../services/TokenService';
+import jwtHandler from '../handler/jwtHandler';
 
 const ensureAuthenticated = (req, res, next) => {
 

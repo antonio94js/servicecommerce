@@ -6,7 +6,12 @@ import config from './config/config';
 
 Studio.use(Studio.plugin.retry({max : 3}));
 
-config.loadClusteringConfig();
+Studio.use(Studio.plugin.timer(function(res){
+    //TODO with these metrics implement integration with Datadog platform
+   console.log('The receiver %s took %d ms to execute', res.receiver, res.time);
+}));
+
+config.loadClusterConfig();
 
 mongodb.connecToMongo();
 
