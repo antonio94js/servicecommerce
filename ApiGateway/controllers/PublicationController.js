@@ -59,7 +59,7 @@ const publicationDetail = (req, res, next) => {
         '_id': req.params.publicationID
     }
     let publicationDetail = {};
-
+    // console.log("asdasdf");
     getDetail(publicationData)
         .then((publication) => {
 
@@ -67,35 +67,39 @@ const publicationDetail = (req, res, next) => {
             let product = {
                 'productID': publication.productID,
                 'userID': publication.userID
-
             }
 
             return getProductDetail(product)
         })
         .then((product) => {
+
             delete product.data.userID
             publicationDetail.publication.product = product.data;
             let user = {
                 'id': publicationDetail.publication.userID
             };
 
-            return getUserInfo(user)
-        })
-        .then((user) => {
             delete publicationDetail.publication.userID
-            publicationDetail.publication.user = user;
-            res.status(200).json(publicationDetail);
-        }, (userError) => {
-            delete publicationDetail.publication.userID
-            publicationDetail.publication.user = null;
-            res.status(200).json(publicationDetail);
-        })
-        .catch((err) => {
-            console.log(err);
+
+            getUserInfo(user).then((user) => {
+
+                publicationDetail.publication.user = user;
+                res.status(200).json(publicationDetail);
+
+            }, (userError) => {
+                console.log(userError);
+                publicationDetail.publication.user = null;
+                res.status(200).json(publicationDetail);
+
+            })
+        }).catch((err) => {
+            // console.log(err);
             ErrorHandler(err, res, next);
         })
 
 };
 
 
-export default {publicationCreate, publicationDelete, publicationUpdate, publicationDetail}
+export default {
+    publicationCreate, publicationDelete, publicationUpdate, publicationDetail
+}
