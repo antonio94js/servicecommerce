@@ -19,11 +19,11 @@ dotenv.config({
     silent: true
 });
 
-try {
-    mongodb.connecToMongo();
-} catch (e) {
-    console.error(e);
-}
+// try {
+//     mongodb.connecToMongo();
+// } catch (e) {
+//     console.error(e);
+// }
 
 
 //Setting up the Express App

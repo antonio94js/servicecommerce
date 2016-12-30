@@ -16,6 +16,5 @@ RUN yarn
 # Bundle app source
 ADD . /var/www/app
 
-EXPOSE 3000
-EXPOSE 10119
+EXPOSE 10120
 CMD [ "npm", "start" ]
