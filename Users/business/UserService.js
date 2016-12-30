@@ -19,12 +19,12 @@ const createNewUser = (userData) => {
             return MessageHandler.messageGenerator("User created succefully", true); //resolve the promise
         })
         .catch((err) => {
-
+            // console.log(err);
             if (err.code === 11000 || err.code === 11001)
                 throw MessageHandler.errorGenerator("The user already exist", 409); //reject the promise
 
             if (err.name === 'ValidationError')
-                return MessageHandler.errorGenerator("Some fields on the request are invalid", 400);
+                throw MessageHandler.errorGenerator("Some fields on the request are invalid or missing", 400);
 
             throw MessageHandler.errorGenerator("Something wrong happened creating user", 500); //reject the promise
         });
@@ -35,7 +35,11 @@ const userSignOn = (userData) => {
 
     return User
         .findOne({
-            email: userData.email
+            $or: [{
+                email: userData.account
+            }, {
+                username: userData.account
+            }]
         })
         .then((user) => {
             if (!user || !bcrypt.compareSync(userData.password, user.password))
@@ -43,7 +47,8 @@ const userSignOn = (userData) => {
                     false);
 
             let userID = {
-                "id": user._id
+                "id": user._id,
+                "username": user.username
             };
 
             return MessageHandler.messageGenerator(jwtHandler.generateAccessToken(userID), true, 'token');
@@ -86,8 +91,8 @@ const updateUser = (userData, setWish) => {
 
 }
 
-const getUserAccount = () => {
-
+const getUserAccount = (userData) => {
+    const ImageComponent = Studio.module('ImageComponent');
     return co.wrap(function*() {
         let user = yield User.findById(userData.id).lean(true).populate('wishlist').select(
             '-password -_id -__v');
@@ -117,18 +122,20 @@ const getUserAccount = () => {
 }
 
 
-const getUserDetail = () => {
+const getUserDetail = (userData) => {
 
     return User
         .findById(userData.id)
         .lean(true)
-        .select('address'); //By the moment We will only select the user's address
+        .select('address username -_id'); //By the moment We will only select the user's address and username
 
 }
 
 const _isValidateField = (data, setWish) => {
 
-    let {field, value} = data;
+    let {
+        field, value
+    } = data;
 
     if (setWish) { // to set new Wishlist into a user model
         data.fieldName = () => field;

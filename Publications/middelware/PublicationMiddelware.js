@@ -33,7 +33,7 @@ const _checkProductOwnership = (Component, property) => {
                 if (err.statusCode === 400)
                     throw err;
                 else {
-                    throw MessagaeHandler.errorGenerator("Actually this service is not enabled", 500);
+                    throw MessageHandler.errorGenerator("Actually this service is not enabled", 500);
                 }
             });
     });

@@ -2,12 +2,15 @@ import mongoose, {Schema} from 'mongoose';
 import bcrypt from 'bcryptjs'
 import moment from 'moment'
 
+import validator from '../utils/Validator';
+
 
 const UserSchema = new Schema({
     _id: {
         type: String,
         required: true,
-        unique: true,
+        
+        unique: true
     },
     firstname: {
         type: String,
@@ -23,8 +26,17 @@ const UserSchema = new Schema({
     },
     email: {
         type: String,
+        unique: true,
+        validate: {
+            validator: validator.emailValidator,
+        },
         required: true,
-        unique: true
+
+    },
+    username: {
+        type: String,
+        unique: true,
+        required: true,
     },
     address: {
         type: String,

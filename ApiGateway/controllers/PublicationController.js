@@ -53,7 +53,8 @@ const publicationDetail = (req, res, next) => {
 
     let getDetail = PublicationComponent('getDetail');
     let getProductDetail = ProductComponent('getProductDetail');
-    let getUserProfile = UserComponent('getUserProfile');
+    let getUserInfo = UserComponent('getUserInfo');
+
     let publicationData = {
         '_id': req.params.publicationID
     }
@@ -72,15 +73,21 @@ const publicationDetail = (req, res, next) => {
             return getProductDetail(product)
         })
         .then((product) => {
+            delete product.data.userID
             publicationDetail.publication.product = product.data;
             let user = {
                 'id': publicationDetail.publication.userID
             };
 
-            return getUserProfile(user)
+            return getUserInfo(user)
         })
         .then((user) => {
+            delete publicationDetail.publication.userID
             publicationDetail.publication.user = user;
+            res.status(200).json(publicationDetail);
+        }, (userError) => {
+            delete publicationDetail.publication.userID
+            publicationDetail.publication.user = null;
             res.status(200).json(publicationDetail);
         })
         .catch((err) => {
@@ -90,53 +97,5 @@ const publicationDetail = (req, res, next) => {
 
 };
 
-const publicationCreateResponse = (req, res, next) => {
 
-    let createCommentResponse = CommentComponent('createCommentResponse');
-    req.body.userID = req.user.id;
-
-    createCommentResponse(req.body)
-        .then((response) => {
-            res.status(200).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, next);
-        })
-
-};
-
-const publicationCreateComment = (req, res, next) => {
-
-    let createComment = CommentComponent('createComment');
-    req.body.userID = req.user.id;
-
-    createComment(req.body)
-        .then((response) => {
-            res.status(200).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, next);
-        })
-
-};
-
-const publicationDeleteComment = (req, res, next) => {
-
-    let deleteComment = CommentComponent('deleteComment');
-    req.body.userID = req.user.id;
-
-    deleteComment(req.body)
-        .then((response) => {
-            res.status(200).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, next);
-        })
-
-};
-
-
-export default {
-    publicationCreate, publicationDelete, publicationCreateResponse, publicationUpdate, publicationCreateComment,
-    publicationDeleteComment, publicationDetail
-}
+export default {publicationCreate, publicationDelete, publicationUpdate, publicationDetail}

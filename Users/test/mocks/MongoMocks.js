@@ -7,8 +7,10 @@ const DuplicatedError = {
 };
 
 const findOne = (user) => {
+// console.log(user);
+    let [userEmail, userUsername] = user.$or;
 
-    if(UserMock.email === user.email) {
+    if(UserMock.email === userEmail.email || UserMock.username === userUsername.username ) {
 
         return PromiseHandler.resolver(UserMock)
     }
