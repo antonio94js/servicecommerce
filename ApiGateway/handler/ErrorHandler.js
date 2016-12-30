@@ -6,6 +6,7 @@ const ErrorHandler = (err, res, next) => {
         delete err.name;
         res.json(err);
     } else {
+
         next(err);
     }
 

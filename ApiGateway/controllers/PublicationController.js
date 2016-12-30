@@ -1,12 +1,11 @@
 import Studio from 'studio';
-// import jwtHandler from '../services/TokenService';
 import ErrorHandler from '../handler/ErrorHandler';
-
 
 const PublicationComponent = Studio.module('PublicationComponent'); //Fetching the Publication Microservice
 const ProductComponent = Studio.module('ProductComponent'); //Fetching the Product Microservice
 const UserComponent = Studio.module('UserComponent'); //Fetching the User Microservice
-const CommentComponent = Studio.module('CommentComponent');
+const CommentComponent = Studio.module('CommentComponent'); //Fetching the Comment Microservice
+
 
 const publicationCreate = (req, res, next) => {
 
@@ -19,7 +18,6 @@ const publicationCreate = (req, res, next) => {
         })
         .catch((err) => {
             ErrorHandler(err, res, next);
-            // res.status(500).json(err);
         });
 
 };
@@ -34,7 +32,6 @@ const publicationUpdate = (req, res, next) => {
         })
         .catch((err) => {
             ErrorHandler(err, res, next);
-            // res.status(500).json(err);
         });
 };
 
@@ -44,13 +41,11 @@ const publicationDelete = (req, res, next) => {
     req.body.userID = req.user.id;
 
     deletePublication(req.body)
-
-    .then((response) => {
+        .then((response) => {
             res.status(200).json(response);
         })
         .catch((err) => {
             ErrorHandler(err, res, next);
-            // res.status(500).json(err);
         });
 };
 
@@ -63,25 +58,25 @@ const publicationDetail = (req, res, next) => {
         '_id': req.params.publicationID
     }
     let publicationDetail = {};
+
     getDetail(publicationData)
         .then((publication) => {
+
             publicationDetail.publication = publication;
-            console.log(publication);
             let product = {
                 'productID': publication.productID,
                 'userID': publication.userID
 
             }
 
-
             return getProductDetail(product)
-                // res.status(200).json(response);
         })
         .then((product) => {
             publicationDetail.publication.product = product.data;
             let user = {
                 'id': publicationDetail.publication.userID
             };
+
             return getUserProfile(user)
         })
         .then((user) => {
@@ -91,7 +86,6 @@ const publicationDetail = (req, res, next) => {
         .catch((err) => {
             console.log(err);
             ErrorHandler(err, res, next);
-            // res.status(500).json(err);
         })
 
 };
@@ -107,7 +101,6 @@ const publicationCreateResponse = (req, res, next) => {
         })
         .catch((err) => {
             ErrorHandler(err, res, next);
-            // res.status(500).json(err);
         })
 
 };
@@ -116,14 +109,13 @@ const publicationCreateComment = (req, res, next) => {
 
     let createComment = CommentComponent('createComment');
     req.body.userID = req.user.id;
-    // console.log(req.body);
+
     createComment(req.body)
         .then((response) => {
             res.status(200).json(response);
         })
         .catch((err) => {
             ErrorHandler(err, res, next);
-            // res.status(500).json(err);
         })
 
 };
@@ -139,7 +131,6 @@ const publicationDeleteComment = (req, res, next) => {
         })
         .catch((err) => {
             ErrorHandler(err, res, next);
-            // res.status(500).json(err);
         })
 
 };

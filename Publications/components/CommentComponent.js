@@ -1,14 +1,5 @@
 import Studio from 'studio';
-import MessageHandler from '../handler/MessageHandler';
 import CommentService from '../business/CommentService';
-import PublicationMiddelware from '../middelware/PublicationMiddelware';
-
-// import './WishlistComponent';
-
-
-// const WishlistComponent = Studio.module('WishlistComponent');
-
-// const ImageComponent = Studio.module('ImageComponent');
 
 
 class CommentComponent {
@@ -31,7 +22,5 @@ class CommentComponent {
 
 
 }
-//return a new instance from your Microservices component
-Studio.serviceClass(CommentComponent);
 
-// PublicationMiddelware.CheckPublicationOwnership(publication,'deletePublication')
+Studio.serviceClass(CommentComponent);

@@ -5,11 +5,11 @@ import isAuthenticated from '../policies/isAuthenticated';
 
 const router = Router();
 
-/* The Base Path for this router is /user you can see it on index.js */
-router.use(isAuthenticated);
+/* The Base Path for this router is /product/offer you can see it on index.js */
+
 router.post('/', OfferController.createOffer);
 router.put('/', OfferController.updateOffer);
 router.delete('/', OfferController.deleteOffer);
-// router.get('/', OfferController.productDetail);
+
 
 export default router;

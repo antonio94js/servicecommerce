@@ -5,21 +5,24 @@ import studio from 'studio';
 const ProductComponent = studio.module('ProductComponent'); //Fetching the Product Microservice
 
 const CheckPublicationOwnership = (Component, ...properties) => {
+
     for (let property in Component) {
         if (Component.hasOwnProperty(property) && typeof Component[property] === 'function') {
-            if(property === 'createPublication')
-                _setMiddelware1(Component, property);
+            if (property === 'createPublication')
+                _checkProductOwnership(Component, property);
             else if (properties.includes(property))
-                    _setMiddelware(Component, property);
+                _checkUserOwnership(Component, property);
         }
     }
+
 };
 
-const _setMiddelware1 = (Component, property) => {
-    console.log('entre en el middleware 1');
+const _checkProductOwnership = (Component, property) => {
 
     Component[property].filter((data) => {
+
         let checkOwnership = ProductComponent('checkOwnership');
+
         return checkOwnership({ // return a promise
                 productID: data.productID,
                 userID: data.userID
@@ -30,17 +33,17 @@ const _setMiddelware1 = (Component, property) => {
                 if (err.statusCode === 400)
                     throw err;
                 else {
-                    throw MessagaeHandler.errorGenerator(
-                        "Actualmente no esta disponible este servicio", 500);
+                    throw MessagaeHandler.errorGenerator("Actually this service is not enabled", 500);
                 }
-                //reject the promise with the specific error
             });
     });
 };
 
 
-const _setMiddelware = (Component, property) => {
+const _checkUserOwnership = (Component, property) => {
+
     Component[property].filter((data) => {
+
         return PublicationService.publicationBelongsToUser(data, property)
             .then((publication) => {
                 if (publication) {

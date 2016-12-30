@@ -1,8 +1,11 @@
 import Studio from 'studio';
 import ErrorHandler from '../handler/ErrorHandler';
+
 const OfferComponent = Studio.module('OfferComponent'); //Fetching the Offer Microservice
 
+
 const createOffer = (req, res, next) => {
+
     let createOffer = OfferComponent('createOffer');
     req.body.userID = req.user.id;
 
@@ -12,11 +15,11 @@ const createOffer = (req, res, next) => {
         })
         .catch((err) => {
             ErrorHandler(err, res, next);
-            // res.status(500).json(err);
         });
 };
 
 const updateOffer = (req, res, next) => {
+
     let updateOffer = OfferComponent('updateOffer');
     req.body.userID = req.user.id;
 
@@ -26,11 +29,11 @@ const updateOffer = (req, res, next) => {
         })
         .catch((err) => {
             ErrorHandler(err, res, next);
-            // res.status(500).json(err);
         });
 };
 
 const deleteOffer = (req, res, next) => {
+
     let deleteOffer = OfferComponent('deleteOffer');
     req.body.userID = req.user.id;
     req.body.productID = req.query.productID;
@@ -47,7 +50,6 @@ const deleteOffer = (req, res, next) => {
         })
         .catch((err) => {
             ErrorHandler(err, res, next);
-            // res.status(500).json(err);
         });
 };
 

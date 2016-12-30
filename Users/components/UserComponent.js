@@ -32,29 +32,13 @@ class UserComponent {
 
     * getUserProfile(userData) {
 
-        let user = yield User.findById(userData.id).lean(true).populate('wishlist').select('-password -_id -__v');
+        return yield UserService.getUserAccount(userData);
 
-        if (!user) {
-            return MessageHandler.messageGenerator('The user does not exist', false);
-        }
+    }
 
-        let getObjectImage = ImageComponent('getObjectImage'); // Fetching a service from ImageMicroservice
-// console.log("super hola");
-        return getObjectImage({
-                ObjectType: 'user',
-                ID: userData.id, // from the incoming request param
-                userID: userData.id // from the JWT token
-            })
-            .then((value) => {
-                user.SignedURL = value.SignedURL;
-                return MessageHandler.messageGenerator(user, true, 'data');
+    * getUserInfo(userData) {
 
-            })
-            .catch((err) => {
-                console.log(err);
-                // console.log("reject");
-                return MessageHandler.messageGenerator(user, true, 'data');
-            })
+        return yield UserService.getUserDetail(userData);
 
     }
 

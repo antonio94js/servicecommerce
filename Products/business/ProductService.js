@@ -8,7 +8,7 @@ import Promise from 'bluebird';
 const ImageComponent = Studio.module('ImageComponent');
 const PublicationComponent = Studio.module('PublicationComponent');
 
-const store = (productData) => {
+const createNewProduct = (productData) => {
 
     return Product
         .create(productData)
@@ -17,16 +17,18 @@ const store = (productData) => {
                 "The product was created successfully", true);
         })
         .catch((err) => {
-            console.log(err);
             if (err.code === 11000 || err.code === 11001)
                 return MessageHandler.errorGenerator("The product already exist", 409);
-            if(err.name === 'ValidationError')
+
+            if (err.name === 'ValidationError')
                 return MessageHandler.errorGenerator("Some fields on the request are invalid", 400);
+
             return MessageHandler.errorGenerator("Something wrong happened creating product", 500);
         });
 };
 
-const update = (ProductData) => {
+const updateProduct = (ProductData) => {
+
     setData(ProductData, ProductData.product);
 
     return ProductData.product.save()
@@ -38,31 +40,33 @@ const update = (ProductData) => {
         });
 };
 
-const remove = (ProductData) => {
+const removeProduct = (ProductData) => {
 
     let checkPublicationStatus = PublicationComponent('checkPublicationStatus');
 
     return new Promise((resolve, reject) => {
         checkPublicationStatus({
-                    userID: ProductData.product.userID,
-                    productID : ProductData.product._id
-                }).then((value) => {
-                    if(value){
-                        Product.remove({
-                                _id: ProductData._id
-                            }).then(
-                                () => {
-                                    resolve(MessageHandler.messageGenerator("Product deleted succefully", true));
-                                })
-                            .catch((err) => {
-                                reject(MessageHandler.errorGenerator("Something wrong happened deleting product", 500));
-                            });
-                    }else
-                        resolve(MessageHandler.messageGenerator("Product can not be deleted", false));
-                })
-                .catch((err) => {
-                    resolve(MessageHandler.messageGenerator("Product can not be deleted at the momment, Try again later", false));
-                });
+                userID: ProductData.product.userID,
+                productID: ProductData.product._id
+            }).then((value) => {
+                if (value) {
+                    Product
+                        .remove({_id: ProductData._id})
+                        .then((response) => {
+                                resolve(MessageHandler.messageGenerator("Product deleted succefully",
+                                    true));
+                            })
+                        .catch((err) => {
+                            reject(MessageHandler.errorGenerator(
+                                "Something wrong happened deleting product", 500));
+                        });
+                } else
+                    resolve(MessageHandler.messageGenerator("Product can not be deleted", false));
+            })
+            .catch((err) => {
+                resolve(MessageHandler.messageGenerator(
+                    "Product can not be deleted at the momment, Try again later", false));
+            });
     });
 };
 
@@ -90,32 +94,27 @@ const getBatch = (ProductData) => {
     return co.wrap(function*() {
 
         let ImageBatch = ImageComponent('getBatchImage');
-
-        let products = yield Product.find({
-            userID: ProductData.userID
-        }).lean(true).populate('offer');
-
+        let products = yield Product.find({userID: ProductData.userID}).lean(true).populate('offer');
         let data = {
             'guids': _.map(products, product => product._id),
             'ObjectType': 'product'
         };
-        return ImageBatch(data).then((images) => {
-            console.log(images);
-            console.log('hola');
-            for (const product of products) {
-                let img = _.find(images, image => image.id === product._id);
-                // console.log(img);
-                if (img) {
-                    product.SignedUrl = img.SignedUrl;
+
+        return ImageBatch(data)
+            .then((images) => {
+
+                for (const product of products) {
+                    let img = _.find(images, image => image.id === product._id);
+                    if (img) {
+                        product.SignedUrl = img.SignedUrl;
+                    }
                 }
-            }
 
-            return products;
+                return products;
 
-        }).catch((err) => {
-            console.log(err);
-            return products;
-        });
+            }).catch((err) => {
+                return products;
+            });
     })();
 };
 
@@ -141,7 +140,9 @@ const assignOffer = (OfferData) => {
 
 
 const productBelongsToUser = (ProductData, property) => {
+
     let lean = property === 'getProductDetail';
+
     return Product.findById(ProductData.productID ? ProductData.productID : ProductData._id)
         .lean(lean)
         .populate('offer')
@@ -150,7 +151,6 @@ const productBelongsToUser = (ProductData, property) => {
         })
         .select('-__v')
         .then((product) => {
-            console.log(product);
             return product;
         })
         .catch((err) => {
@@ -159,6 +159,7 @@ const productBelongsToUser = (ProductData, property) => {
 };
 
 const setData = (productData, product) => {
+
     let {productDetail, status, price, quantity, name} = productData;
 
     product.productDetail = !productDetail ? product.productDetail : productDetail;
@@ -171,9 +172,9 @@ const setData = (productData, product) => {
 export default {
     productBelongsToUser,
     setData,
-    store,
-    update,
-    remove,
+    createNewProduct,
+    updateProduct,
+    removeProduct,
     getDetail,
     getBatch,
     assignOffer

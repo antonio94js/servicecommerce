@@ -1,43 +1,34 @@
 import Studio from 'studio';
-import MessageHandler from '../handler/MessageHandler';
 import PublicationService from '../business/PublicationService';
 import PublicationMiddelware from '../middelware/PublicationMiddelware';
 
-// import './WishlistComponent';
-
-
-// const WishlistComponent = Studio.module('WishlistComponent');
-
-// const ImageComponent = Studio.module('ImageComponent');
-
-
 class PublicationComponent {
 
-    *createPublication(publicationData) {
+    * createPublication(publicationData) {
 
         return yield PublicationService.createNewPublication(publicationData);
     }
 
-    *updatePublication(publicationData) {
+    * updatePublication(publicationData) {
         return yield PublicationService.updatePublication(publicationData);
     }
 
-    *deletePublication(publicationData) {
+    * deletePublication(publicationData) {
         return yield PublicationService.removePublication(publicationData);
     }
 
-    *makeComment(commentData) {
+    * makeComment(commentData) {
 
         return yield PublicationService.makeNewComment(commentData);
     }
 
 
-    *getDetail(publicationData) {
+    * getDetail(publicationData) {
 
         return yield PublicationService.getPublicationDetail(publicationData);
     }
 
-    *checkPublicationStatus(producData) {
+    * checkPublicationStatus(producData) {
 
         return yield PublicationService.checkPublicationStatus(producData);
     }
@@ -51,4 +42,5 @@ class PublicationComponent {
 //return a new instance from your Microservices component
 let publication = Studio.serviceClass(PublicationComponent);
 
-PublicationMiddelware.CheckPublicationOwnership(publication,'deletePublication','updatePublication','createPublication','CheckOwnership');
+PublicationMiddelware.CheckPublicationOwnership(publication, 'deletePublication', 'updatePublication',
+    'createPublication', 'CheckOwnership');

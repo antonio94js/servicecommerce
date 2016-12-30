@@ -1,8 +1,8 @@
+import studio from 'studio'
+import _ from 'lodash';
 import ImageService from '../business/ImageService';
 import MessagaeHandler from '../handler/MessageHandler';
 import Common from '../utils/Common';
-import studio from 'studio'
-import _ from 'lodash';
 
 
 const ProductComponent = studio.module('ProductComponent'); //Fetching the Product Microservice

@@ -61,7 +61,8 @@ describe('#ProductService', () => {
         it('Should get success true when its resolve ', () => {
 
             sandboxProduct.stub(Product, "create").returns(PromiseHandler.resolver(ProductMock));
-            ProductService.store(productData)
+
+            ProductService.createNewProduct(productData)
             .then(function(response) {
                 expect(response.success).to.be.true;
             });
@@ -71,7 +72,8 @@ describe('#ProductService', () => {
         it('Should get status 409 when the promise its rejected by duplicated product', () => {
 
             sandboxProduct.stub(Product, "create").returns(PromiseHandler.rejecter(MongoMocks.DuplicatedError));
-            ProductService.store(productData)
+
+            ProductService.createNewProduct(productData)
             .then((response) => {
 
             }).catch((err) => {
@@ -87,7 +89,8 @@ describe('#ProductService', () => {
         it('Should get status 500 when the promise its rejected by unhandled error', () => {
 
             sandboxProduct.stub(Product, "create").returns(PromiseHandler.rejecter(MethodsMocks.UnhandledError));
-            ProductService.store(productData)
+
+            ProductService.createNewProduct(productData)
             .then((response) => {
 
             }).catch((err) => {
@@ -141,7 +144,8 @@ describe('#ProductService', () => {
     it('Should get success true when its resolve ', () => {
 
         sandboxProduct.stub(Product.prototype, "save").returns(PromiseHandler.resolver(ProductMock));
-        ProductService.update(ProductData)
+
+        ProductService.updateProduct(ProductData)
         .then(function(response) {
             expect(response.success).to.be.true;
             expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("The product was updated successfully", true);
@@ -153,7 +157,7 @@ describe('#ProductService', () => {
     it('Should get status 500 when the promise its rejected by unhandled error', () => {
 
         // sandboxProduct.stub(Product.prototype, "save").returns(PromiseHandler.rejecter(MethodsMocks.UnhandledError));
-        ProductService.update(ProductData)
+        ProductService.updateProduct(ProductData)
         .then((response) => {
 
         }).catch((err) => {
@@ -190,7 +194,7 @@ describe('#deleteProduct', () => {
     it('Should get success true when its resolve ', () => {
 
         sandboxProduct.stub(Product, "remove").returns(PromiseHandler.resolver(ProductMock));
-        ProductService.remove(productData)
+        ProductService.removeProduct(productData)
         .then(function(response) {
             expect(response.success).to.be.true;
             expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Product deleted succefully", true);
@@ -201,7 +205,7 @@ describe('#deleteProduct', () => {
     it('Should get status 500 when the promise its rejected by unhandled error', () => {
 
         sandboxProduct.stub(Product, "remove").returns(PromiseHandler.rejecter(MethodsMocks.UnhandledError));
-        ProductService.remove(productData)
+        ProductService.removeProduct(productData)
         .then((response) => {
 
         }).catch((err) => {

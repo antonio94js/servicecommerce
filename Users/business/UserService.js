@@ -1,10 +1,10 @@
 import Studio from 'studio';
 import bcrypt from 'bcryptjs'
 import Promise from 'bluebird';
+import co from 'co';
 import MessageHandler from '../handler/MessageHandler';
 import User from '../models/User';
 import jwtHandler from '../handler/jwtHandler';
-
 
 
 
@@ -15,22 +15,23 @@ const createNewUser = (userData) => {
     return User //return a promise
         .create(userData)
         .then((user) => {
-            // console.log(user);
-            //
             WishlistComponent('createWishlist')(user.id); // Create a new Wishlist Ascinchronously
             return MessageHandler.messageGenerator("User created succefully", true); //resolve the promise
         })
         .catch((err) => {
+
             if (err.code === 11000 || err.code === 11001)
                 throw MessageHandler.errorGenerator("The user already exist", 409); //reject the promise
-            // console.log("aqui" + err);
+
+            if (err.name === 'ValidationError')
+                return MessageHandler.errorGenerator("Some fields on the request are invalid", 400);
+
             throw MessageHandler.errorGenerator("Something wrong happened creating user", 500); //reject the promise
         });
 
 }
 
 const userSignOn = (userData) => {
-    // console.log(User.findOne);
 
     return User
         .findOne({
@@ -45,8 +46,7 @@ const userSignOn = (userData) => {
                 "id": user._id
             };
 
-            return MessageHandler.messageGenerator(jwtHandler.generateAccessToken(userID),
-                true, 'token');
+            return MessageHandler.messageGenerator(jwtHandler.generateAccessToken(userID), true, 'token');
 
         })
         .catch((err) => {
@@ -70,7 +70,7 @@ const updateUser = (userData, setWish) => {
                 })
                 .catch((err) => {
                     if (err.code === 11000 || err.code === 11001) {
-                        resolve(MessageHandler.messageGenerator("This email is already in use",false));
+                        resolve(MessageHandler.messageGenerator("This email is already in use", false));
                         // return;
                     } else {
                         reject(new Error("Error updating the user profile"));
@@ -83,6 +83,46 @@ const updateUser = (userData, setWish) => {
         }
 
     })
+
+}
+
+const getUserAccount = () => {
+
+    return co.wrap(function*() {
+        let user = yield User.findById(userData.id).lean(true).populate('wishlist').select(
+            '-password -_id -__v');
+
+        if (!user) {
+            return MessageHandler.messageGenerator('The user does not exist', false);
+        }
+
+        let getObjectImage = ImageComponent('getObjectImage'); // Fetching a service from ImageMicroservice
+
+        return getObjectImage({
+                ObjectType: 'user',
+                ID: userData.id, // from the incoming request param
+                userID: userData.id // from the JWT token
+            })
+            .then((value) => {
+                user.SignedURL = value.SignedURL;
+                return MessageHandler.messageGenerator(user, true, 'data');
+
+            })
+            .catch((err) => {
+                console.log(err);
+                return MessageHandler.messageGenerator(user, true, 'data');
+            })
+    })();
+
+}
+
+
+const getUserDetail = () => {
+
+    return User
+        .findById(userData.id)
+        .lean(true)
+        .select('address'); //By the moment We will only select the user's address
 
 }
 
@@ -116,5 +156,5 @@ const _isValidateField = (data, setWish) => {
 };
 
 export default {
-    createNewUser, userSignOn, updateUser
+    createNewUser, userSignOn, updateUser, getUserAccount, getUserDetail
 }

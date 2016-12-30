@@ -1,6 +1,6 @@
 import studio from 'studio';
-import aws from '../handler/awsHandler';
 import _ from 'lodash';
+import aws from '../handler/awsHandler';
 import ImageService from '../business/ImageService';
 import MessagaeHandler from '../handler/MessageHandler'
 import ImageMiddelware from '../middelware/ImageMiddelware';
@@ -20,7 +20,7 @@ class ImageComponent {
     }
 
     getObjectImage(data) {
-        // return {SignedURL:'https://mockimageurl.com'}
+        // return {SignedURL:'https://mockimageurl.com'
         return aws.getSignedUrl(data);
     }
 

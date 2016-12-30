@@ -19,7 +19,6 @@ const getPrivateTokenKey = () => PRIVATE_TOKEN_KEY;
 
 const loadClusterConfig = () => {
 
-
     if(process.env.NETWORK_ENV === 'local') {
         const port = util.getRandomPort();
         Studio.use(studioCluster({rpcPort:port}));

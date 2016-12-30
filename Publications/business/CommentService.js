@@ -31,10 +31,14 @@ const createNewComment = (commentData) => {
 }
 
 const createNewResponse = (commentData) => {
+    
     let CheckOwnership = PublicationComponent('CheckOwnership');
 
     return co.wrap(function*() {
-        let publicationData = {'_id': commentData.publicationID,'userID': commentData.userID};
+        let publicationData = {
+            '_id': commentData.publicationID,
+            'userID': commentData.userID
+        };
 
         yield CheckOwnership(publicationData);
 

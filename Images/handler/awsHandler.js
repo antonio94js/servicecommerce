@@ -21,8 +21,6 @@ const saveImage = (mimeType, fileBuffer, ImageData) => {
         ContentType: mimeType
     }
 
-    // console.log(`${ImageData.ObjectType}/${ImageData.ID}`);
-
     return new Promise(function(resolve, reject) {
         s3.putObject(data, function(err, response) {
             if (err) {
@@ -42,8 +40,6 @@ const getSignedUrl = (data) => {
         Bucket: BUCKET_NAME,
         Key: `${data.ObjectType}/${data.ID}`
     };
-
-    // console.log(`${data.ObjectType}/${data.ID}`);
 
     return new Promise((resolve, reject) => {
 
@@ -76,8 +72,6 @@ const removeImage = (data) => {
             }]
         }
     };
-    // return true;
-
     return new Promise((resolve, reject) => {
         s3.deleteObjects(params, function(err, data) {
             if (err) reject(err);

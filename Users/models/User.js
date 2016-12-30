@@ -43,8 +43,6 @@ UserSchema.pre('save', function(next) {
         next();
     });
 
-    // this.password = bcrypt.hashSync(this.password, 10);
-
 });
 
 // UserSchema.set('toObject', { virtuals: true });

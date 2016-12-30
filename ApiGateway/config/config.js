@@ -17,7 +17,7 @@ const getMongoString = () => `mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST
 const getRedisString = () => '';
 const getPrivateTokenKey = () => PRIVATE_TOKEN_KEY;
 
-const loadClusteringConfig = () => {
+const loadClusterConfig = () => {
     const port = util.getRandomPort();
 
     if(process.env.NETWORK_ENV === 'local') {
@@ -35,4 +35,4 @@ const loadClusteringConfig = () => {
     }
 };
 
-export default {getMongoString,getRedisString,getPrivateTokenKey,loadClusteringConfig};
+export default {getMongoString,getRedisString,getPrivateTokenKey,loadClusterConfig};
