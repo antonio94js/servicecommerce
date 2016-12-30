@@ -9,17 +9,16 @@ const offerSchema = new Schema({
         required: true,
         unique: true,
     },
-    idproduct: {
+    productID: {
         type: String,
         required: true,
         unique: true,
     },
-    start_date: {
+    startDate: {
         type: Date,
-        required: true,
-        unique: true,
+        required: true
     },
-    end_date: {
+    endDate: {
         type: Date,
         required: true,
     },

@@ -3,14 +3,15 @@ export const UserMock = {
     "lastname": 'Commerce',
     "password": '$2a$10$mZ4Wf8h.M/g0zbSJLdV8KuX9tWaA2r3xStXavtLGlpRUVJnBq3fKW',
     "email": 'servi@gmail.com',
+    "username": 'servicommerce',
     "id": '2697bd30-1fbd-4d79-8cc5-26e052141235'
 }
 
 
 export const WishlistMock = {
 	"_id" : "dad50524-0938-1596-273c-b207e2793496",
-	"iduser" : "2697bd30-1fbd-4d79-8cc5-26e052141235",
-	"products" : [
+	"userID" : "2697bd30-1fbd-4d79-8cc5-26e052141235",
+	"publications" : [
 		{
 			"publicationName" : "A New MackBook Air 13 inch 8 gb Ram Intel i3",
 			"publicationID" : "01e4b81a-f7a4-46e5-b21f-0ba1a4120610"

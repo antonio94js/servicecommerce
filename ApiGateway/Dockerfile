@@ -11,10 +11,11 @@ WORKDIR ${appDir}
 # Install app dependencies
 ADD package.json /var/www/app/
 RUN npm install -g yarn
-RUN yarn install
+RUN yarn
 
 # Bundle app source
 ADD . /var/www/app
 
-EXPOSE 8080
+EXPOSE 3000
+EXPOSE 10119
 CMD [ "npm", "start" ]

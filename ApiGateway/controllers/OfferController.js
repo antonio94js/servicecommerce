@@ -1,10 +1,13 @@
 import Studio from 'studio';
 import ErrorHandler from '../handler/ErrorHandler';
+
 const OfferComponent = Studio.module('OfferComponent'); //Fetching the Offer Microservice
 
+
 const createOffer = (req, res, next) => {
+
     let createOffer = OfferComponent('createOffer');
-    req.body.iduser = req.user.id;
+    req.body.userID = req.user.id;
 
     createOffer(req.body)
         .then((response) => {
@@ -12,13 +15,13 @@ const createOffer = (req, res, next) => {
         })
         .catch((err) => {
             ErrorHandler(err, res, next);
-            // res.status(500).json(err);
         });
 };
 
 const updateOffer = (req, res, next) => {
+
     let updateOffer = OfferComponent('updateOffer');
-    req.body.iduser = req.user.id;
+    req.body.userID = req.user.id;
 
     updateOffer(req.body)
         .then((response) => {
@@ -26,18 +29,18 @@ const updateOffer = (req, res, next) => {
         })
         .catch((err) => {
             ErrorHandler(err, res, next);
-            // res.status(500).json(err);
         });
 };
 
 const deleteOffer = (req, res, next) => {
+
     let deleteOffer = OfferComponent('deleteOffer');
-    req.body.iduser = req.user.id;
-    req.body.idproduct = req.query.idproduct;
+    req.body.userID = req.user.id;
+    req.body.productID = req.query.productID;
 
     deleteOffer(req.body)
         .then((response) => {
-            
+
             if(response.success === false) {
                 res.status(200).json(response);
             } else {
@@ -47,7 +50,6 @@ const deleteOffer = (req, res, next) => {
         })
         .catch((err) => {
             ErrorHandler(err, res, next);
-            // res.status(500).json(err);
         });
 };
 

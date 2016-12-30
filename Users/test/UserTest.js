@@ -50,7 +50,8 @@ describe('#UserService', () => {
                 "firstname": "Service",
                 "lastname": "Commerce",
                 "password": "123",
-                "email": "servi@gmail.com"
+                "email": "servi@gmail.com",
+                "username":"servicommerce"
             };
 
         });
@@ -105,7 +106,7 @@ describe('#UserService', () => {
     });
 
     describe('#LoginUser', () => {
-        var useCredentials;
+        var userCredentials;
         before(() => {
             sinon.spy(MessageHandler,'errorGenerator');
             sinon.spy(MessageHandler,'messageGenerator');
@@ -120,14 +121,14 @@ describe('#UserService', () => {
 
             sandboxUser.stub(User, "findOne", MongoMocks.findOne);
 
-            useCredentials = {"password": "123","email": "servi@gmail.com"};
+            userCredentials = {"password": "123","account": "servi@gmail.com"};
 
         });
 
         it('Should get success false when the password is invalid ', () => {
 
-            useCredentials.password = "12345"; // invalid password
-            UserService.userSignOn(useCredentials)
+            userCredentials.password = "12345"; // invalid password
+            UserService.userSignOn(userCredentials)
                 .then(function(response) {
                     expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("The credentials are invalid, please check it out", false);
                     expect(response.success).to.be.false;
@@ -137,8 +138,8 @@ describe('#UserService', () => {
 
         it('Should get success false when the email is invalid ', () => {
 
-            useCredentials.email = "s@gmail.com"; // invalid email
-            UserService.userSignOn(useCredentials)
+            userCredentials.account = "s@gmail.com"; // invalid email
+            UserService.userSignOn(userCredentials)
                 .then(function(response) {
                     expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("The credentials are invalid, please check it out", false);
                     expect(response.success).to.be.false;
@@ -148,7 +149,7 @@ describe('#UserService', () => {
 
         it('Should get success equals true when credentials are valids ', () => {
 
-            UserService.userSignOn(useCredentials)
+            UserService.userSignOn(userCredentials)
                 .then(function(response) {
                     expect(MessageHandler.messageGenerator).to.have.been.called;
                     expect(response.success).to.be.true;

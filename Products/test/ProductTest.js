@@ -44,7 +44,7 @@ describe('#ProductService', () => {
 
             productData = {
                 "_id": "5erfefa-c427-4894-832c-ee1e8c714b80",
-                "productdetail": "Here should be a detail",
+                "productDetail": "Here should be a detail",
                 "status":"New",
                 "price": 40,
                 "quantity": 5,
@@ -61,7 +61,8 @@ describe('#ProductService', () => {
         it('Should get success true when its resolve ', () => {
 
             sandboxProduct.stub(Product, "create").returns(PromiseHandler.resolver(ProductMock));
-            ProductService.store(productData)
+
+            ProductService.createNewProduct(productData)
             .then(function(response) {
                 expect(response.success).to.be.true;
             });
@@ -71,7 +72,8 @@ describe('#ProductService', () => {
         it('Should get status 409 when the promise its rejected by duplicated product', () => {
 
             sandboxProduct.stub(Product, "create").returns(PromiseHandler.rejecter(MongoMocks.DuplicatedError));
-            ProductService.store(productData)
+
+            ProductService.createNewProduct(productData)
             .then((response) => {
 
             }).catch((err) => {
@@ -87,7 +89,8 @@ describe('#ProductService', () => {
         it('Should get status 500 when the promise its rejected by unhandled error', () => {
 
             sandboxProduct.stub(Product, "create").returns(PromiseHandler.rejecter(MethodsMocks.UnhandledError));
-            ProductService.store(productData)
+
+            ProductService.createNewProduct(productData)
             .then((response) => {
 
             }).catch((err) => {
@@ -108,29 +111,24 @@ describe('#ProductService', () => {
             sinon.spy(MessageHandler,'messageGenerator');
         });
 
-        after(() => {
-            MessageHandler.errorGenerator.restore();
-            MessageHandler.messageGenerator.restore();
-        });
-
         beforeEach(() => {
 
             ProductData = {
                 "_id": "5erfefa-c427-4894-832c-ee1e8c714b80",
-                "productdetail": "Here should be a detail",
+                "productDetail": "Here should be a detail",
                 "status": "New",
                 "price": 40,
                 "quantity": 6,
                 "name": "MackBook Pro XXX",
-                "iduser": "2697bd30-1fbd-4d79-8cc5-26e052141f35",
+                "userID": "2697bd30-1fbd-4d79-8cc5-26e052141f35",
                 "product":
                         { "_id": "5erfefa-c427-4894-832c-ee1e8c714b80",
-                        "productdetail": "Here should be a detail",
+                        "productDetail": "Here should be a detail",
                         "status": "New",
                         "price": 40,
                         "quantity": 6,
                         "name": "MackBook Pro X",
-                        "iduser": "2697bd30-1fbd-4d79-8cc5-26e052141f35",
+                        "userID": "2697bd30-1fbd-4d79-8cc5-26e052141f35",
                         "date": "2016-12-22T01:52:24.483Z",
                         "save" :  function(){return PromiseHandler.resolver(MethodsMocks.UnhandledError)}
                     }
@@ -138,10 +136,16 @@ describe('#ProductService', () => {
 
     });
 
+    after(() => {
+        MessageHandler.errorGenerator.restore();
+        MessageHandler.messageGenerator.restore();
+    });
+
     it('Should get success true when its resolve ', () => {
 
         sandboxProduct.stub(Product.prototype, "save").returns(PromiseHandler.resolver(ProductMock));
-        ProductService.update(ProductData)
+
+        ProductService.updateProduct(ProductData)
         .then(function(response) {
             expect(response.success).to.be.true;
             expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("The product was updated successfully", true);
@@ -153,7 +157,7 @@ describe('#ProductService', () => {
     it('Should get status 500 when the promise its rejected by unhandled error', () => {
 
         // sandboxProduct.stub(Product.prototype, "save").returns(PromiseHandler.rejecter(MethodsMocks.UnhandledError));
-        ProductService.update(ProductData)
+        ProductService.updateProduct(ProductData)
         .then((response) => {
 
         }).catch((err) => {
@@ -179,10 +183,28 @@ describe('#deleteProduct', () => {
         MessageHandler.messageGenerator.restore();
     });
 
+    afterEach(() => {
+        Studio.module.restore(); // Restoring Studio module system
+    });
+
     beforeEach(() => {
 
+        sinon.stub(Studio, "module").returns(MethodsMocks.StudioModule); // Mocking Studio module system
+
         productData = {
-            "_id": "5erfefa-c427-4894-832c-ee1e8c714b80"
+            "_id": "5erfefa-c427-4894-832c-ee1e8c714b80",
+            "userID" : "2697bd30-1fbd-4d79-8cc5-26e052141f35",
+            "product":
+                    { "_id": "5erfefa-c427-4894-832c-ee1e8c714b80",
+                    "productDetail": "Here should be a detail",
+                    "status": "New",
+                    "price": 40,
+                    "quantity": 6,
+                    "name": "MackBook Pro X",
+                    "userID": "2697bd30-1fbd-4d79-8cc5-26e052141f35",
+                    "date": "2016-12-22T01:52:24.483Z"
+                }
+
         };
 
     });
@@ -190,7 +212,8 @@ describe('#deleteProduct', () => {
     it('Should get success true when its resolve ', () => {
 
         sandboxProduct.stub(Product, "remove").returns(PromiseHandler.resolver(ProductMock));
-        ProductService.remove(productData)
+
+        ProductService.removeProduct(productData)
         .then(function(response) {
             expect(response.success).to.be.true;
             expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Product deleted succefully", true);
@@ -201,7 +224,7 @@ describe('#deleteProduct', () => {
     it('Should get status 500 when the promise its rejected by unhandled error', () => {
 
         sandboxProduct.stub(Product, "remove").returns(PromiseHandler.rejecter(MethodsMocks.UnhandledError));
-        ProductService.remove(productData)
+        ProductService.removeProduct(productData)
         .then((response) => {
 
         }).catch((err) => {

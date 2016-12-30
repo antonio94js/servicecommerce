@@ -5,15 +5,15 @@ import Check from '../utils/filter';
 class ProductComponent {
 
     *createProduct(productData){
-        return yield ProductService.store(productData);
+        return yield ProductService.createNewProduct(productData);
     }
 
     *updateProduct(ProductData) {
-        return yield ProductService.update(ProductData);
+        return yield ProductService.updateProduct(ProductData);
     }
 
     *deleteProduct(ProductData) {
-        return yield ProductService.remove(ProductData);
+        return yield ProductService.removeProduct(ProductData);
     }
 
     *getProductDetail(ProductData) {

@@ -4,8 +4,6 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import Studio from 'studio';
 
-
-
 import mongodb from './config/db';
 import config from './config/config';
 import router from './routes/';
@@ -13,7 +11,7 @@ import router from './routes/';
 const app = express();
 const port = process.env.PORT || 3000;
 // Studio.use(Studio.plugin.retry({max:4}));
-config.loadClusteringConfig();
+config.loadClusterConfig();
 
 /*Loading envioroment vars from .env file,  this file is not available in the repository,
 so if you need to test this ApiGateway in localhost you must create your own*/
@@ -21,11 +19,11 @@ dotenv.config({
     silent: true
 });
 
-try {
-    mongodb.connecToMongo();
-} catch (e) {
-    console.error(e);
-}
+// try {
+//     mongodb.connecToMongo();
+// } catch (e) {
+//     console.error(e);
+// }
 
 
 //Setting up the Express App

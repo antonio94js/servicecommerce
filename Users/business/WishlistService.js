@@ -4,19 +4,19 @@ import _ from 'lodash';
 import MessageHandler from '../handler/MessageHandler';
 import Wishlist from '../models/Whislist';
 
-const updateUserWishlist = (action, payload) => {
+const updateUserWishlist = (action, publicationData) => {
 
     return co.wrap(function*() {
-        let wishlist = yield Wishlist.findOne({iduser: payload.iduser});
+        let wishlist = yield Wishlist.findOne({userID: publicationData.userID});
 
         if (wishlist) {
 
-            let result = _proccessPublicationsArray(action, wishlist.products, payload.data)
+            let result = _proccessPublicationsArray(action, wishlist.publications, publicationData.data)
 
             if (_.isArray(result)) {
-                wishlist.products = result;
+                wishlist.publications = result;
 
-                yield Wishlist.findByIdAndUpdate(wishlist._id, {$set: {'products': wishlist.products}});
+                yield Wishlist.findByIdAndUpdate(wishlist._id, {$set: {'publications': wishlist.publications}});
 
                 let message = action === 'add' ? "Publication added successfully" : "Publication deleted successfully"
 

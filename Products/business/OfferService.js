@@ -1,70 +1,74 @@
+import Studio from 'studio';
+import co from 'co';
 import Offer from '../models/offer';
 import ProductService from '../business/ProductService';
-import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
-import co from 'co';
 
-const store = (offerData) => {
-   return co.wrap(function*() {
-      let product = yield ProductService.productBelongsToUser(offerData);
+const createNewOffer = (offerData) => {
+    return co.wrap(function*() {
+        let product = yield ProductService.productBelongsToUser(offerData);
 
-      if(product){
-         let x = yield Offer.create(offerData);
-         return yield ProductService.assignOffer(offerData);
-      }
-      return MessageHandler.messageGenerator('Product not found',false);
+        if (product) {
+            yield Offer.create(offerData);
+            return yield ProductService.assignOffer(offerData);
+        }
+        return MessageHandler.messageGenerator('Product not found', false);
 
-   })();
+    })();
 
 };
 
-const update = (offerData) => {
-   return co.wrap(function*() {
+const updateOffer = (offerData) => {
+    return co.wrap(function*() {
 
-      let product = yield ProductService.productBelongsToUser(offerData);
+        let product = yield ProductService.productBelongsToUser(offerData);
 
-      if(product){
+        if (product) {
 
-         let offer = yield Offer.findById(offerData._id);
+            let offer = yield Offer.findById(offerData._id);
 
-         if (offer){
-            offer.start_date = offerData.start_date;
-            offer.end_date = offerData.price;
-            offer.price = offerData.price;
+            if (offer) {
+                offer.startDate = offerData.startDate;
+                offer.endDate = offerData.price;
+                offer.price = offerData.price;
 
-            return offer.save()
-            .then((offer) =>{
-               return MessageHandler.messageGenerator('Offer updated successfully',true);
-            }).catch((err) => {
-               return MessageHandler.errorGenerator("Something wrong happened updating offer", 500);
-            });
-         }
+                return offer.save()
+                    .then((offer) => {
+                        return MessageHandler.messageGenerator('Offer updated successfully', true);
+                    }).catch((err) => {
+                        throw MessageHandler.errorGenerator("Something wrong happened updating offer",
+                            500);
+                    });
+            }
 
-         return MessageHandler.messageGenerator('Offer not found',false);
+            return MessageHandler.messageGenerator('Offer not found', false);
 
-      }
-      return MessageHandler.messageGenerator('Product not found',false);
+        }
+        return MessageHandler.messageGenerator('Product not found', false);
 
-   })();
+    })();
 };
 
-const remove = (offerData) => {
-   return co.wrap(function*() {
+const removeOffer = (offerData) => {
+    return co.wrap(function*() {
 
-      let product = yield ProductService.productBelongsToUser(offerData);
-      if (product && product.offer._id)
-         return Offer.remove({ _id : product.offer._id })
-         .then(() =>{
-            return MessageHandler.messageGenerator('Offer deleted successfully',true);
-         }).catch((err) => {
-            return MessageHandler.errorGenerator("Something wrong happened deleting offer", 500);
-         });
+        let product = yield ProductService.productBelongsToUser(offerData);
+        if (product && product.offer._id)
+            return Offer
+                .remove({
+                    _id: product.offer._id
+                })
+                .then((response) => {
+                    return MessageHandler.messageGenerator('Offer deleted successfully', true);
+                }).catch((err) => {
+                    throw MessageHandler.errorGenerator("Something wrong happened deleting offer", 500);
+                });
 
-      return MessageHandler.messageGenerator("Product not found in yours", false);
-   })();
+        return MessageHandler.messageGenerator("Product not found in yours", false);
+    })();
 };
 
 
 export default {
-   store, update, remove
+    createNewOffer, updateOffer, removeOffer
 };

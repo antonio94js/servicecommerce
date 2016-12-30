@@ -7,7 +7,7 @@ import bluebird from 'bluebird';
 mongoose.Promise = bluebird;
 
 const connecToMongo = () => {
-
+    console.log(config.getMongoString());
     return mongoose.connect(config.getMongoString(), (err, res) => {
         if (err) {
             throw err;

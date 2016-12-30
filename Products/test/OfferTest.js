@@ -43,12 +43,12 @@ describe('#OfferService', () => {
         beforeEach(() => {
 
             offerData = {
-                "start_date" : "2016-09-16",
-                "end_date" : "2016-11-16",
+                "startDate" : "2016-09-16",
+                "endDate" : "2016-11-16",
                 "price" : 30,
-                "idproduct" : "5erfefa-c427-4894-832c-ee1e8c714b80",
+                "productID" : "5erfefa-c427-4894-832c-ee1e8c714b80",
                 "_id" : "g5hf5th-c436-4894-832c-aaqd8c714b87",
-                "iduser" : "2697bd30-1fbd-4d79-8cc5-26e052141f35"
+                "userID" : "2697bd30-1fbd-4d79-8cc5-26e052141f35"
             };
 
         });
@@ -64,7 +64,8 @@ describe('#OfferService', () => {
             sandboxOffer.stub(ProductService, "assignOffer").returns(PromiseHandler.resolver(MessageHandler.messageGenerator(
          "Offer created successfully",
          true)));
-            OfferService.store(offerData)
+
+            OfferService.createNewOffer(offerData)
             .then(function(response) {
                 expect(response.success).to.be.true;
                 expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Offer created successfully", true);
@@ -75,7 +76,7 @@ describe('#OfferService', () => {
         it('Should get success false when product id is not found', () => {
             sandboxOffer.stub(ProductService, "productBelongsToUser").returns(PromiseHandler.resolver(null));
 
-            OfferService.store(offerData)
+            OfferService.createNewOffer(offerData)
             .then(function(response) {
                 expect(response.success).to.be.false;
                 expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Product not found", false);
@@ -98,12 +99,12 @@ describe('#OfferService', () => {
         beforeEach(() => {
 
             offerData = {
-                "start_date" : "2016-09-16",
-                "end_date" : "2016-11-16",
+                "startDate" : "2016-09-16",
+                "endDate" : "2016-11-16",
                 "price" : 30,
-                "idproduct" : "5erfefa-c427-4894-832c-ee1e8c714b80",
+                "productID" : "5erfefa-c427-4894-832c-ee1e8c714b80",
                 "_id" : "g5hf5th-c436-4894-832c-aaqd8c714b87",
-                "iduser" : "2697bd30-1fbd-4d79-8cc5-26e052141f35"
+                "userID" : "2697bd30-1fbd-4d79-8cc5-26e052141f35"
             };
 
         });
@@ -118,7 +119,8 @@ describe('#OfferService', () => {
             sandboxOffer.stub(ProductService, "productBelongsToUser").returns(PromiseHandler.resolver(ProductMock));
             sandboxOffer.stub(Offer, "findOne", MongoMocks.findOne);
             sandboxOffer.stub(Offer.prototype, "save").returns(PromiseHandler.resolver(ProductMock));
-            OfferService.store(offerData)
+
+            OfferService.createNewOffer(offerData)
             .then(function(response) {
                 expect(response.success).to.be.true;
                 expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Offer updated successfully", false);
@@ -132,7 +134,8 @@ describe('#OfferService', () => {
 
             sandboxOffer.stub(ProductService, "productBelongsToUser").returns(PromiseHandler.resolver(ProductMock));
             sandboxOffer.stub(Offer, "findOne", null);
-            OfferService.store(offerData)
+
+            OfferService.createNewOffer(offerData)
             .then(function(response) {
                 expect(response.success).to.be.false;
                 expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Offer not found", false);
@@ -144,7 +147,7 @@ describe('#OfferService', () => {
         it('Should get success false when product id is not found', () => {
             sandboxOffer.stub(ProductService, "productBelongsToUser").returns(PromiseHandler.resolver(null));
 
-            OfferService.store(offerData)
+            OfferService.createNewOffer(offerData)
             .then(function(response) {
                 expect(response.success).to.be.false;
                 expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Product not found", false);
@@ -164,8 +167,8 @@ describe('#OfferService', () => {
         beforeEach(() => {
 
             offerData = {
-                "iduser": "2697bd30-1fbd-4d79-8cc5-26e052141f35",
-                "idproduct": "5erfefa-c427-4894-832c-ee1e8c714b80"
+                "userID": "2697bd30-1fbd-4d79-8cc5-26e052141f35",
+                "productID": "5erfefa-c427-4894-832c-ee1e8c714b80"
             }
 
 
@@ -180,7 +183,8 @@ describe('#OfferService', () => {
 
             sandboxOffer.stub(ProductService, "productBelongsToUser").returns(PromiseHandler.resolver(ProductMock));
             sandboxOffer.stub(Offer.prototype, "remove").returns(PromiseHandler.resolver(ProductMock));
-            OfferService.remove(offerData)
+
+            OfferService.removeOffer(offerData)
             .then(function(response) {
                 expect(response.success).to.be.true;
                 expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Offer deleted successfully", false);
@@ -193,7 +197,8 @@ describe('#OfferService', () => {
         it('Should get success false when product id is not found', () => {
 
             sandboxOffer.stub(ProductService, "productBelongsToUser").returns(PromiseHandler.resolver(null));
-            OfferService.remove(offerData)
+
+            OfferService.removeOffer(offerData)
             .then(function(response) {
                 expect(response.success).to.be.true;
                 expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Product not found in yours", false);
@@ -205,7 +210,7 @@ describe('#OfferService', () => {
         it('Should get status 500 when the promise its rejected by unhandled error', () => {
 
             sandboxOffer.stub(ProductService, "productBelongsToUser").returns(PromiseHandler.resolver(ProductMock));
-            OfferService.remove(offerData)
+            OfferService.removeOffer(offerData)
             .then(function(response) {
 
             }).catch((err) => {

@@ -10,11 +10,11 @@ const productSchema = new Schema({
         required: true,
         unique: true,
     },
-    iduser: {
+    userID: {
         type: String,
         required: true,
     },
-    productdetail: {
+    productDetail: {
         type: String,
         required: true,
     },

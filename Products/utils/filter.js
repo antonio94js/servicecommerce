@@ -1,4 +1,5 @@
 import ProductService from '../business/ProductService';
+import MessageHandler from '../handler/MessageHandler';
 
 const CheckProductOwnership = (Component,...properties) => {
     for (let property in Component) {
@@ -10,14 +11,6 @@ const CheckProductOwnership = (Component,...properties) => {
     }
 };
 
-// const CheckProductOwnershipall = (Component) => {
-//     for (let property in Component) {
-//         if (Component.hasOwnProperty(property) && typeof Component[property] === 'function') {
-//             _setfilter(Component, property);
-//         }
-//     }
-// };
-
 const _setfilter = (Component, property) => {
     // console.log(property);
     Component[property].filter((data) => {
@@ -26,7 +19,7 @@ const _setfilter = (Component, property) => {
                 data.product = obj;
                 return true;
             }
-            throw new Error('Ownership, not verefied');
+            throw MessageHandler.errorGenerator('This product do not belong to you',400);
         });
         // return true;
     });
