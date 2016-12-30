@@ -19,7 +19,7 @@ const _setfilter = (Component, property) => {
                 data.product = obj;
                 return true;
             }
-            return MessageHandler.errorGenerator('This product do not belong to you',400);
+            throw MessageHandler.errorGenerator('This product do not belong to you',400);
         });
         // return true;
     });

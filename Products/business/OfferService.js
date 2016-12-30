@@ -36,7 +36,7 @@ const updateOffer = (offerData) => {
                     .then((offer) => {
                         return MessageHandler.messageGenerator('Offer updated successfully', true);
                     }).catch((err) => {
-                        return MessageHandler.errorGenerator("Something wrong happened updating offer",
+                        throw MessageHandler.errorGenerator("Something wrong happened updating offer",
                             500);
                     });
             }
@@ -61,7 +61,7 @@ const removeOffer = (offerData) => {
                 .then((response) => {
                     return MessageHandler.messageGenerator('Offer deleted successfully', true);
                 }).catch((err) => {
-                    return MessageHandler.errorGenerator("Something wrong happened deleting offer", 500);
+                    throw MessageHandler.errorGenerator("Something wrong happened deleting offer", 500);
                 });
 
         return MessageHandler.messageGenerator("Product not found in yours", false);

@@ -6,7 +6,6 @@ import _ from 'lodash';
 import Promise from 'bluebird';
 
 const ImageComponent = Studio.module('ImageComponent');
-const PublicationComponent = Studio.module('PublicationComponent');
 
 const createNewProduct = (productData) => {
 
@@ -18,12 +17,12 @@ const createNewProduct = (productData) => {
         })
         .catch((err) => {
             if (err.code === 11000 || err.code === 11001)
-                return MessageHandler.errorGenerator("The product already exist", 409);
+                throw MessageHandler.errorGenerator("The product already exist", 409);
 
             if (err.name === 'ValidationError')
-                return MessageHandler.errorGenerator("Some fields on the request are invalid", 400);
+                throw MessageHandler.errorGenerator("Some fields on the request are invalid", 400);
 
-            return MessageHandler.errorGenerator("Something wrong happened creating product", 500);
+            throw MessageHandler.errorGenerator("Something wrong happened creating product", 500);
         });
 };
 
@@ -36,11 +35,13 @@ const updateProduct = (ProductData) => {
             return MessageHandler.messageGenerator(
                 "The product was updated successfully", true);
         }).catch((err) => {
-            return MessageHandler.errorGenerator("Something wrong happened updating product", 500);
+            throw MessageHandler.errorGenerator("Something wrong happened updating product", 500);
         });
 };
 
 const removeProduct = (ProductData) => {
+
+    const PublicationComponent = Studio.module('PublicationComponent');
 
     let checkPublicationStatus = PublicationComponent('checkPublicationStatus');
 

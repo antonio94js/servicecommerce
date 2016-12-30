@@ -111,11 +111,6 @@ describe('#ProductService', () => {
             sinon.spy(MessageHandler,'messageGenerator');
         });
 
-        after(() => {
-            MessageHandler.errorGenerator.restore();
-            MessageHandler.messageGenerator.restore();
-        });
-
         beforeEach(() => {
 
             ProductData = {
@@ -139,6 +134,11 @@ describe('#ProductService', () => {
                     }
         };
 
+    });
+
+    after(() => {
+        MessageHandler.errorGenerator.restore();
+        MessageHandler.messageGenerator.restore();
     });
 
     it('Should get success true when its resolve ', () => {
@@ -183,10 +183,28 @@ describe('#deleteProduct', () => {
         MessageHandler.messageGenerator.restore();
     });
 
+    afterEach(() => {
+        Studio.module.restore(); // Restoring Studio module system
+    });
+
     beforeEach(() => {
 
+        sinon.stub(Studio, "module").returns(MethodsMocks.StudioModule); // Mocking Studio module system
+
         productData = {
-            "_id": "5erfefa-c427-4894-832c-ee1e8c714b80"
+            "_id": "5erfefa-c427-4894-832c-ee1e8c714b80",
+            "userID" : "2697bd30-1fbd-4d79-8cc5-26e052141f35",
+            "product":
+                    { "_id": "5erfefa-c427-4894-832c-ee1e8c714b80",
+                    "productDetail": "Here should be a detail",
+                    "status": "New",
+                    "price": 40,
+                    "quantity": 6,
+                    "name": "MackBook Pro X",
+                    "userID": "2697bd30-1fbd-4d79-8cc5-26e052141f35",
+                    "date": "2016-12-22T01:52:24.483Z"
+                }
+
         };
 
     });
@@ -194,6 +212,7 @@ describe('#deleteProduct', () => {
     it('Should get success true when its resolve ', () => {
 
         sandboxProduct.stub(Product, "remove").returns(PromiseHandler.resolver(ProductMock));
+
         ProductService.removeProduct(productData)
         .then(function(response) {
             expect(response.success).to.be.true;

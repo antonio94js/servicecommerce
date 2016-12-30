@@ -22,6 +22,6 @@ export const OfferMock = {
 	"price": 30,
 	"productID": "5erfefa-c427-4894-832c-ee1e8c714b80",
 	"_id": "g5hf5th-c436-4894-832c-aaqd8c714b87"
-}
+};
 
 // export default {UserMock};
