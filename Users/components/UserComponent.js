@@ -8,7 +8,7 @@ import UserService from '../business/UserService';
 
 // const WishlistComponent = Studio.module('WishlistComponent');
 
-const ImageComponent = Studio.module('ImageComponent');
+
 
 
 class UserComponent {

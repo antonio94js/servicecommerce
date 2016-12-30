@@ -1,12 +1,11 @@
-import mongoose, {
-    Schema
-}
-from 'mongoose';
+import mongoose, {Schema} from 'mongoose';
+import validator from '../utils/Validator';
 
 const WishlistSchema = new Schema({
     _id: {
         type: String,
         required: true,
+
         unique: true
     },
     userID: {
