@@ -10,29 +10,35 @@ const createNewPublication = (publicationData) => {
         .create(publicationData)
         .then((publication) => {
 
-            return MessageHandler.messageGenerator("Publication created succefully", true); //resolve the promise
+            return MessageHandler.messageGenerator(
+                "Publication created succefully", true); //resolve the promise
         })
         .catch((err) => {
-           console.log(err);
+            console.log(err);
             if (err.code === 11000 || err.code === 11001)
-                throw MessageHandler.errorGenerator("The publication already exist", 409); //reject the promise
+                throw MessageHandler.errorGenerator(
+                    "The publication already exist", 409); //reject the promise
             // console.log("aqui" + err);
-            throw MessageHandler.errorGenerator("Something wrong happened creating publication", 500); //reject the promise
+            throw MessageHandler.errorGenerator(
+                "Something wrong happened creating publication",
+                500); //reject the promise
         });
 
 };
 
 const updatePublication = (publicationData) => {
 
-   setData(publicationData, publicationData.publication);
+    setData(publicationData, publicationData.publication);
 
-   return publicationData.publication.save()
-      .then((product) => {
-         return MessageHandler.messageGenerator(
-            "The publication was updated successfully", true);
-         }).catch((err) => {
-            return MessageHandler.errorGenerator("Something wrong happened updating publication", 500);
-         });
+    return publicationData.publication.save()
+        .then((product) => {
+            return MessageHandler.messageGenerator(
+                "The publication was updated successfully", true);
+        }).catch((err) => {
+            return MessageHandler.errorGenerator(
+                "Something wrong happened updating publication",
+                500);
+        });
 };
 
 const removePublication = (publicationData) => {
@@ -41,10 +47,13 @@ const removePublication = (publicationData) => {
             _id: publicationData._id
         })
         .then((publication) => {
-            return MessageHandler.messageGenerator("Publication deleted succefully", true); //resolve the promise
+            return MessageHandler.messageGenerator(
+                "Publication deleted succefully", true); //resolve the promise
         })
         .catch((err) => {
-            throw MessageHandler.errorGenerator("Something wrong happened deleted publication", 500); //reject the promise
+            throw MessageHandler.errorGenerator(
+                "Something wrong happened deleted publication", 500
+            ); //reject the promise
         });
 };
 
@@ -59,21 +68,27 @@ const getPublicationDetail = (publicationData) => {
             }
 
         })
-        .where({'status':0})
+        .where({
+            'status': 0
+        })
         .select('-__v')
         .lean(true)
-        .then((product) => {
-            return product;
+        .then((publication) => {
+            if (!publication)
+                throw MessageHandler.errorGenerator("Publication does not exist", 200); //reject the promise
+            return publication;
         });
 }
 
 const checkPublicationStatus = (productData) => {
-    return Publication.findOne({'productID':productData._id})
+    return Publication.findOne({
+            'productID': productData._id
+        })
         // .where({'status':0})
         .select('-__v')
         .lean(true)
         .then((product) => {
-            if(product && product.status === 1) {
+            if (product && product.status === 1) {
                 return false;
             } else {
                 return true;
@@ -84,7 +99,9 @@ const checkPublicationStatus = (productData) => {
 const makeNewComment = (commentData) => {
     console.log(commentData);
     return co.wrap(function*() {
-        let publication = yield Publication.findOne({'_id': commentData.publicationID});
+        let publication = yield Publication.findOne({
+            '_id': commentData.publicationID
+        });
 
         if (publication) {
 
@@ -95,7 +112,8 @@ const makeNewComment = (commentData) => {
             return true;
 
         } else {
-            throw MessageHandler.errorGenerator("The publication does not exist");
+            throw MessageHandler.errorGenerator(
+                "The publication does not exist");
         }
     })();
 };
@@ -115,12 +133,14 @@ const publicationBelongsToUser = (publicationData, property) => {
 };
 
 const setData = (publicationData, publication) => {
-   let { publicationDetail, name } = publicationData;
-   publication.publicationDetail = !publicationDetail ? publication.publicationDetail : publicationDetail;
-   publication.name = !name ? publication.name : name;
+    let {publicationDetail, name} = publicationData;
+    publication.publicationDetail = !publicationDetail ? publication.publicationDetail : publicationDetail;
+    publication.name = !name ? publication.name : name;
 };
 
 
 export default {
-    createNewPublication, publicationBelongsToUser, removePublication,checkPublicationStatus, makeNewComment,getPublicationDetail,updatePublication
+    createNewPublication, publicationBelongsToUser, removePublication,
+    checkPublicationStatus, makeNewComment, getPublicationDetail,
+    updatePublication
 };

@@ -11,7 +11,7 @@ Studio.use(Studio.plugin.timer(function(res){
    console.log('The receiver %s took %d ms to execute', res.receiver, res.time);
 }));
 
-config.loadClusteringConfig();
+config.loadClusterConfig();
 
 mongodb.connecToMongo();
 
