@@ -103,6 +103,7 @@ const getBatch = (ProductData) => {
         } else {
             products = yield Product.find({userID: ProductData.userID}).lean(true).populate('offer');
         }
+        // console.log(products);
 
         let data = {
             'guids': _.map(products, product => product._id),

@@ -29,7 +29,7 @@ const updateOffer = (offerData) => {
 
             if (offer) {
                 offer.startDate = offerData.startDate;
-                offer.endDate = offerData.price;
+                offer.endDate = offerData.endDate;
                 offer.price = offerData.price;
 
                 return offer.save()

@@ -83,18 +83,22 @@ const publicationDetail = (req, res, next) => {
 
             delete publicationDetail.publication.userID
 
-            getUserInfo(user).then((user) => {
+            return getUserInfo(user)
+                .then((user) => {
 
-                publicationDetail.publication.user = user;
-                res.status(200).json(publicationDetail);
+                    return user;
 
-            }, (userError) => {
-                // console.log(userError);
-                publicationDetail.publication.user = null;
-                res.status(200).json(publicationDetail);
+                }, (userError) => {
 
-            })
-        }).catch((err) => {
+                    return null;
+
+                })
+        })
+        .then((user) => {
+            publicationDetail.publication.user = user;
+            res.status(200).json(publicationDetail);
+        })
+        .catch((err) => {
             // console.log(err);
             ErrorHandler(err, res, next);
         })
@@ -107,9 +111,10 @@ const publicationBatch = (req, res, next) => {
     let getBatch = PublicationComponent('getBatch');
     let getProductBatch = ProductComponent('getProductBatch');
     let getUserBatch = UserComponent('getUserBatch');
+    console.log(getUserBatch);
 
     let publicationData = {
-        'queryText': req.body.queryText
+        'queryText': req.query.queryText
     }
     let publicationsInfo = [];
 
@@ -132,18 +137,20 @@ const publicationBatch = (req, res, next) => {
             };
 
             publicationsInfo.push(products);
+            // console.log("pipeee");
 
-            return getUserBatch(user).then((users) => {
+            return getUserBatch(userData).then((users) => {
                 publicationsInfo.push(users)
-                return PublicationService.joinPublicationData(...publicationsInfo);
+                return true;
 
             }, (userError) => {
                 publicationsInfo.push(null)
-                return PublicationService.joinPublicationData(...publicationsInfo);
+                return true;
 
             })
         })
-        .then((publicationsBatch) => {
+        .then(() => {
+            let publicationsBatch = PublicationService.joinPublicationData(...publicationsInfo);
             res.status(200).json(publicationsBatch);
         })
         .catch((err) => {

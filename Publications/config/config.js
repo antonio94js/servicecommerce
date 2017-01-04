@@ -26,7 +26,7 @@ const loadClusterConfig = () => {
             rpcPort: port
         }));
     } else {
-        const port = 10123;
+        const port = 10121;
         Studio.use(studioCluster({
             rpcPort: port,
             balance: studioCluster.balance.random({

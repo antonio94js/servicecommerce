@@ -1,7 +1,8 @@
 import dotenv from 'dotenv';
 import Studio from 'studio';
 import studioCluster from 'studio-cluster';
-import util from '../utils';
+// import util from '../utils';
+import Common from '../utils/Common';
 
 /*Loading envioroment vars from .env file,  this file is not available in the repository,
 so if you need to test this ApiGateway in localhost you must create your own*/
@@ -19,7 +20,7 @@ const loadClusterConfig = () => {
 
 
     if (process.env.NETWORK_ENV === 'local') {
-        const port = util.getRandomPort();
+        const port = Common.getRandomPort();
         Studio.use(studioCluster({
             rpcPort: port
         }));
