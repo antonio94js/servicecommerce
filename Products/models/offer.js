@@ -3,6 +3,8 @@ import mongoose, {
 }
 from 'mongoose';
 
+import validator from '../utils/Validator';
+
 const offerSchema = new Schema({
     _id: {
         type: String,
@@ -20,7 +22,7 @@ const offerSchema = new Schema({
     },
     endDate: {
         type: Date,
-        required: true,
+        required: true
     },
     price: {
         type: Number,
