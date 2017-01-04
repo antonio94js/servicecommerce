@@ -99,7 +99,7 @@ const getBatch = (ProductData) => {
 
         /*Check if the operation is for publications batch or just simple listing*/
         if(ProductData.isPublicationBatch) {
-            products = yield Product.find({_id:{$in:ProductData.productGuids}}).lean(true).populate('offer');
+            products = yield Product.find({_id:{$in:ProductData.productGuids}}).lean(true).select('-date -_v -userID').populate('offer');
         } else {
             products = yield Product.find({userID: ProductData.userID}).lean(true).populate('offer');
         }

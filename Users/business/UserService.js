@@ -138,7 +138,7 @@ const getUserBatch = (userData) => {
     return User
         .find({_id:{$in:userData.userGuids}})
         .lean(true)
-        .select('address username -_id'); //By the moment We will only select the user's address and username
+        .select('address username'); //By the moment We will only select the user's address and username
 
 }
 
