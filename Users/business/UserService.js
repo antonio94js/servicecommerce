@@ -92,7 +92,9 @@ const updateUser = (userData, setWish) => {
 }
 
 const getUserAccount = (userData) => {
+
     const ImageComponent = Studio.module('ImageComponent');
+
     return co.wrap(function*() {
         let user = yield User.findById(userData.id).lean(true).populate('wishlist').select(
             '-password -_id -__v');
@@ -131,6 +133,18 @@ const getUserDetail = (userData) => {
 
 }
 
+const getUserBatch = (userData) => {
+
+    return User
+        .find({_id:{$in:userData.userGuids}})
+        .lean(true)
+        .select('address username -_id'); //By the moment We will only select the user's address and username
+
+}
+
+
+/*Helpers*/
+
 const _isValidateField = (data, setWish) => {
 
     let {
@@ -163,5 +177,5 @@ const _isValidateField = (data, setWish) => {
 };
 
 export default {
-    createNewUser, userSignOn, updateUser, getUserAccount, getUserDetail
+    createNewUser, userSignOn, updateUser, getUserAccount, getUserDetail, getUserBatch
 }

@@ -1,5 +1,7 @@
 import Studio from 'studio';
+import _ from 'lodash';
 import ErrorHandler from '../handler/ErrorHandler';
+import PublicationService from '../services/PublicationService';
 
 const PublicationComponent = Studio.module('PublicationComponent'); //Fetching the Publication Microservice
 const ProductComponent = Studio.module('ProductComponent'); //Fetching the Product Microservice
@@ -59,7 +61,7 @@ const publicationDetail = (req, res, next) => {
         '_id': req.params.publicationID
     }
     let publicationDetail = {};
-    // console.log("asdasdf");
+
     getDetail(publicationData)
         .then((publication) => {
 
@@ -87,7 +89,7 @@ const publicationDetail = (req, res, next) => {
                 res.status(200).json(publicationDetail);
 
             }, (userError) => {
-                console.log(userError);
+                // console.log(userError);
                 publicationDetail.publication.user = null;
                 res.status(200).json(publicationDetail);
 
@@ -100,6 +102,58 @@ const publicationDetail = (req, res, next) => {
 };
 
 
+const publicationBatch = (req, res, next) => {
+
+    let getBatch = PublicationComponent('getBatch');
+    let getProductBatch = ProductComponent('getProductBatch');
+    let getUserBatch = UserComponent('getUserBatch');
+
+    let publicationData = {
+        'queryText': req.body.queryText
+    }
+    let publicationsInfo = [];
+
+    getBatch(publicationData)
+        .then((publications) => {
+
+            let productData = {
+                isPublicationBatch: true,
+                productGuids: _.map(publications, publication => publication.productID)
+            }
+
+            publicationsInfo.push(publications);
+
+            return getProductBatch(productData)
+        })
+        .then((products) => {
+
+            let userData = {
+                userGuids: _.map(products, product => product.userID)
+            };
+
+            publicationsInfo.push(products);
+
+            return getUserBatch(user).then((users) => {
+                publicationsInfo.push(users)
+                return PublicationService.joinPublicationData(...publicationsInfo);
+
+            }, (userError) => {
+                publicationsInfo.push(null)
+                return PublicationService.joinPublicationData(...publicationsInfo);
+
+            })
+        })
+        .then((publicationsBatch) => {
+            res.status(200).json(publicationsBatch);
+        })
+        .catch((err) => {
+
+            ErrorHandler(err, res, next);
+        })
+
+};
+
+
 export default {
-    publicationCreate, publicationDelete, publicationUpdate, publicationDetail
+    publicationCreate, publicationDelete, publicationUpdate, publicationDetail, publicationBatch
 }

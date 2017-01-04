@@ -3,6 +3,7 @@ import co from 'co';
 import _ from 'lodash';
 import MessageHandler from '../handler/MessageHandler';
 import Publication from '../models/Publication';
+import Common from '../utils/Common';
 
 const createNewPublication = (publicationData) => {
 
@@ -14,7 +15,7 @@ const createNewPublication = (publicationData) => {
                 "Publication created succefully", true); //resolve the promise
         })
         .catch((err) => {
-            console.log(err);
+
             if (err.code === 11000 || err.code === 11001)
                 throw MessageHandler.errorGenerator(
                     "The publication already exist", 409); //reject the promise
@@ -58,6 +59,7 @@ const removePublication = (publicationData) => {
 };
 
 const getPublicationDetail = (publicationData) => {
+
     return Publication.findById(publicationData._id)
         .populate({
             'path': 'comments',
@@ -69,26 +71,59 @@ const getPublicationDetail = (publicationData) => {
 
         })
         .where({
-            'status': 0
+            'status': 0 //change to 1
         })
         .select('-__v')
         .lean(true)
         .then((publication) => {
-            if (!publication)
-                throw MessageHandler.errorGenerator("Publication does not exist", 200); //reject the promise
+
+            if (!publication) throw MessageHandler.errorGenerator("Publication does not exist", 200); //reject the promise
+
             return publication;
         });
 }
+
+
+const getPublicationBatch = (publicationData) => {
+
+    return Publication.find({
+            $text: {
+                $search: Common.sanitizeQuery(publicationData.queryText)
+            }
+        })
+        .populate({
+            'path': 'comments',
+            'select': 'body date response',
+            'populate': {
+                'path': 'response',
+                'select': 'body  date',
+            }
+
+        })
+        .where({
+            'status': 0 //change to 1
+        })
+        .select('-__v')
+        .lean(true)
+        .then((publications) => {
+
+            if (publications.length === 0) throw MessageHandler.errorGenerator("There aren't publications for what you are looking for", 200); //reject the promise
+
+            return publications;
+        });
+}
+
+
 
 const checkPublicationStatus = (productData) => {
     return Publication.findOne({
             'productID': productData._id
         })
-        // .where({'status':0})
+        // .where({'status':0}) //change to 1
         .select('-__v')
         .lean(true)
-        .then((product) => {
-            if (product && product.status === 1) {
+        .then((publication) => {
+            if (publication && publication.status === 1) {
                 return false;
             } else {
                 return true;
@@ -97,7 +132,7 @@ const checkPublicationStatus = (productData) => {
 };
 
 const makeNewComment = (commentData) => {
-    console.log(commentData);
+
     return co.wrap(function*() {
         let publication = yield Publication.findOne({
             '_id': commentData.publicationID
@@ -112,8 +147,7 @@ const makeNewComment = (commentData) => {
             return true;
 
         } else {
-            throw MessageHandler.errorGenerator(
-                "The publication does not exist");
+            throw MessageHandler.errorGenerator("The publication does not exist");
         }
     })();
 };
@@ -122,7 +156,7 @@ const makeNewComment = (commentData) => {
 /*HELPERS*/
 
 const publicationBelongsToUser = (publicationData, property) => {
-    // let lean = property === 'getProductDetail';
+
     return Publication.findById(publicationData._id)
         .where({
             userID: publicationData.userID
@@ -133,7 +167,9 @@ const publicationBelongsToUser = (publicationData, property) => {
 };
 
 const setData = (publicationData, publication) => {
-    let {publicationDetail, name} = publicationData;
+    let {
+        publicationDetail, name
+    } = publicationData;
     publication.publicationDetail = !publicationDetail ? publication.publicationDetail : publicationDetail;
     publication.name = !name ? publication.name : name;
 };
@@ -142,5 +178,5 @@ const setData = (publicationData, publication) => {
 export default {
     createNewPublication, publicationBelongsToUser, removePublication,
     checkPublicationStatus, makeNewComment, getPublicationDetail,
-    updatePublication
+    updatePublication, getPublicationBatch
 };

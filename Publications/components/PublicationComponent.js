@@ -28,9 +28,14 @@ class PublicationComponent {
         return yield PublicationService.getPublicationDetail(publicationData);
     }
 
-    * checkPublicationStatus(producData) {
+    * getBatch(publicationData) {
 
-        return yield PublicationService.checkPublicationStatus(producData);
+        return yield PublicationService.getPublicationBatch(publicationData);
+    }
+
+    * checkPublicationStatus(productData) {
+
+        return yield PublicationService.checkPublicationStatus(productData);
     }
 
     CheckOwnership(publicationData) {
@@ -39,7 +44,7 @@ class PublicationComponent {
     }
 
 }
-//return a new instance from your Microservices component
+
 let publication = Studio.serviceClass(PublicationComponent);
 
 PublicationMiddelware.CheckPublicationOwnership(publication, 'deletePublication', 'updatePublication',

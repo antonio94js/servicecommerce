@@ -8,6 +8,7 @@ const router = Router();
 /* The Base Path for this router is /publication you can see it on index.js */
 
 router.get('/:publicationID', PublicationController.publicationDetail);
+// router.get('/:publicationID', PublicationController.publicationBatch);
 router.post('/', PublicationController.publicationCreate);
 router.post('/comment/', CommentController.publicationCreateComment);
 router.post('/comment/response', CommentController.publicationCreateResponse);

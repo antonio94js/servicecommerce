@@ -95,7 +95,15 @@ const getBatch = (ProductData) => {
     return co.wrap(function*() {
 
         let ImageBatch = ImageComponent('getBatchImage');
-        let products = yield Product.find({userID: ProductData.userID}).lean(true).populate('offer');
+        let products = [];
+
+        /*Check if the operation is for publications batch or just simple listing*/
+        if(ProductData.isPublicationBatch) {
+            products = yield Product.find({_id:{$in:ProductData.productGuids}}).lean(true).populate('offer');
+        } else {
+            products = yield Product.find({userID: ProductData.userID}).lean(true).populate('offer');
+        }
+
         let data = {
             'guids': _.map(products, product => product._id),
             'ObjectType': 'product'
@@ -105,7 +113,7 @@ const getBatch = (ProductData) => {
             .then((images) => {
 
                 for (const product of products) {
-                    let img = _.find(images, image => image.id === product._id);
+                    let img = _.find(images, productImage => productImage.id === product._id);
                     if (img) {
                         product.SignedUrl = img.SignedUrl;
                     }
@@ -113,7 +121,7 @@ const getBatch = (ProductData) => {
 
                 return products;
 
-            }).catch((err) => {
+            }).catch((err) => { //If exist an error with the Image Microservice, return the products list without images
                 return products;
             });
     })();

@@ -42,6 +42,10 @@ class UserComponent {
 
     }
 
+    * getUserBatch(userData) {
+        return yield UserService.getUserBatch(userData);
+    }
+
 }
 //return a new instance from your Microservices component
 let UserObject = Studio.serviceClass(UserComponent);
