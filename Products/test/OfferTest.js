@@ -58,7 +58,7 @@ describe('#OfferService', () => {
             MessageHandler.messageGenerator.restore();
         });
 
-        it('Should get success true when its resolve ', () => {
+        it('Should get success true when its resolve ', (done) => {
             sandboxOffer.stub(ProductService, "productBelongsToUser").returns(PromiseHandler.resolver(ProductMock));
             sandboxOffer.stub(Offer, "create").returns(PromiseHandler.resolver('offerData'));
             sandboxOffer.stub(ProductService, "assignOffer").returns(PromiseHandler.resolver(MessageHandler.messageGenerator(
@@ -69,17 +69,19 @@ describe('#OfferService', () => {
             .then(function(response) {
                 expect(response.success).to.be.true;
                 expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Offer created successfully", true);
+                done();
             });
 
         });
 
-        it('Should get success false when product id is not found', () => {
+        it('Should get success false when product id is not found', (done) => {
             sandboxOffer.stub(ProductService, "productBelongsToUser").returns(PromiseHandler.resolver(null));
 
             OfferService.createNewOffer(offerData)
             .then(function(response) {
                 expect(response.success).to.be.false;
                 expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Product not found", false);
+                done();
             }).catch((err) => {
 
             });
@@ -114,43 +116,48 @@ describe('#OfferService', () => {
             MessageHandler.messageGenerator.restore();
         });
 
-        it('Should get success true when its resolve ', () => {
+        it('Should get success true when its resolve ', (done) => {
+
+            OfferMock.save = () => PromiseHandler.resolver(true);
 
             sandboxOffer.stub(ProductService, "productBelongsToUser").returns(PromiseHandler.resolver(ProductMock));
-            sandboxOffer.stub(Offer, "findOne", MongoMocks.findOne);
-            sandboxOffer.stub(Offer.prototype, "save").returns(PromiseHandler.resolver(ProductMock));
+            sandboxOffer.stub(Offer, "findById").returns(PromiseHandler.resolver(OfferMock));
 
-            OfferService.createNewOffer(offerData)
+            OfferService.updateOffer(offerData)
             .then(function(response) {
                 expect(response.success).to.be.true;
-                expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Offer updated successfully", false);
+                expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Offer updated successfully", true);
+                done();
             }).catch((err) => {
 
             });
 
         });
 
-        it('Should get success false when offer id is not found', () => {
+        it("Should get success false when offer dosen't exist", (done) => {
 
             sandboxOffer.stub(ProductService, "productBelongsToUser").returns(PromiseHandler.resolver(ProductMock));
-            sandboxOffer.stub(Offer, "findOne", null);
+            sandboxOffer.stub(Offer, "findById").returns(PromiseHandler.resolver(null));
 
-            OfferService.createNewOffer(offerData)
+            OfferService.updateOffer(offerData)
             .then(function(response) {
+
                 expect(response.success).to.be.false;
                 expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Offer not found", false);
+                done();
             }).catch((err) => {
 
             });
         });
 
-        it('Should get success false when product id is not found', () => {
+        it('Should get success false when product id is not found', (done) => {
             sandboxOffer.stub(ProductService, "productBelongsToUser").returns(PromiseHandler.resolver(null));
 
-            OfferService.createNewOffer(offerData)
+            OfferService.updateOffer(offerData)
             .then(function(response) {
                 expect(response.success).to.be.false;
                 expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Product not found", false);
+                done();
             }).catch((err) => {
 
             });
@@ -179,44 +186,49 @@ describe('#OfferService', () => {
             MessageHandler.messageGenerator.restore();
         });
 
-        it('Should get success true when its resolve ', () => {
+        it('Should get success true when its resolve ', (done) => {
 
             sandboxOffer.stub(ProductService, "productBelongsToUser").returns(PromiseHandler.resolver(ProductMock));
-            sandboxOffer.stub(Offer.prototype, "remove").returns(PromiseHandler.resolver(ProductMock));
+            sandboxOffer.stub(Offer, "remove").returns(PromiseHandler.resolver(ProductMock));
 
             OfferService.removeOffer(offerData)
             .then(function(response) {
                 expect(response.success).to.be.true;
-                expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Offer deleted successfully", false);
+                expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Offer deleted successfully", true);
+                done();
             }).catch((err) => {
 
             });
 
         });
 
-        it('Should get success false when product id is not found', () => {
+        it('Should get success false when product id is not found', (done) => {
 
             sandboxOffer.stub(ProductService, "productBelongsToUser").returns(PromiseHandler.resolver(null));
+            sandboxOffer.stub(Offer, "remove").returns(PromiseHandler.resolver(null));
 
             OfferService.removeOffer(offerData)
             .then(function(response) {
-                expect(response.success).to.be.true;
+                expect(response.success).to.be.false;
                 expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("Product not found in yours", false);
+                done();
             }).catch((err) => {
 
             });
         });
 
-        it('Should get status 500 when the promise its rejected by unhandled error', () => {
+        it('Should get status 500 when the promise its rejected by unhandled error', (done) => {
 
             sandboxOffer.stub(ProductService, "productBelongsToUser").returns(PromiseHandler.resolver(ProductMock));
+            sandboxOffer.stub(Offer, "remove").returns(PromiseHandler.rejecter(MethodsMocks.UnhandledError));
             OfferService.removeOffer(offerData)
             .then(function(response) {
 
             }).catch((err) => {
-                console.log(err);
+                // console.log('hola');
                 expect(MessageHandler.errorGenerator).to.have.been.calledWithExactly("Something wrong happened deleting offer", 500);
                 expect(err.statusCode).to.be.equals(500);
+                done();
             });
         });
     });

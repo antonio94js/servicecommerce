@@ -12,6 +12,7 @@ const createNewProduct = (productData) => {
     return Product
         .create(productData)
         .then((product) => {
+            // console.log(product);
             return MessageHandler.messageGenerator(
                 "The product was created successfully", true);
         })
