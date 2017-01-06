@@ -51,6 +51,7 @@ const removeProduct = (ProductData) => {
                 userID: ProductData.product.userID,
                 productID: ProductData.product._id
             }).then((value) => {
+
                 if (value) {
                     Product
                         .remove({_id: ProductData._id})
@@ -100,9 +101,9 @@ const getBatch = (ProductData) => {
 
         /*Check if the operation is for publications batch or just simple listing*/
         if(ProductData.isPublicationBatch) {
-            products = yield Product.find({_id:{$in:ProductData.productGuids}}).lean(true).select('-date -_v -userID').populate('offer');
+            products = yield Product.find({_id:{$in:ProductData.productGuids}}).lean(true).select('-date -__v').populate('offer');
         } else {
-            products = yield Product.find({userID: ProductData.userID}).lean(true).populate('offer');
+            products = yield Product.find({userID: ProductData.userID}).lean(true).select('-__v').populate('offer');
         }
         // console.log(products);
 

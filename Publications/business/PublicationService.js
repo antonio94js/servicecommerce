@@ -117,9 +117,9 @@ const getPublicationBatch = (publicationData) => {
 
 
 const checkPublicationStatus = (productData) => {
-    // console.log(productData);
+
     return Publication.findOne({
-            'productID': productData._id
+            'productID': productData.productID
         })
         .where({
             'status': 1
@@ -127,17 +127,17 @@ const checkPublicationStatus = (productData) => {
         .select('-__v')
         .lean(true)
         .then((publication) => {
-
             if (publication) {
                 return false;
             } else {
+                //TODO delete publication and change 'where' logic
                 return true;
             }
         });
 };
 
 const makeNewComment = (commentData) => {
-    
+
     return co.wrap(function*() {
 
         let publication = yield Publication.findOne({

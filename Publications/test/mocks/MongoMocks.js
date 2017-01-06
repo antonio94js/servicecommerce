@@ -25,6 +25,7 @@ const findOne = (publication) => {
 
 const findOneNested = (data) => {
     let productData = data;
+    console.log('culos');
     return {
         where: () => ({
             select: () => ({

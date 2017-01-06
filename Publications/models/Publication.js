@@ -26,7 +26,7 @@ const PublicationSchema = new Schema({
     status: {
         type: Number,
         enum: [0, 1],
-        default: 0,
+        default: 1,
     },
     publicationDetail: {
         type: String,

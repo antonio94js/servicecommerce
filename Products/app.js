@@ -1,5 +1,6 @@
 import mongodb from './config/db';
 import Studio from 'studio';
+import StatsD from 'hot-shots';
 import studioCluster from 'studio-cluster';
 import config from './config/config';
 
