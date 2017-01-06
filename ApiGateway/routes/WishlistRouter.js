@@ -1,4 +1,7 @@
-import {Router} from 'express';
+import {
+    Router
+}
+from 'express';
 import Studio from 'studio';
 import WishlistController from '../controllers/WishlistController';
 import isAuthenticated from '../policies/isAuthenticated';
@@ -9,7 +12,8 @@ const router = Router();
 
 /* The Base Path for this router is /user you can see it on index.js */
 
-router.post('/:publicationID', WishlistController.addPublication);
-router.delete('/:publicationID',  WishlistController.deletePublication);
+router
+    .post('/:publicationID', WishlistController.addPublication)
+    .delete('/:publicationID', WishlistController.deletePublication);
 
 export default router;

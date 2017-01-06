@@ -10,6 +10,7 @@ class PublicationComponent {
     }
 
     * updatePublication(publicationData) {
+
         return yield PublicationService.updatePublication(publicationData);
     }
 
@@ -47,5 +48,7 @@ class PublicationComponent {
 
 let publication = Studio.serviceClass(PublicationComponent);
 
-PublicationMiddelware.CheckPublicationOwnership(publication, 'deletePublication', 'updatePublication',
-    'createPublication', 'CheckOwnership');
+if (process.env.NODE_ENV !== 'test') {
+    PublicationMiddelware.CheckPublicationOwnership(publication, 'deletePublication', 'updatePublication',
+        'createPublication', 'CheckOwnership');
+}

@@ -32,10 +32,10 @@ const updateOffer = (offerData) => {
 
                 // console.log(\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2]\d|3[0-1])T(?:[0-1]\d|2[0-3]):[0-5]\d:[0-5]\dZ.test(offerData.endDate));
 
-                if(!moment(offerData.startDate, "YYYY-MM-DD HH:mm Z", true).isValid() || !moment(offerData.endDate, "YYYY-MM-DD HH:mm Z", true).isValid()){
-                    throw MessageHandler.errorGenerator("Date not valid",400);
-
-                }
+                // if(!moment(offerData.startDate, "YYYY-MM-DD HH:mm Z", true).isValid() || !moment(offerData.endDate, "YYYY-MM-DD HH:mm Z", true).isValid()){
+                //     throw MessageHandler.errorGenerator("Date not valid",400);
+                //
+                // }
 
                 offer.startDate = offerData.startDate;
                 offer.endDate = offerData.endDate;
@@ -45,8 +45,6 @@ const updateOffer = (offerData) => {
                     .then((offer) => {
                         return MessageHandler.messageGenerator('Offer updated successfully', true);
                     }).catch((err) => {
-                        // if (err.code === 11000 || err.code === 11001)
-                        //     throw MessageHandler.errorGenerator("The product already exist", 409);
 
                         throw MessageHandler.errorGenerator("Something wrong happened updating offer",
                             500);

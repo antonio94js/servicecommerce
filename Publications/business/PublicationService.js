@@ -36,7 +36,7 @@ const updatePublication = (publicationData) => {
             return MessageHandler.messageGenerator(
                 "The publication was updated successfully", true);
         }).catch((err) => {
-            return MessageHandler.errorGenerator(
+            throw MessageHandler.errorGenerator(
                 "Something wrong happened updating publication",
                 500);
         });
@@ -71,7 +71,7 @@ const getPublicationDetail = (publicationData) => {
 
         })
         .where({
-            'status': 0 //change to 1
+            'status': 1 //change to 1
         })
         .select('-__v')
         .lean(true)
@@ -101,13 +101,14 @@ const getPublicationBatch = (publicationData) => {
 
         })
         .where({
-            'status': 0 //change to 1
+            'status': 1 //change to 1
         })
         .select('-__v')
         .lean(true)
         .then((publications) => {
 
-            if (publications.length === 0) throw MessageHandler.errorGenerator("There aren't publications for what you are looking for", 200); //reject the promise
+            if (publications.length === 0) throw MessageHandler.errorGenerator(
+                "There aren't publications for what you are looking for", 200); //reject the promise
 
             return publications;
         });
@@ -116,14 +117,18 @@ const getPublicationBatch = (publicationData) => {
 
 
 const checkPublicationStatus = (productData) => {
+    // console.log(productData);
     return Publication.findOne({
             'productID': productData._id
         })
-        // .where({'status':0}) //change to 1
+        .where({
+            'status': 1
+        })
         .select('-__v')
         .lean(true)
         .then((publication) => {
-            if (publication && publication.status === 1) {
+
+            if (publication) {
                 return false;
             } else {
                 return true;
@@ -132,8 +137,9 @@ const checkPublicationStatus = (productData) => {
 };
 
 const makeNewComment = (commentData) => {
-
+    
     return co.wrap(function*() {
+
         let publication = yield Publication.findOne({
             '_id': commentData.publicationID
         });
@@ -143,6 +149,7 @@ const makeNewComment = (commentData) => {
             publication.comments = _.uniq(publication.comments.concat(commentData._id));
 
             yield publication.save();
+
 
             return true;
 
@@ -167,9 +174,9 @@ const publicationBelongsToUser = (publicationData, property) => {
 };
 
 const setData = (publicationData, publication) => {
-    let {
-        publicationDetail, name
-    } = publicationData;
+
+    let {publicationDetail, name} = publicationData;
+
     publication.publicationDetail = !publicationDetail ? publication.publicationDetail : publicationDetail;
     publication.name = !name ? publication.name : name;
 };

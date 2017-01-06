@@ -10,14 +10,14 @@ import isAuthenticated from '../policies/isAuthenticated';
 
 const router = Router();
 
-router.use('/auth',oauthRouter);
-router.use('/user',userRouter);
-router.use('/product',isAuthenticated, productRouter);
-router.use('/product/offer',isAuthenticated,offerRouter);
-router.use('/wishlist',isAuthenticated, wishlistRouter);
-router.use('/image',isAuthenticated, ImageRouter);
-router.use('/publication',isAuthenticated, PublicationRouter);
-
+router
+    .use('/auth', oauthRouter)
+    .use('/user', userRouter)
+    .use('/product', isAuthenticated, productRouter)
+    .use('/product/offer', isAuthenticated, offerRouter)
+    .use('/wishlist', isAuthenticated, wishlistRouter)
+    .use('/image', isAuthenticated, ImageRouter)
+    .use('/publication', isAuthenticated, PublicationRouter);
 
 
 export default router;

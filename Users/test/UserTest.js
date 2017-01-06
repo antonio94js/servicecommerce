@@ -34,7 +34,7 @@ describe('#UserService', () => {
 
     describe('#CreateUser', () => {
 
-        var userData;
+        let userData;
 
         before(() => {
             sinon.spy(MessageHandler,'errorGenerator');
@@ -66,17 +66,19 @@ describe('#UserService', () => {
             MessageHandler.messageGenerator.restore();
         });
 
-        it('Should get success true when its resolve ', () => {
+        it('Should get success true when its resolve ', (done) => {
 
             sandboxUser.stub(User, "create").returns(PromiseHandler.resolver(UserMock));
             UserService.createNewUser(userData)
                 .then(function(response) {
+                    expect(response).not.to.be.undefined;
                     expect(response.success).to.be.true;
+                    done();
                 });
 
         });
 
-        it('Should get status 409 when the promise its rejected by duplicated user', () => {
+        it('Should get status 409 when the promise its rejected by duplicated user', (done) => {
 
             sandboxUser.stub(User, "create").returns(PromiseHandler.rejecter(MongoMocks.DuplicatedError));
             UserService.createNewUser(userData)
@@ -87,11 +89,12 @@ describe('#UserService', () => {
                     // expect(MessageHandler.errorGenerator.calledWithExactly("The user already exist", 409)).to.be.true;
                     expect(err.statusCode).to.be.equals(409);
                     expect(err.name).to.be.equals('CustomError');
+                    done();
                 });
 
         });
 
-        it('Should get status 500 when the promise its rejected by unhandled error', () => {
+        it('Should get status 500 when the promise its rejected by unhandled error', (done) => {
 
             sandboxUser.stub(User, "create").returns(PromiseHandler.rejecter(MethodsMocks.UnhandledError));
             UserService.createNewUser(userData)
@@ -100,13 +103,16 @@ describe('#UserService', () => {
                 }).catch((err) => {
                     expect(MessageHandler.errorGenerator).to.have.been.calledWithExactly("Something wrong happened creating user", 500);
                     expect(err.statusCode).to.be.equals(500);
+                    done();
                 });
 
         });
     });
 
     describe('#LoginUser', () => {
-        var userCredentials;
+
+        let userCredentials;
+
         before(() => {
             sinon.spy(MessageHandler,'errorGenerator');
             sinon.spy(MessageHandler,'messageGenerator');
@@ -125,34 +131,40 @@ describe('#UserService', () => {
 
         });
 
-        it('Should get success false when the password is invalid ', () => {
+        it('Should get success false when the password is invalid ', (done) => {
 
             userCredentials.password = "12345"; // invalid password
             UserService.userSignOn(userCredentials)
                 .then(function(response) {
+                    expect(response).to.not.be.undefined;
                     expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("The credentials are invalid, please check it out", false);
                     expect(response.success).to.be.false;
+                    done();
                 });
 
         });
 
-        it('Should get success false when the email is invalid ', () => {
+        it('Should get success false when the email is invalid ', (done) => {
 
             userCredentials.account = "s@gmail.com"; // invalid email
             UserService.userSignOn(userCredentials)
                 .then(function(response) {
+                    expect(response).to.not.be.undefined;
                     expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("The credentials are invalid, please check it out", false);
                     expect(response.success).to.be.false;
+                    done();
                 });
 
         });
 
-        it('Should get success equals true when credentials are valids ', () => {
+        it('Should get success equals true when credentials are valids ', (done) => {
 
             UserService.userSignOn(userCredentials)
                 .then(function(response) {
+                    expect(response).to.not.be.undefined;
                     expect(MessageHandler.messageGenerator).to.have.been.called;
                     expect(response.success).to.be.true;
+                    done();
                 })
                 .catch((err) => {
                     console.log(err);
@@ -162,7 +174,7 @@ describe('#UserService', () => {
     });
 
     describe('#updateUser', () => {
-        var userField;
+        let userField;
 
         before(() => {
             sinon.spy(MessageHandler,'errorGenerator');
@@ -182,7 +194,7 @@ describe('#UserService', () => {
 
         });
 
-        it('Should be rejected when the field is invalid', () => {
+        it('Should be rejected when the field is invalid', (done) => {
 
             userField.field = 'sadfsdfad'; //Invalid field
             UserService.updateUser(userField)
@@ -191,6 +203,7 @@ describe('#UserService', () => {
                 }).catch((err) => {
                     expect(err).to.not.be.undefined;
                     expect(err.statusCode).to.be.equals(400);
+                    done();
                 });
 
         });

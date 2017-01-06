@@ -5,12 +5,9 @@ import co from 'co';
 import MessageHandler from '../handler/MessageHandler';
 import Comment from '../models/Comment';
 
-
-
-const PublicationComponent = Studio.module('PublicationComponent');
-
 const createNewComment = (commentData) => {
 
+    const PublicationComponent = Studio.module('PublicationComponent');
     let makeComment = PublicationComponent('makeComment');
 
     return co.wrap(function*() {
@@ -22,7 +19,6 @@ const createNewComment = (commentData) => {
                 return MessageHandler.messageGenerator("Your question was made", true);
             })
             .catch((err) => {
-
                 removeComment(commentData);
                 return MessageHandler.messageGenerator("The comment could not be created", false);
             })
@@ -31,7 +27,7 @@ const createNewComment = (commentData) => {
 }
 
 const createNewResponse = (commentData) => {
-    
+
     let CheckOwnership = PublicationComponent('CheckOwnership');
 
     return co.wrap(function*() {
@@ -42,7 +38,8 @@ const createNewResponse = (commentData) => {
 
         yield CheckOwnership(publicationData);
 
-        let parentComment = yield Comment.findById(commentData.parentID).where();
+        let parentComment = yield Comment.findById(commentData.parentID);
+
         if (parentComment) {
             delete commentData.parentID;
             yield Comment.create(commentData);
@@ -60,6 +57,7 @@ const createNewResponse = (commentData) => {
 }
 
 const removeComment = (commentData) => {
+    // console.log("origna");
     return Comment.remove({
             '_id': commentData._id
         })
