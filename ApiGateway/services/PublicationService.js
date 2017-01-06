@@ -7,8 +7,10 @@ const joinPublicationData = (publications, products, users) => {
     for (const publication of publications) {
 
         publication.product = _.find(products, product => publication.productID === product._id)
+
         ProductService.setOffer(publication.product);
-        if(users) publication.user = _.find(users, user => publication.userID === user._id)
+
+        if(users) publication.user = _.cloneDeep(_.find(users, user => publication.userID === user._id));
 
         Common.removeNativeID(publication.product,publication.user)
 

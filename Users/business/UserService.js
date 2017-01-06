@@ -134,7 +134,7 @@ const getUserDetail = (userData) => {
 }
 
 const getUserBatch = (userData) => {
-
+    console.log(userData);
     return User
         .find({_id:{$in:userData.userGuids}})
         .lean(true)
