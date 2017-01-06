@@ -51,7 +51,7 @@ const setMiddelware = (ImageObject) => {
                             data.ID = Common.cryptoID(data.ID, 'encrypt');
                             return true; // resolve the promise with true
                         }).catch((err) => {
-                            console.log(err);
+                            // console.log(err);
                             if (err.statusCode === 400)
                                 throw err;
                             else {

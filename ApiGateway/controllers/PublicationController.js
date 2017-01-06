@@ -2,6 +2,7 @@ import Studio from 'studio';
 import _ from 'lodash';
 import ErrorHandler from '../handler/ErrorHandler';
 import PublicationService from '../services/PublicationService';
+import ProductService from '../services/ProductService';
 
 const PublicationComponent = Studio.module('PublicationComponent'); //Fetching the Publication Microservice
 const ProductComponent = Studio.module('ProductComponent'); //Fetching the Product Microservice
@@ -75,13 +76,15 @@ const publicationDetail = (req, res, next) => {
         })
         .then((product) => {
 
-            delete product.data.userID
-            publicationDetail.publication.product = product.data;
+            delete product.userID
+            publicationDetail.publication.product = product;
             let user = {
                 'id': publicationDetail.publication.userID
             };
 
             delete publicationDetail.publication.userID
+
+            ProductService.setOffer(publicationDetail.publication.product)
 
             return getUserInfo(user)
                 .then((user) => {
@@ -111,7 +114,6 @@ const publicationBatch = (req, res, next) => {
     let getBatch = PublicationComponent('getBatch');
     let getProductBatch = ProductComponent('getProductBatch');
     let getUserBatch = UserComponent('getUserBatch');
-    console.log(getUserBatch);
 
     let publicationData = {
         'queryText': req.query.queryText
@@ -137,9 +139,9 @@ const publicationBatch = (req, res, next) => {
             };
 
             publicationsInfo.push(products);
-            // console.log("pipeee");
 
             return getUserBatch(userData).then((users) => {
+                console.log(users);
                 publicationsInfo.push(users)
                 return true;
 

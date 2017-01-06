@@ -54,11 +54,13 @@ const removeProduct = (ProductData) => {
 
                 if (value) {
                     Product
-                        .remove({_id: ProductData._id})
+                        .remove({
+                            _id: ProductData._id
+                        })
                         .then((response) => {
-                                resolve(MessageHandler.messageGenerator("Product deleted succefully",
-                                    true));
-                            })
+                            resolve(MessageHandler.messageGenerator("Product deleted succefully",
+                                true));
+                        })
                         .catch((err) => {
                             reject(MessageHandler.errorGenerator(
                                 "Something wrong happened deleting product", 500));
@@ -84,11 +86,11 @@ const getDetail = (ProductData) => {
         })
         .then((value) => {
             ProductData.product.SignedURL = value.SignedURL;
-            return MessageHandler.messageGenerator(ProductData.product, true, 'data');
+            return ProductData.product;
 
         })
         .catch((err) => {
-            return MessageHandler.messageGenerator(ProductData.product, true, 'data');
+            return ProductData.product;
         });
 };
 
@@ -136,12 +138,12 @@ const assignOffer = (OfferData) => {
             $set: {
                 offer: OfferData._id
             }
-        }).then(
-            (product) => {
-                return MessageHandler.messageGenerator(
-                    "Offer created successfully",
-                    true);
-            })
+        })
+        .then((product) => {
+            return MessageHandler.messageGenerator(
+                "Offer created successfully",
+                true);
+        })
         .catch((err) => {
             throw new Error(err);
         });

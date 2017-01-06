@@ -1,6 +1,7 @@
-import mongodb from './config/db';
 import Studio from 'studio';
+import StatsD from 'hot-shots';
 import studioCluster from 'studio-cluster';
+import mongodb from './config/db';
 import config from './config/config';
 
 const clientStatsD = new StatsD(); //Start a connection to DogStatsDServer

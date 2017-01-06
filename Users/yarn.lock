@@ -1365,6 +1365,10 @@ hosted-git-info@^2.1.4:
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.1.5.tgz#0ba81d90da2e25ab34a332e6ec77936e1598118b"
 
+hot-shots@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/hot-shots/-/hot-shots-4.3.1.tgz#58a6c1ff717f25673be4d2f736d1c94d5d79e239"
+
 http-signature@~1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/http-signature/-/http-signature-1.1.1.tgz#df72e267066cd0ac67fb76adf8e134a8fbcf91bf"
