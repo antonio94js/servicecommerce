@@ -1,0 +1,210 @@
+[34m
+* Installing apt-transport-https
+[0m
+Ign http://dl.google.com stable InRelease
+Des:1 http://repo.mysql.com jessie InRelease [23,9 kB]
+Des:2 http://security.debian.org jessie/updates InRelease [63,1 kB]
+Ign http://repo.mongodb.org wheezy/mongodb-org/3.0 InRelease
+Ign http://ftp.us.debian.org stable InRelease
+Des:3 http://ftp.debian.org jessie-updates InRelease [145 kB]
+Ign http://ftp.ca.debian.org jessie InRelease
+Des:4 http://www.deb-multimedia.org jessie InRelease [38,2 kB]
+Obj http://repo.mysql.com jessie/mysql-5.7 Sources
+Ign http://dl.google.com stable InRelease
+Des:5 http://dl.google.com stable Release.gpg [916 B]
+Obj http://ftp.ca.debian.org jessie Release.gpg
+Obj https://deb.nodesource.com jessie InRelease
+Obj http://repo.mysql.com jessie/mysql-apt-config amd64 Packages
+Obj http://dl.google.com stable Release.gpg
+Obj http://repo.mongodb.org wheezy/mongodb-org/3.0 Release.gpg
+Des:6 http://dl.google.com stable Release [1.189 B]
+Obj https://deb.nodesource.com jessie/main Sources
+Des:7 http://http.debian.net wheezy-backports InRelease [166 kB]
+Obj http://repo.mysql.com jessie/mysql-5.7 amd64 Packages
+Obj http://repo.mongodb.org wheezy/mongodb-org/3.0 Release
+Obj http://ftp.ca.debian.org jessie Release
+Obj http://ftp.us.debian.org stable Release.gpg
+Obj http://dl.google.com stable Release
+Obj http://ftp.us.debian.org stable Release
+Des:8 http://deb.opera.com stable InRelease [2.592 B]
+Obj http://ftp.ca.debian.org jessie/main Sources
+Des:9 http://repo.mysql.com jessie/mysql-tools amd64 Packages [1.798 B]
+Obj http://ftp.us.debian.org stable/contrib amd64 Packages
+Obj https://deb.nodesource.com jessie/main amd64 Packages
+Obj http://repo.mongodb.org wheezy/mongodb-org/3.0/main amd64 Packages
+Obj http://ftp.us.debian.org stable/non-free amd64 Packages
+Des:10 https://apt.dockerproject.org debian-jessie InRelease [30,2 kB]
+Des:11 http://dl.google.com stable/main amd64 Packages [1.417 B]
+Des:12 http://security.debian.org jessie/updates/main Sources [174 kB]
+Obj http://repo.mysql.com jessie/mysql-apt-config i386 Packages
+Obj http://repo.mongodb.org wheezy/mongodb-org/3.0/main i386 Packages
+Obj http://www.deb-multimedia.org jessie/main Sources
+Obj https://deb.nodesource.com jessie/main i386 Packages
+Des:13 http://deb.opera.com stable/non-free amd64 Packages [1.831 B]
+Obj http://ftp.ca.debian.org jessie/contrib Sources
+Obj http://www.deb-multimedia.org jessie/non-free Sources
+Obj http://ftp.us.debian.org stable/contrib i386 Packages
+Des:14 https://deb.nodesource.com jessie/main Translation-es_VE [162 B]
+Obj http://repo.mysql.com jessie/mysql-5.7 i386 Packages
+Obj http://ftp.us.debian.org stable/non-free i386 Packages
+Obj http://www.deb-multimedia.org jessie/main amd64 Packages
+Obj http://ftp.ca.debian.org jessie/non-free Sources
+Des:15 https://deb.nodesource.com jessie/main Translation-es [162 B]
+Obj http://ftp.us.debian.org stable/contrib Translation-en
+Obj http://www.deb-multimedia.org jessie/non-free amd64 Packages
+Obj http://dl.google.com stable/main amd64 Packages
+Des:16 http://deb.opera.com stable/non-free i386 Packages [1.837 B]
+Obj http://ftp.us.debian.org stable/non-free Translation-en
+Des:17 http://repo.mysql.com jessie/mysql-tools i386 Packages [1.795 B]
+Obj http://www.deb-multimedia.org jessie/main i386 Packages
+Obj http://ftp.ca.debian.org jessie/main amd64 Packages
+Des:18 https://deb.nodesource.com jessie/main Translation-en [162 B]
+Obj http://dl.google.com stable/main i386 Packages
+Des:19 http://ftp.debian.org jessie-updates/main Sources [15,4 kB]
+Obj http://www.deb-multimedia.org jessie/non-free i386 Packages
+Des:20 https://apt.dockerproject.org debian-jessie/main amd64 Packages [5.885 B]
+Obj http://ftp.ca.debian.org jessie/contrib amd64 Packages
+Des:21 https://deb.nodesource.com jessie/main Translation-es_VE [162 B]
+Obj http://www.deb-multimedia.org jessie/main Translation-en
+Obj https://apt.dockerproject.org debian-jessie/main i386 Packages
+Des:22 http://ftp.debian.org jessie-updates/contrib Sources [32 B]
+Obj http://www.deb-multimedia.org jessie/non-free Translation-en
+Des:23 https://apt.dockerproject.org debian-jessie/main Translation-es_VE [454 B]
+Obj http://ftp.ca.debian.org jessie/non-free amd64 Packages
+Des:24 https://deb.nodesource.com jessie/main Translation-es [162 B]
+Des:25 http://ftp.debian.org jessie-updates/main amd64 Packages/DiffIndex [6.916 B]
+Des:26 https://apt.dockerproject.org debian-jessie/main Translation-es [454 B]
+Obj http://ftp.ca.debian.org jessie/main i386 Packages
+Des:27 https://deb.nodesource.com jessie/main Translation-en [162 B]
+Des:28 http://ftp.debian.org jessie-updates/contrib amd64 Packages [32 B]
+Des:29 https://apt.dockerproject.org debian-jessie/main Translation-en [454 B]
+Des:30 http://http.debian.net wheezy-backports/main amd64 Packages/DiffIndex [17,4 kB]
+Obj http://ftp.ca.debian.org jessie/contrib i386 Packages
+Des:31 https://apt.dockerproject.org debian-jessie/main Translation-es_VE [454 B]
+Des:32 http://ftp.debian.org jessie-updates/main i386 Packages/DiffIndex [6.916 B]
+Des:33 https://deb.nodesource.com jessie/main Translation-es_VE [162 B]
+Des:34 http://ftp.debian.org jessie-updates/contrib i386 Packages [32 B]
+Obj http://ftp.ca.debian.org jessie/non-free i386 Packages
+Des:35 http://ftp.debian.org jessie-updates/contrib Translation-en [14 B]
+Des:36 https://apt.dockerproject.org debian-jessie/main Translation-es [454 B]
+Des:37 https://deb.nodesource.com jessie/main Translation-es [162 B]
+Obj http://ftp.ca.debian.org jessie/contrib Translation-en
+Des:38 https://apt.dockerproject.org debian-jessie/main Translation-en [454 B]
+Des:39 http://ftp.debian.org jessie-updates/main Translation-en/DiffIndex [2.704 B]
+Des:40 https://apt.dockerproject.org debian-jessie/main Translation-es_VE [454 B]
+Obj http://ftp.ca.debian.org jessie/main Translation-es
+Des:41 https://deb.nodesource.com jessie/main Translation-en [162 B]
+Des:42 https://apt.dockerproject.org debian-jessie/main Translation-es [454 B]
+Des:43 http://security.debian.org jessie/updates/contrib Sources [1.439 B]
+Obj http://ftp.ca.debian.org jessie/main Translation-en
+Des:44 http://security.debian.org jessie/updates/main amd64 Packages [336 kB]
+Des:45 https://apt.dockerproject.org debian-jessie/main Translation-en [454 B]
+Ign http://repo.mongodb.org wheezy/mongodb-org/3.0/main Translation-es_VE
+Des:46 https://deb.nodesource.com jessie/main Translation-es_VE [162 B]
+Ign http://repo.mongodb.org wheezy/mongodb-org/3.0/main Translation-es
+Des:47 https://apt.dockerproject.org debian-jessie/main Translation-es_VE [454 B]
+Obj http://ftp.ca.debian.org jessie/non-free Translation-en
+Des:48 https://deb.nodesource.com jessie/main Translation-es [162 B]
+Ign http://repo.mongodb.org wheezy/mongodb-org/3.0/main Translation-en
+Des:49 https://apt.dockerproject.org debian-jessie/main Translation-es [454 B]
+Des:50 https://deb.nodesource.com jessie/main Translation-en [162 B]
+Des:51 https://apt.dockerproject.org debian-jessie/main Translation-en [454 B]
+Ign http://dl.google.com stable/main Translation-es_VE
+Ign http://dl.google.com stable/main Translation-es
+Des:52 https://apt.dockerproject.org debian-jessie/main Translation-es_VE [454 B]
+Ign https://apt.dockerproject.org debian-jessie/main Translation-es_VE
+Des:53 https://deb.nodesource.com jessie/main Translation-es_VE [162 B]
+Ign https://deb.nodesource.com jessie/main Translation-es_VE
+Ign http://dl.google.com stable/main Translation-en
+Des:54 https://apt.dockerproject.org debian-jessie/main Translation-es [454 B]
+Ign https://apt.dockerproject.org debian-jessie/main Translation-es
+Ign http://dl.google.com stable/main Translation-es_VE
+Des:55 https://deb.nodesource.com jessie/main Translation-es [162 B]
+Ign https://deb.nodesource.com jessie/main Translation-es
+Des:56 https://apt.dockerproject.org debian-jessie/main Translation-en [454 B]
+Ign https://apt.dockerproject.org debian-jessie/main Translation-en
+Ign http://dl.google.com stable/main Translation-es
+Des:57 https://deb.nodesource.com jessie/main Translation-en [162 B]
+Ign https://deb.nodesource.com jessie/main Translation-en
+Ign http://dl.google.com stable/main Translation-en
+Des:58 http://security.debian.org jessie/updates/contrib amd64 Packages [2.506 B]
+Des:59 http://security.debian.org jessie/updates/main i386 Packages [337 kB]
+Des:60 http://security.debian.org jessie/updates/contrib i386 Packages [2.526 B]
+Des:61 http://security.debian.org jessie/updates/contrib Translation-en [1.211 B]
+Des:62 http://security.debian.org jessie/updates/main Translation-en [178 kB]
+Ign http://deb.opera.com stable/non-free Translation-es_VE
+Ign http://deb.opera.com stable/non-free Translation-es
+Ign http://deb.opera.com stable/non-free Translation-en
+Des:63 http://http.debian.net wheezy-backports/main i386 Packages/DiffIndex [20,0 kB]
+Des:64 http://http.debian.net wheezy-backports/main Translation-en/DiffIndex [6.424 B]
+Des:65 http://http.debian.net wheezy-backports/main amd64 2016-12-27-1428.13.pdiff [1.051 B]
+Des:66 http://http.debian.net wheezy-backports/main amd64 2016-12-27-1428.13.pdiff [1.051 B]
+Des:67 http://http.debian.net wheezy-backports/main i386 2016-12-27-2028.19.pdiff [1.051 B]
+Des:68 http://http.debian.net wheezy-backports/main i386 2016-12-27-2028.19.pdiff [1.051 B]
+Ign http://repo.mysql.com jessie/mysql-5.7 Translation-es_VE
+Ign http://repo.mysql.com jessie/mysql-5.7 Translation-es
+Ign http://repo.mysql.com jessie/mysql-5.7 Translation-en
+Ign http://repo.mysql.com jessie/mysql-apt-config Translation-es_VE
+Ign http://repo.mysql.com jessie/mysql-apt-config Translation-es
+Ign http://repo.mysql.com jessie/mysql-apt-config Translation-en
+Ign http://repo.mysql.com jessie/mysql-tools Translation-es_VE
+Ign http://repo.mysql.com jessie/mysql-tools Translation-es
+Ign http://repo.mysql.com jessie/mysql-tools Translation-en
+Descargados 1.597 kB en 48s (33,0 kB/s)
+Leyendo lista de paquetes...
+Leyendo lista de paquetes...
+Creando árbol de dependencias...
+Leyendo la información de estado...
+apt-transport-https ya está en su versión más reciente.
+0 actualizados, 0 nuevos se instalarán, 0 para eliminar y 27 no actualizados.
+[34m
+* Installing APT package sources for Datadog
+[0m
+Executing: gpg --ignore-time-conflict --no-options --no-default-keyring --homedir /tmp/tmp.FNjZ0foXAi --no-auto-check-trustdb --trust-model always --keyring /etc/apt/trusted.gpg --primary-keyring /etc/apt/trusted.gpg --keyring /etc/apt/trusted.gpg.d/deb-multimedia-keyring.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-jessie-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-jessie-security-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-jessie-stable.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-squeeze-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-squeeze-stable.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-wheezy-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-wheezy-stable.gpg --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 C7A7DA52
+gpg: solicitando clave C7A7DA52 de hkp servidor keyserver.ubuntu.com
+gpg: clave C7A7DA52: clave pública "Datadog Packages <package@datadoghq.com>" importada
+gpg: Cantidad total procesada: 1
+gpg:               importadas: 1  (RSA: 1)
+Executing: gpg --ignore-time-conflict --no-options --no-default-keyring --homedir /tmp/tmp.5qImSSajJ7 --no-auto-check-trustdb --trust-model always --keyring /etc/apt/trusted.gpg --primary-keyring /etc/apt/trusted.gpg --keyring /etc/apt/trusted.gpg.d/deb-multimedia-keyring.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-jessie-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-jessie-security-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-jessie-stable.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-squeeze-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-squeeze-stable.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-wheezy-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-wheezy-stable.gpg --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 382E94DE
+gpg: solicitando clave 382E94DE de hkp servidor keyserver.ubuntu.com
+gpg: clave 382E94DE: clave pública "Datadog, Inc <package@datadoghq.com>" importada
+gpg: Cantidad total procesada: 1
+gpg:               importadas: 1  (RSA: 1)
+[34m
+* Installing the Datadog Agent package
+[0m
+Des:1 https://apt.datadoghq.com stable InRelease [313 B]
+Ign https://apt.datadoghq.com stable InRelease
+Des:2 https://apt.datadoghq.com stable Release.gpg [473 B]
+Des:3 https://apt.datadoghq.com stable Release [2.367 B]
+Des:4 https://apt.datadoghq.com stable/main amd64 Packages [8.400 B]
+Des:5 https://apt.datadoghq.com stable/main i386 Packages [8.382 B]
+Des:6 https://apt.datadoghq.com stable/main Translation-es_VE [313 B]
+Des:7 https://apt.datadoghq.com stable/main Translation-es [313 B]
+Des:8 https://apt.datadoghq.com stable/main Translation-en [313 B]
+Des:9 https://apt.datadoghq.com stable/main Translation-es_VE [313 B]
+Des:10 https://apt.datadoghq.com stable/main Translation-es [313 B]
+Des:11 https://apt.datadoghq.com stable/main Translation-en [313 B]
+Des:12 https://apt.datadoghq.com stable/main Translation-es_VE [313 B]
+Des:13 https://apt.datadoghq.com stable/main Translation-es [313 B]
+Des:14 https://apt.datadoghq.com stable/main Translation-en [313 B]
+Des:15 https://apt.datadoghq.com stable/main Translation-es_VE [313 B]
+Des:16 https://apt.datadoghq.com stable/main Translation-es [313 B]
+Des:17 https://apt.datadoghq.com stable/main Translation-en [313 B]
+Des:18 https://apt.datadoghq.com stable/main Translation-es_VE [313 B]
+Ign https://apt.datadoghq.com stable/main Translation-es_VE
+Des:19 https://apt.datadoghq.com stable/main Translation-es [313 B]
+Ign https://apt.datadoghq.com stable/main Translation-es
+Des:20 https://apt.datadoghq.com stable/main Translation-en [313 B]
+Ign https://apt.datadoghq.com stable/main Translation-en
+Descargados 19,6 kB en 9s (2.090 B/s)
+Leyendo lista de paquetes...
+Leyendo lista de paquetes...
+Creando árbol de dependencias...
+Leyendo la información de estado...
+Se instalarán los siguientes paquetes NUEVOS:
+  datadog-agent
+0 actualizados, 1 nuevos se instalarán, 0 para eliminar y 27 no actualizados.
+Se necesita descargar 63,3 MB de archivos.
+Se utilizarán 209 MB de espacio de disco adicional después de esta operación.
+Des:1 https://apt.datadoghq.com/ stable/main datadog-agent amd64 1:5.10.1-1 [63,3 MB]

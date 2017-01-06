@@ -30,12 +30,10 @@ const updateOffer = (offerData) => {
 
             if (offer) {
 
-                // console.log(\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2]\d|3[0-1])T(?:[0-1]\d|2[0-3]):[0-5]\d:[0-5]\dZ.test(offerData.endDate));
+                if(isNaN(Date.parse(offerData.startDate)) || isNaN(Date.parse(offerData.endDate))){
+                    throw MessageHandler.errorGenerator("Date not valid",400);
 
-                // if(!moment(offerData.startDate, "YYYY-MM-DD HH:mm Z", true).isValid() || !moment(offerData.endDate, "YYYY-MM-DD HH:mm Z", true).isValid()){
-                //     throw MessageHandler.errorGenerator("Date not valid",400);
-                //
-                // }
+                }
 
                 offer.startDate = offerData.startDate;
                 offer.endDate = offerData.endDate;
@@ -63,7 +61,7 @@ const removeOffer = (offerData) => {
     return co.wrap(function*() {
 
         let product = yield ProductService.productBelongsToUser(offerData);
-        if (product && product.offer._id)
+        if (product && product.offer) {
             return Offer
                 .remove({
                     _id: product.offer._id
@@ -73,8 +71,9 @@ const removeOffer = (offerData) => {
                 }).catch((err) => {
                     throw MessageHandler.errorGenerator("Something wrong happened deleting offer", 500);
                 });
+        }
 
-        return MessageHandler.messageGenerator("Product not found in yours", false);
+        return MessageHandler.messageGenerator("Offer not found in yours", false);
     })();
 };
 

@@ -70,7 +70,7 @@ const productBatch  = (req, res, next) => {
 
     getProductBatch(req.body)
         .then((response) => {
-            res.status(201).json(response);
+            res.status(200).json(response);
         })
         .catch((err) => {
             ErrorHandler(err, res, next);
