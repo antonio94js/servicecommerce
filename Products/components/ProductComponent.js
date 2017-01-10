@@ -1,6 +1,6 @@
 import Studio from 'studio';
 import ProductService from '../business/ProductService';
-import Check from '../utils/filter';
+import Check from '../middleware/ProductMiddleware';
 
 class ProductComponent {
 
