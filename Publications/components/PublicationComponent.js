@@ -1,6 +1,6 @@
 import Studio from 'studio';
 import PublicationService from '../business/PublicationService';
-import PublicationMiddelware from '../middelware/PublicationMiddelware';
+import PublicationMiddleware from '../middleware/PublicationMiddleware';
 
 class PublicationComponent {
 
@@ -49,6 +49,6 @@ class PublicationComponent {
 let publication = Studio.serviceClass(PublicationComponent);
 
 if (process.env.NODE_ENV !== 'test') {
-    PublicationMiddelware.CheckPublicationOwnership(publication, 'deletePublication', 'updatePublication',
+    PublicationMiddleware.CheckPublicationOwnership(publication, 'deletePublication', 'updatePublication',
         'createPublication', 'CheckOwnership');
 }

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import aws from '../handler/awsHandler';
 import ImageService from '../business/ImageService';
 import MessagaeHandler from '../handler/MessageHandler'
-import ImageMiddelware from '../middelware/ImageMiddelware';
+import ImageMiddleware from '../middleware/ImageMiddleware';
 
 
 class ImageComponent {
@@ -53,7 +53,7 @@ class ImageComponent {
 let ImageObject = studio.serviceClass(ImageComponent);
 
 if (process.env.NODE_ENV !== 'test') {
-    ImageMiddelware.setMiddelware(ImageObject)
+    ImageMiddleware.setMiddleware(ImageObject)
 }
 
 // console.log(log);

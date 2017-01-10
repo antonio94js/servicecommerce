@@ -8,7 +8,7 @@ import Common from '../utils/Common';
 const ProductComponent = studio.module('ProductComponent'); //Fetching the Product Microservice
 
 /*
-This filter / middelware allow us to filter all the bad request model sending to our
+This filter / middleware allow us to filter all the bad request model sending to our
 ImageMicroservice and also check if the user can do a specific action like upload or delete
 a Product image or his own photo
 */
@@ -17,19 +17,19 @@ a Product image or his own photo
 //     for (let property in ImageObject) {
 //
 //         if (ImageObject.hasOwnProperty(property) && typeof ImageObject[property] === 'function') {
-//             setMiddelware();
+//             setMiddleware();
 //         }
 //     }
 // }
 
-const setMiddelware = (ImageObject) => {
+const setMiddleware = (ImageObject) => {
     for (let property in ImageObject) {
 
         if (ImageObject.hasOwnProperty(property) && typeof ImageObject[property] === 'function') {
 
             ImageObject[property].timeout(3000);
 
-            ImageObject[property].filter((data) => { //Setting Studio filter like a middelware
+            ImageObject[property].filter((data) => { //Setting Studio filter like a middleware
 
                 if (!ImageService.checkObjectType(data.ObjectType)) {
                     throw MessagaeHandler.errorGenerator("The ObjectType is invalid", 400);
@@ -82,5 +82,5 @@ const setMiddelware = (ImageObject) => {
 }
 
 export default {
-    setMiddelware
+    setMiddleware
 };
