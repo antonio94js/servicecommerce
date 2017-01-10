@@ -2,7 +2,7 @@ import ProductService from '../business/ProductService';
 import MessageHandler from '../handler/MessageHandler';
 
 const CheckProductOwnership = (Component,...properties) => {
-    for (let property in Component) {
+    for (const property of Component) {
         if (Component.hasOwnProperty(property) && typeof Component[property] === 'function') {
             if(properties.includes(property)){
                 _setfilter(Component, property);

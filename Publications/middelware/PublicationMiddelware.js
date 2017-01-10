@@ -6,7 +6,7 @@ const ProductComponent = studio.module('ProductComponent'); //Fetching the Produ
 
 const CheckPublicationOwnership = (Component, ...properties) => {
 
-    for (let property in Component) {
+    for (const property of Component) {
         if (Component.hasOwnProperty(property) && typeof Component[property] === 'function') {
             if (property === 'createPublication')
                 _checkProductOwnership(Component, property);
@@ -44,7 +44,8 @@ const _checkUserOwnership = (Component, property) => {
 
     Component[property].filter((data) => {
 
-        return PublicationService.publicationBelongsToUser(data, property)
+        return PublicationService
+            .publicationBelongsToUser(data, property)
             .then((publication) => {
                 if (publication) {
                     data.publication = publication;
