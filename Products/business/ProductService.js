@@ -6,15 +6,28 @@ import _ from 'lodash';
 import Promise from 'bluebird';
 
 const ImageComponent = Studio.module('ImageComponent');
+const EmailComponent = Studio.module('EmailComponent');
 
 const createNewProduct = (productData) => {
+
+    let email = {
+        "toEmail" : "alosalasv@gmail.com",
+        "fromEmail" : "alosalasv@gmail.com",
+        "subject": "New product created at your stock",
+        "content": "A new brand product has been created by you in your stock, for more information, please get in touch with us"
+    };
+
+    let sendEmail = EmailComponent('sendEmail');
 
     return Product
         .create(productData)
         .then((product) => {
-            // console.log(product);
+
+            sendEmail(email);
+
             return MessageHandler.messageGenerator(
                 "The product was created successfully", true);
+
         })
         .catch((err) => {
             if (err.code === 11000 || err.code === 11001)

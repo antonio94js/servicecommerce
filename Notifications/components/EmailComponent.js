@@ -1,12 +1,12 @@
 import Studio from 'studio';
-import EmailService from '../business/EmailComponent';
+import EmailService from '../business/EmailService';
 import PublicationMiddelware from '../middleware/EmailMiddleware';
 
 class EmailComponent {
 
-    * function1(EmailData) {
+    * sendEmail(EmailData) {
 
-        return yield EmailService.function1(EmailData);
+        return yield EmailService.sendEmail(EmailData);
     }
 
 }
