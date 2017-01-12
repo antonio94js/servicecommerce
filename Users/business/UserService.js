@@ -2,6 +2,7 @@ import Studio from 'studio';
 import bcrypt from 'bcryptjs'
 import Promise from 'bluebird';
 import co from 'co';
+import _ from 'lodash';
 import MessageHandler from '../handler/MessageHandler';
 import User from '../models/User';
 import jwtHandler from '../handler/jwtHandler';
@@ -91,13 +92,37 @@ const updateUser = (userData, setWish) => {
 
 }
 
+const fcmTokenManagement = (userData) => {
+
+    return co.wrap(function*() {
+        let user = yield User.findById(userData.id);
+
+        let result = _proccessTokenArray(userData.action, user.fcmTokens, userData)
+
+        if (_.isArray(result)) {
+            user.fcmTokens = result;
+
+            yield User.findByIdAndUpdate(userData.id, {$set: {'fcmTokens': user.fcmTokens}});
+
+
+            return MessageHandler.messageGenerator('success operation', true);
+
+        } else {
+
+            throw MessageHandler.errorGenerator("Invalid action for the FCM Token", 400);
+        }
+
+    })();
+
+}
+
+
 const getUserAccount = (userData) => {
 
     const ImageComponent = Studio.module('ImageComponent');
 
     return co.wrap(function*() {
-        let user = yield User.findById(userData.id).lean(true).populate('wishlist').select(
-            '-password -_id -__v');
+        let user = yield User.findById(userData.id).lean(true).populate('wishlist').select('-password -_id -__v');
 
         if (!user) {
             return MessageHandler.messageGenerator('The user does not exist', false);
@@ -136,7 +161,7 @@ const getUserDetail = (userData) => {
 const getUserBatch = (userData) => {
     console.log(userData);
     return User
-        .find({_id:{$in:userData.userGuids}})
+        .find({_id: {$in: userData.userGuids}})
         .lean(true)
         .select('address username'); //By the moment We will only select the user's address and username
 
@@ -154,7 +179,7 @@ const _isValidateField = (data, setWish) => {
         return true;
     }
 
-    if (['email', 'password', 'address','fcmToken'].includes(field)) {
+    if (['email', 'password', 'address', 'fcmToken'].includes(field)) {
         if (!value || value === '') {
             return false;
         }
@@ -174,6 +199,32 @@ const _isValidateField = (data, setWish) => {
     // return true;
 };
 
+const _proccessTokenArray = (action, fcmList, userData) => {
+
+    switch (action) {
+
+        case 'add':
+
+            fcmList.push(userData.fcmToken);
+            return fcmList;
+
+        case 'update':
+
+            for (let fcmToken of fcmList) {
+                if (userData.previousToken === fcmToken) {
+                    fcmToken = userData.fcmToken;
+                }
+            }
+            return fcmList
+
+        case 'delete':
+            return _.filter(fcmList, fcmToken => fcmToken !== userData.fcmToken);
+        default:
+            return false;
+
+    }
+};
+
 export default {
-    createNewUser, userSignOn, updateUser, getUserAccount, getUserDetail, getUserBatch
+    createNewUser, userSignOn, updateUser, getUserAccount, getUserDetail, getUserBatch,fcmTokenManagement
 }

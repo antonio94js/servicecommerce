@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import Studio from 'studio';
 import studioCluster from 'studio-cluster';
 import sendgrid from 'sendgrid';
+import FCM from 'fcm-push';
 /*Loading envioroment vars from .env file,  this file is not available in the repository,
 so if you need to test this ApiGateway in localhost you must create your own*/
 
@@ -11,10 +12,11 @@ dotenv.config();
 let {REDIS_HOST, REDIS_PORT, REDIS_PASS} = process.env;
 let {PRIVATE_TOKEN_KEY} = process.env;
 let {SENDGRID_API_KEY} = process.env;
+let {FCM_SERVER_KEY} = process.env;
+
+export const fcm = new FCM(FCM_SERVER_KEY)
 
 const getRedisObject = () => ({port: REDIS_PORT,host: REDIS_HOST, password: REDIS_PASS});
-
-const getRedisString = () => '';
 
 const loadClusterConfig = () => {
 
@@ -40,6 +42,5 @@ const loadClusterConfig = () => {
 // MAIL CONFIGURATION
 const getSendgridInstance = () => sendgrid(SENDGRID_API_KEY);
 
-export default {
-    getRedisString, loadClusterConfig, getRedisObject, getSendgridInstance
+export default {loadClusterConfig, getRedisObject, getSendgridInstance,fcm
 };

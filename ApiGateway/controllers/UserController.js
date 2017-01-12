@@ -43,11 +43,27 @@ const userUpdateProfile = (req, res, next) => {
 
     updateUserProfile(req.body)
         .then((response) => {
-            if(req.body.field === 'fcmToken') {
-                // console.log("llamar");
-                sendPushNotification({TokenFCM:req.body.value})
-            }
+            // if(req.body.field === 'fcmToken') {
+            //     // console.log("llamar");
+            //     // sendPushNotification({TokenFCM:req.body.value})
+            // }
 
+            res.status(200).json(response);
+        })
+        .catch((err) => {
+            ErrorHandler(err, res, next);
+        })
+
+};
+
+const userFcmTokenManagement = (req, res, next) => {
+
+    let fcmTokenManagement = UserComponent('fcmTokenManagement');
+    // let sendPushNotification = PushNotificationComponent('sendPushNotification');
+    req.body.id = req.user.id;
+
+    fcmTokenManagement(req.body)
+        .then((response) => {
             res.status(200).json(response);
         })
         .catch((err) => {
@@ -70,4 +86,4 @@ const getUserProfile = (req, res, next) => {
 
 };
 
-export default {userLogin,userCreate,userUpdateProfile,getUserProfile}
+export default {userLogin,userCreate,userUpdateProfile,getUserProfile,userFcmTokenManagement}

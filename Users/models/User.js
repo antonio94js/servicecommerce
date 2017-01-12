@@ -1,4 +1,7 @@
-import mongoose, {Schema} from 'mongoose';
+import mongoose, {
+    Schema
+}
+from 'mongoose';
 import bcrypt from 'bcryptjs'
 import moment from 'moment'
 
@@ -41,9 +44,9 @@ const UserSchema = new Schema({
     address: {
         type: String,
     },
-    fcmToken: {
-        type: String,
-        unique: true
+    fcmTokens: {
+        type: Array,
+        "default": []
     },
     wishlist: {
         type: String,

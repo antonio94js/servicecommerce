@@ -1,14 +1,9 @@
 import Studio from 'studio';
 import co from 'co';
-import FCM from 'fcm-push';
 import MessageHandler from '../handler/MessageHandler';
 import Common from '../utils/Common';
-
+import {fcm} from '../config/config';
 // const UserComponent = Studio.module('UserComponent'); // Fetching User Microservice
-
-const fcm = new FCM(
-    'AAAAr9bYrYI:APA91bGB_2z8Kms_x1xnLR6NbgD4nhPCZxfrw6z1ypVE3wLyEa4OzdkWRGKwSw0yeg4MouOUFj49hCZGkoTpS2usI_MnrEEnymprTHtwfDixIociFz93v18zaRls20rE-1OXoqgea6Ip'
-)
 
 const sendPushNotification = (NotificationData) => {
     // let getTokenFCM = UserComponent('getTokenFCM');
