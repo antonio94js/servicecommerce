@@ -2,41 +2,71 @@ import Studio from 'studio';
 import co from 'co';
 import MessageHandler from '../handler/MessageHandler';
 import Common from '../utils/Common';
-import {fcm} from '../config/config';
-// const UserComponent = Studio.module('UserComponent'); // Fetching User Microservice
+import {
+    fcm
+}
+from '../config/config';
+const UserComponent = Studio.module('UserComponent'); // Fetching User Microservice
 
-const sendPushNotification = (NotificationData) => {
-    // let getTokenFCM = UserComponent('getTokenFCM');
-
+const sendPushNotification = (notificationData) => {
 
     co.wrap(function*() {
         // const TokenFCM = yield getTokenFCM(NotificationData.userID);
+        let {data,context} = notificationData
+        let retrieveUserField = UserComponent('retrieveUserField');
+        let message = {};
+        switch (context) {
 
-        var message = {
-            to: NotificationData.TokenFCM, // required fill with device token or topics
-            notification: {
-                title: 'Nueva operación',
-                body: 'El token FCM fue configurado exitosamente',
-                icon:"e-commerce-icon-icon.png"
-            }
-        };
+            case 'comment':
+                let {fcmTokens} = yield retrieveUserField({credential:data.ownerName,field:'fcmTokens'});
 
-        return yield fcm.send(message);
+                for (const token of fcmTokens) {
+                    message = _generateNotificationObject(token,'A new comment was made in',data.publicationName);
+                    fcm.send(message)
+                }
+
+                // console.log(message);
+                break;
+            case 'response':
+
+                break;
+                // case 'newOrder':
+                //
+                //     break;
+                // case 'cancelOrder':
+                //
+                //     break;
+                // case 'endOrder':
+                //
+                //     break;
+            default:
+                break;
+
+        }
+
+        // fcm.send(message).then((value) => {
+        //     console.log(value);
+        // }).catch((err) => {
+        //     console.log(err);
+        // })
+
+
+        // return yield fcm.send(message);
 
     })();
 };
 
-/*
-previusToken
-ActualToken
+const _generateNotificationObject = (token, title, body) => ({
+    to: token, // required fill with device token or topics
+    notification: {
+        title: title,
+        body: body,
+        icon: "e-commerce-icon-icon.png"
+    }
+})
 
-guardar token fcm en localStorage para permitir al usuario tener varias sesiones abiertas
-y que le lleguen push
 
-cuando se elimine el token en cliente tambien se debe hacer en el Server
-cuando se actualize en cliente tambien hacerlo en Server
-un cliente puede tener varios tokens asignados
-*/
+
 /*HELPERS*/
 
 

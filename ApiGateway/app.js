@@ -47,7 +47,7 @@ app.use(function(err, req, res, next) {
 });
 
 
-const server = app.listen(port, (error) => {
+const server = app.listen(port,'0.0.0.0', (error) => {
     if (error)
         throw error;
     else

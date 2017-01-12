@@ -102,7 +102,11 @@ const fcmTokenManagement = (userData) => {
         if (_.isArray(result)) {
             user.fcmTokens = result;
 
-            yield User.findByIdAndUpdate(userData.id, {$set: {'fcmTokens': user.fcmTokens}});
+            yield User.findByIdAndUpdate(userData.id, {
+                $set: {
+                    'fcmTokens': user.fcmTokens
+                }
+            });
 
 
             return MessageHandler.messageGenerator('success operation', true);
@@ -122,7 +126,8 @@ const getUserAccount = (userData) => {
     const ImageComponent = Studio.module('ImageComponent');
 
     return co.wrap(function*() {
-        let user = yield User.findById(userData.id).lean(true).populate('wishlist').select('-password -_id -__v');
+        let user = yield User.findById(userData.id).lean(true).populate('wishlist').select(
+            '-password -_id -__v');
 
         if (!user) {
             return MessageHandler.messageGenerator('The user does not exist', false);
@@ -158,10 +163,29 @@ const getUserDetail = (userData) => {
 
 }
 
+const retrieveUserField = (userData) => {
+
+    return User
+        .findOne({
+            $or: [{
+                _id: userData.credential
+            }, {
+                username: userData.credential
+            }]
+        })
+        .lean(true)
+        .select(`-_id ${userData.field}`); //By the moment We will only select the user's address and username
+
+}
+
 const getUserBatch = (userData) => {
     console.log(userData);
     return User
-        .find({_id: {$in: userData.userGuids}})
+        .find({
+            _id: {
+                $in: userData.userGuids
+            }
+        })
         .lean(true)
         .select('address username'); //By the moment We will only select the user's address and username
 
@@ -172,7 +196,9 @@ const getUserBatch = (userData) => {
 
 const _isValidateField = (data, setWish) => {
 
-    let {field, value} = data;
+    let {
+        field, value
+    } = data;
 
     if (setWish) { // to set new Wishlist into a user model
         data.fieldName = () => field;
@@ -205,6 +231,10 @@ const _proccessTokenArray = (action, fcmList, userData) => {
 
         case 'add':
 
+            if (fcmList.includes(userData.fcmToken)) {
+                return fcmList;
+            }
+
             fcmList.push(userData.fcmToken);
             return fcmList;
 
@@ -226,5 +256,5 @@ const _proccessTokenArray = (action, fcmList, userData) => {
 };
 
 export default {
-    createNewUser, userSignOn, updateUser, getUserAccount, getUserDetail, getUserBatch,fcmTokenManagement
+    createNewUser, userSignOn, updateUser, getUserAccount, getUserDetail, getUserBatch, fcmTokenManagement, retrieveUserField
 }
