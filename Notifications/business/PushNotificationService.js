@@ -12,23 +12,41 @@ const sendPushNotification = (notificationData) => {
 
     co.wrap(function*() {
         // const TokenFCM = yield getTokenFCM(NotificationData.userID);
-        let {data,context} = notificationData
+        let {
+            data, context
+        } = notificationData
         let retrieveUserField = UserComponent('retrieveUserField');
         let message = {};
+
         switch (context) {
 
             case 'comment':
-                let {fcmTokens} = yield retrieveUserField({credential:data.ownerName,field:'fcmTokens'});
+                let userData = yield retrieveUserField({
+                    credential: data.ownerName,
+                    field: 'fcmTokens'
+                });
 
-                for (const token of fcmTokens) {
-                    message = _generateNotificationObject(token,'A new comment was made in',data.publicationName);
-                    fcm.send(message)
+                if (userData) {
+                    for (const token of userData.fcmTokens) {
+                        message = _generateNotificationObject(token, 'New question in', data.publicationName);
+                        fcm.send(message)
+                    }
                 }
 
                 // console.log(message);
                 break;
             case 'response':
+                let userData2 = yield retrieveUserField({
+                    credential: data.questionerID,
+                    field: 'fcmTokens'
+                });
 
+                if (userData2) {
+                    for (const token of userData2.fcmTokens) {
+                        message = _generateNotificationObject(token, 'New response in', data.commentData.publicationName);
+                        fcm.send(message)
+                    }
+                }
                 break;
                 // case 'newOrder':
                 //

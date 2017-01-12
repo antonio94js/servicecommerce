@@ -1,5 +1,6 @@
 import Studio from 'studio';
 import Promise from 'bluebird';
+import co from 'co';
 import config from '../config/config';
 
 import MessageHandler from '../handler/MessageHandler';
@@ -25,9 +26,9 @@ const sendEmail = (notificationData) => {
       switch (context) {
 
         case 'comment':
-        
-          subject = 'A new question has been made';
-          message = "A client has made a new question in your publication '"+notificationData.publicationName+"\nThe question is: \n\n"+notificationData.body;
+
+          subject = `New question in ${data.publicationName}`;
+          message = `A client has made a new question in your publication ${data.publicationName} \n The question is: \n\n ${data.body}`;
 
         break;
         case 'response':
@@ -77,8 +78,6 @@ const sendEmail = (notificationData) => {
       sg.API(request)
       .then(response => {
         console.log(response.statusCode);
-        console.log(response.body);
-        console.log(response.headers);
         // return MessageHandler.messageGenerator('Email sent successfully', true);
       })
       .catch(error => {
