@@ -8,6 +8,8 @@ import Comment from '../models/Comment';
 const createNewComment = (commentData) => {
 
     const PublicationComponent = Studio.module('PublicationComponent');
+    const NotificationComponent =  Studio.module('NotificationComponent');
+
     let makeComment = PublicationComponent('makeComment');
 
     return co.wrap(function*() {
@@ -16,6 +18,16 @@ const createNewComment = (commentData) => {
 
         return makeComment(commentData)
             .then((value) => {
+
+                let sendPushNotification = NotificationComponent('sendPushNotification');
+                let sendEmail = NotificationComponent('sendEmail');
+                let notificationData = {
+                    context : 'comment',
+                    data : commentData
+                }
+
+                Promise.all([sendPushNotification(notificationData),sendEmail(notificationData)]);
+
                 return MessageHandler.messageGenerator("Your question was made", true);
             })
             .catch((err) => {

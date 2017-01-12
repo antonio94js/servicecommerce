@@ -47,6 +47,12 @@ class UserComponent {
 
     }
 
+    * retrieveUserField(userData) {
+
+        return yield UserService.retrieveUserField(userData);
+
+    }
+
     * getUserBatch(userData) {
         return yield UserService.getUserBatch(userData);
     }
