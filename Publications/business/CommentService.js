@@ -5,17 +5,29 @@ import co from 'co';
 import MessageHandler from '../handler/MessageHandler';
 import Comment from '../models/Comment';
 
+const EmailComponent = Studio.module('EmailComponent');
+
 const createNewComment = (commentData) => {
+
+    let email = {
+        "toEmail" : "alosalasv@gmail.com",
+        "fromEmail" : "alosalasv@gmail.com",
+        "subject": "New product created at your stock",
+        "content": "A new brand product has been created by you in your stock, for more information, please get in touch with us"
+    };
 
     const PublicationComponent = Studio.module('PublicationComponent');
     let makeComment = PublicationComponent('makeComment');
 
+    let sendEmail = EmailComponent('sendEmail');
+
     return co.wrap(function*() {
 
-        let comment = yield Comment.create(commentData)
+        let comment = yield Comment.create(commentData);
 
         return makeComment(commentData)
             .then((value) => {
+                sendEmail(email);
                 return MessageHandler.messageGenerator("Your question was made", true);
             })
             .catch((err) => {
