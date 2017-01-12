@@ -23,12 +23,12 @@ const loadClusterConfig = () => {
 
 
     if(process.env.NETWORK_ENV === 'local') {
-        // console.log(process.env.NETWORK_ENV);
-        const port = util.getRandomPort();
+
+        // const port = util.getRandomPort();
+        const port = 10120;
         Studio.use(studioCluster({rpcPort:port}));
     } else {
-        // console.log(process.env.NETWORK_ENV);
-        // console.log("remoto");
+
         const port = 10120;
         Studio.use(studioCluster({
             rpcPort: port,

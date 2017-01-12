@@ -21,7 +21,8 @@ const loadClusterConfig = () => {
 
 
     if (process.env.NETWORK_ENV === 'local') {
-        const port = util.getRandomPort();
+        const port = 10124;
+        // const port = util.getRandomPort();
         Studio.use(studioCluster({
             rpcPort: port
         }));

@@ -147,16 +147,14 @@ const getUserBatch = (userData) => {
 
 const _isValidateField = (data, setWish) => {
 
-    let {
-        field, value
-    } = data;
+    let {field, value} = data;
 
     if (setWish) { // to set new Wishlist into a user model
         data.fieldName = () => field;
         return true;
     }
 
-    if (['email', 'password', 'address'].includes(field)) {
+    if (['email', 'password', 'address','fcmToken'].includes(field)) {
         if (!value || value === '') {
             return false;
         }

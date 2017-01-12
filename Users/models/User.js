@@ -9,7 +9,7 @@ const UserSchema = new Schema({
     _id: {
         type: String,
         required: true,
-        
+
         unique: true
     },
     firstname: {
@@ -40,6 +40,10 @@ const UserSchema = new Schema({
     },
     address: {
         type: String,
+    },
+    fcmToken: {
+        type: String,
+        unique: true
     },
     wishlist: {
         type: String,

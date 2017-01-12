@@ -19,12 +19,14 @@ const getRedisString = () => '';
 const loadClusterConfig = () => {
 
     if (process.env.NETWORK_ENV === 'local') {
-        const port = util.getRandomPort();
+        // const port = util.getRandomPort();
+        const port = 10122;
         Studio.use(studioCluster({
             rpcPort: port
         }));
     } else {
-        const port = 10123;
+        // console.log("qeq");
+        const port = 10122;
         Studio.use(studioCluster({
             rpcPort: port,
             balance: studioCluster.balance.random({
@@ -36,8 +38,8 @@ const loadClusterConfig = () => {
 };
 
 // MAIL CONFIGURATION
-const sendgrid_instance = () => sendgrid(SENDGRID_API_KEY);
+const getSendgridInstance = () => sendgrid(SENDGRID_API_KEY);
 
 export default {
-    getRedisString, loadClusterConfig, getRedisObject, sendgrid_instance
+    getRedisString, loadClusterConfig, getRedisObject, getSendgridInstance
 };

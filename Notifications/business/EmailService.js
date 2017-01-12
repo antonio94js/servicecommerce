@@ -6,7 +6,7 @@ import MessageHandler from '../handler/MessageHandler';
 
 const sendEmail = (EmailData) => {
 
-  let sg = config.sendgrid_instance();
+  let sg = config.getSendgridInstance();
 
   let request = sg.emptyRequest({
     method: 'POST',

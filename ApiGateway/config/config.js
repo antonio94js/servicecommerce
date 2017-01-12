@@ -9,10 +9,18 @@ so if you need to test this ApiGateway in localhost you must create your own*/
 
 dotenv.config();
 
-let {REDIS_HOST, REDIS_PORT, REDIS_PASS} = process.env;
-let {PRIVATE_TOKEN_KEY} = process.env;
+let {
+    REDIS_HOST, REDIS_PORT, REDIS_PASS
+} = process.env;
+let {
+    PRIVATE_TOKEN_KEY
+} = process.env;
 
-const getRedisObject = () => ({port: REDIS_PORT,host: REDIS_HOST, password: REDIS_PASS});
+const getRedisObject = () => ({
+    port: REDIS_PORT,
+    host: REDIS_HOST,
+    password: REDIS_PASS
+});
 
 const getPrivateTokenKey = () => PRIVATE_TOKEN_KEY;
 
@@ -20,7 +28,8 @@ const loadClusterConfig = () => {
 
 
     if (process.env.NETWORK_ENV === 'local') {
-        const port = Common.getRandomPort();
+        const port = 10119;
+        // const port = Common.getRandomPort();
         Studio.use(studioCluster({
             rpcPort: port
         }));
@@ -36,6 +45,20 @@ const loadClusterConfig = () => {
     }
 };
 
+const CorssConfig = (req, res, next) => {
+
+    res.header('Access-Control-Allow-Origin','*');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+    // res.header('Access-Control-Expose-Headers', 'Content-Length');
+    res.header('Access-Control-Allow-Headers', 'Accept, Authorization, Content-Type, X-Requested-With, Range, Origin');
+
+    if (req.method === 'OPTIONS') return res.sendStatus(200);
+
+    return next();
+
+};
+
 export default {
-    getPrivateTokenKey, loadClusterConfig
+    getPrivateTokenKey, loadClusterConfig,CorssConfig
 };

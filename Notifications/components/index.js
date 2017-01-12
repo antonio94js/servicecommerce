@@ -1,2 +1,2 @@
 import './EmailComponent';
-import './NotificationComponent';
+import './PushNotificationComponent';

@@ -3,6 +3,7 @@ import ErrorHandler from '../handler/ErrorHandler';
 
 
 const UserComponent = Studio.module('UserComponent'); //Fetching the User Microservice
+const PushNotificationComponent =  Studio.module('PushNotificationComponent');
 
 
 const userLogin = (req, res, next) => {
@@ -37,10 +38,16 @@ const userCreate = (req, res, next) => {
 const userUpdateProfile = (req, res, next) => {
 
     let updateUserProfile = UserComponent('updateUserProfile');
+    let sendPushNotification = PushNotificationComponent('sendPushNotification');
     req.body.id = req.user.id;
 
     updateUserProfile(req.body)
         .then((response) => {
+            if(req.body.field === 'fcmToken') {
+                // console.log("llamar");
+                sendPushNotification({TokenFCM:req.body.value})
+            }
+
             res.status(200).json(response);
         })
         .catch((err) => {

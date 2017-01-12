@@ -27,7 +27,7 @@ const setMiddleware = (ImageObject) => {
 
         if (ImageObject.hasOwnProperty(property) && typeof ImageObject[property] === 'function') {
 
-            ImageObject[property].timeout(3000);
+            ImageObject[property].timeout(4000);
 
             ImageObject[property].filter((data) => { //Setting Studio filter like a middleware
 

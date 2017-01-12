@@ -22,6 +22,12 @@ class ImageComponent {
     getObjectImage(data) {
         // return {SignedURL:'https://mockimageurl.com'
         return aws.getSignedUrl(data);
+        // function delay(ms) {
+        //     let now = new Date().getTime() + ms;
+        //     while(new Date().getTime() <= now) {}
+        // }
+        // delay(4000);
+        // return true;
     }
 
     * getBatchImage(data) {
@@ -51,9 +57,10 @@ class ImageComponent {
 
 
 let ImageObject = studio.serviceClass(ImageComponent);
-
+// ImageObject.getObjectImage.timeout(50);
 if (process.env.NODE_ENV !== 'test') {
     ImageMiddleware.setMiddleware(ImageObject)
+    // console.log(ImageObject);
 }
 
 // console.log(log);
