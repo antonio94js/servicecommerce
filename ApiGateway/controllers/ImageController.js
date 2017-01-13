@@ -19,7 +19,7 @@ const saveImage = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         });
 
 };
@@ -38,7 +38,7 @@ const getImage = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         });
 
 };
@@ -56,7 +56,7 @@ const getBatchImage = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         });
 
 };
@@ -75,7 +75,7 @@ const deleteImage = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         });
 
 };

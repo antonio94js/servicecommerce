@@ -125,13 +125,11 @@ const checkPublicationStatus = (productData) => {
         .lean(true)
         .then((publication) => {
             if (publication) {
-
+                
                 if(publication.status === 1) return false;
 
                 removePublication({_id:publication._id})
             }
-
-                //TODO delete publication and change 'where' logic
                 return true;
 
         });

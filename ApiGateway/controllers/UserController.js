@@ -15,7 +15,7 @@ const userLogin = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         })
 
 
@@ -30,7 +30,7 @@ const userCreate = (req, res, next) => {
             res.status(201).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         })
 
 };
@@ -47,7 +47,7 @@ const userUpdateProfile = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         })
 
 };
@@ -63,7 +63,7 @@ const userFcmTokenManagement = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         })
 
 };
@@ -77,7 +77,7 @@ const getUserProfile = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         })
 
 };

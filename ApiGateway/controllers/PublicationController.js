@@ -20,7 +20,7 @@ const publicationCreate = (req, res, next) => {
             res.status(201).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         });
 
 };
@@ -34,7 +34,7 @@ const publicationUpdate = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         });
 };
 
@@ -48,7 +48,7 @@ const publicationDelete = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         });
 };
 
@@ -103,7 +103,7 @@ const publicationDetail = (req, res, next) => {
         })
         .catch((err) => {
             // console.log(err);
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         })
 
 };
@@ -157,7 +157,7 @@ const publicationBatch = (req, res, next) => {
         })
         .catch((err) => {
 
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         })
 
 };

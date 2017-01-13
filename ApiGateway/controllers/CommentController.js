@@ -13,7 +13,7 @@ const publicationCreateResponse = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         })
 
 };
@@ -28,7 +28,7 @@ const publicationCreateComment = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res,req, next);
         })
 
 };
@@ -43,7 +43,7 @@ const publicationDeleteComment = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         })
 
 };

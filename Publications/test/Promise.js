@@ -16,6 +16,3 @@ class PromiseHandler {
 }
 
 module.exports = new PromiseHandler();
-
-
-// export default

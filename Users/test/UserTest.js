@@ -6,6 +6,7 @@ import SinonChai from 'sinon-chai';
 import UserService from '../business/UserService';
 import User from '../models/User';
 import MessageHandler from '../handler/MessageHandler';
+import jwtHandler from '../handler/jwtHandler';
 
 import PromiseHandler from './Promise';
 import {UserMock} from './mocks/Fixtures';
@@ -126,6 +127,8 @@ describe('#UserService', () => {
         beforeEach(() => {
 
             sandboxUser.stub(User, "findOne", MongoMocks.findOne);
+            sandboxUser.stub(jwtHandler, "generateAccessToken").returns('aUHuaqw2990ajaKHafkKAKDgqueOAQUEaiudfq');
+
 
             userCredentials = {"password": "123","account": "servi@gmail.com"};
 
@@ -167,7 +170,7 @@ describe('#UserService', () => {
                     done();
                 })
                 .catch((err) => {
-                    console.log(err);
+                    // console.log(err);
                 })
 
         });

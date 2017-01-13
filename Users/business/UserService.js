@@ -52,7 +52,13 @@ const userSignOn = (userData) => {
                 "username": user.username
             };
 
-            return MessageHandler.messageGenerator(jwtHandler.generateAccessToken(userID), true, 'token');
+            return {
+                success: true,
+                token : jwtHandler.generateAccessToken(userID),
+                refreshToken : jwtHandler.generateRefreshToken()
+            }
+
+            // return MessageHandler.messageGenerator(jwtHandler.generateAccessToken(userID), true, 'token');
 
         })
         .catch((err) => {

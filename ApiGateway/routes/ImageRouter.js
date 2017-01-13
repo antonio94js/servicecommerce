@@ -7,8 +7,8 @@ const router = Router();
 
 router
     .get('/:ObjectType/:ID', ImageController.getImage)
-    .post('/detail/:ObjectType/:ID', ImageController.saveImage)
-    .post('/batch/:ObjectType/', ImageController.getBatchImage)
+    // .post('/batch/:ObjectType/', ImageController.getBatchImage)
+    .post('/:ObjectType/:ID', ImageController.saveImage)
     .delete('/:ObjectType/:ID', ImageController.deleteImage);
 
 export default router;

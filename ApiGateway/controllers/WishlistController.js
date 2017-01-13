@@ -20,7 +20,7 @@ const addPublication = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         })
 
 };
@@ -41,7 +41,7 @@ const deletePublication = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         })
 
 };
