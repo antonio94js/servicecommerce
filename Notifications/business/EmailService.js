@@ -55,22 +55,29 @@ const sendEmail = (notificationData) => {
             body: _generateBodyObject(userData, subject, message),
         });
 
-        //SEND EMAIL THROUGH SENDGRID INSTANCE sg
-        sg.API(request)
-        .then(response => {
-            console.log(response.statusCode);
-            // return MessageHandler.messageGenerator('Email sent successfully', true);
-        })
-        .catch(error => {
-            //error is an instance of SendGridError
-            //The full response is attached to error.response
-            console.log(error);
-            // throw MessageHandler.errorGenerator(error, 500);
-        });
+        _sendMessage(request);
     })();
 };
 
 /*HELPERS*/
+
+const _sendMessage = (request) => {
+
+    let sg = config.getSendgridInstance();
+
+    //SEND EMAIL THROUGH SENDGRID INSTANCE sg
+    sg.API(request)
+    .then(response => {
+        console.log(response.statusCode);
+        // return MessageHandler.messageGenerator('Email sent successfully', true);
+    })
+    .catch(error => {
+        //error is an instance of SendGridError
+        //The full response is attached to error.response
+        console.log(error);
+        // throw MessageHandler.errorGenerator(error, 500);
+    });
+};
 
 const _generateBodyObject = (userData, subject, message) => ({
     personalizations: [
