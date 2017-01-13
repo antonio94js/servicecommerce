@@ -7,13 +7,18 @@ import moment from 'moment';
 
 const createNewOffer = (offerData) => {
     return co.wrap(function*() {
+
         let product = yield ProductService.productBelongsToUser(offerData);
 
-        if (product) {
-            yield Offer.create(offerData);
-            return yield ProductService.assignOffer(offerData);
+        if (!product) return MessageHandler.messageGenerator('Product not found', false);
+
+        if(isNaN(Date.parse(offerData.startDate)) || isNaN(Date.parse(offerData.endDate))){
+            throw MessageHandler.errorGenerator("Date not valid",400);
         }
-        return MessageHandler.messageGenerator('Product not found', false);
+        
+        yield Offer.create(offerData);
+
+        return yield ProductService.assignOffer(offerData);
 
     })();
 
@@ -24,36 +29,28 @@ const updateOffer = (offerData) => {
 
         let product = yield ProductService.productBelongsToUser(offerData);
 
-        if (product) {
+        if (!product) return MessageHandler.messageGenerator('Product not found', false);
 
-            let offer = yield Offer.findById(offerData._id);
+        let offer = yield Offer.findById(offerData._id);
 
-            if (offer) {
+        if (!offer) return MessageHandler.messageGenerator('Offer not found', false);
 
-                if(isNaN(Date.parse(offerData.startDate)) || isNaN(Date.parse(offerData.endDate))){
-                    throw MessageHandler.errorGenerator("Date not valid",400);
-
-                }
-
-                offer.startDate = offerData.startDate;
-                offer.endDate = offerData.endDate;
-                offer.price = offerData.price;
-
-                return offer.save()
-                    .then((offer) => {
-                        return MessageHandler.messageGenerator('Offer updated successfully', true);
-                    }).catch((err) => {
-
-                        throw MessageHandler.errorGenerator("Something wrong happened updating offer",
-                            500);
-                    });
-            }
-
-            return MessageHandler.messageGenerator('Offer not found', false);
-
+        if(isNaN(Date.parse(offerData.startDate)) || isNaN(Date.parse(offerData.endDate))){
+            throw MessageHandler.errorGenerator("Date not valid",400);
         }
-        return MessageHandler.messageGenerator('Product not found', false);
 
+        offer.startDate = offerData.startDate;
+        offer.endDate = offerData.endDate;
+        offer.price = offerData.price;
+
+        return offer.save()
+            .then((offer) => {
+                return MessageHandler.messageGenerator('Offer updated successfully', true);
+            }).catch((err) => {
+
+                throw MessageHandler.errorGenerator("Something wrong happened updating offer",
+                    500);
+            });
     })();
 };
 
@@ -61,19 +58,18 @@ const removeOffer = (offerData) => {
     return co.wrap(function*() {
 
         let product = yield ProductService.productBelongsToUser(offerData);
-        if (product && product.offer) {
-            return Offer
-                .remove({
-                    _id: product.offer._id
-                })
-                .then((response) => {
-                    return MessageHandler.messageGenerator('Offer deleted successfully', true);
-                }).catch((err) => {
-                    throw MessageHandler.errorGenerator("Something wrong happened deleting offer", 500);
-                });
-        }
 
-        return MessageHandler.messageGenerator("Offer not found in yours", false);
+        if (!(product && product.offer)) return MessageHandler.messageGenerator("Offer not found in yours", false);
+
+        return Offer
+            .remove({
+                _id: product.offer._id
+            })
+            .then((response) => {
+                return MessageHandler.messageGenerator('Offer deleted successfully', true);
+            }).catch((err) => {
+                throw MessageHandler.errorGenerator("Something wrong happened deleting offer", 500);
+            });
     })();
 };
 

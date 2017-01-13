@@ -14,7 +14,7 @@ let {PRIVATE_TOKEN_KEY} = process.env;
 let {SENDGRID_API_KEY} = process.env;
 let {FCM_SERVER_KEY} = process.env;
 
-export const fcm = new FCM(FCM_SERVER_KEY)
+export const fcm = new FCM(FCM_SERVER_KEY);
 
 const getRedisObject = () => ({port: REDIS_PORT,host: REDIS_HOST, password: REDIS_PASS});
 

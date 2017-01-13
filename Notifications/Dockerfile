@@ -3,7 +3,6 @@ FROM node:latest
 #Set enviroment variables
 
 ENV appDir /var/www/app
-ENV DOCKER_ENV true
 
 # Create app directory
 RUN mkdir -p $appDir
@@ -17,5 +16,5 @@ RUN yarn install
 # Bundle app source
 ADD . /var/www/app
 
-EXPOSE 10123
+EXPOSE 10122
 CMD [ "npm", "start" ]
