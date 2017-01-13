@@ -71,7 +71,7 @@ const getPublicationDetail = (publicationData) => {
 
         })
         .where({
-            'status': 1 //change to 1
+            'status': 1
         })
         .select('-__v')
         .lean(true)
@@ -121,18 +121,19 @@ const checkPublicationStatus = (productData) => {
     return Publication.findOne({
             'productID': productData.productID
         })
-        .where({
-            'status': 1
-        })
         .select('-__v')
         .lean(true)
         .then((publication) => {
             if (publication) {
-                return false;
-            } else {
+
+                if(publication.status === 1) return false;
+
+                removePublication({_id:publication._id})
+            }
+
                 //TODO delete publication and change 'where' logic
                 return true;
-            }
+
         });
 };
 

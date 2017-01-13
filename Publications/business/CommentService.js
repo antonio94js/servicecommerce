@@ -9,15 +9,8 @@ const EmailComponent = Studio.module('EmailComponent');
 
 const createNewComment = (commentData) => {
 
-    let email = {
-        "toEmail" : "alosalasv@gmail.com",
-        "fromEmail" : "alosalasv@gmail.com",
-        "subject": "New product created at your stock",
-        "content": "A new brand product has been created by you in your stock, for more information, please get in touch with us"
-    };
-
     const PublicationComponent = Studio.module('PublicationComponent');
-    const NotificationComponent =  Studio.module('NotificationComponent');
+    // const NotificationComponent = Studio.module('NotificationComponent');
 
     let makeComment = PublicationComponent('makeComment');
 
@@ -30,14 +23,7 @@ const createNewComment = (commentData) => {
         return makeComment(commentData)
             .then((value) => {
 
-                let sendPushNotification = NotificationComponent('sendPushNotification');
-                let sendEmail = NotificationComponent('sendEmail');
-                let notificationData = {
-                    context : 'comment',
-                    data : commentData
-                }
-
-                Promise.all([sendPushNotification(notificationData),sendEmail(notificationData)]);
+                _sendNotification(commentData,'comment');
 
                 return MessageHandler.messageGenerator("Your question was made", true);
             })
@@ -50,6 +36,9 @@ const createNewComment = (commentData) => {
 }
 
 const createNewResponse = (commentData) => {
+
+    const PublicationComponent = Studio.module('PublicationComponent');
+    // const NotificationComponent = Studio.module('NotificationComponent');
 
     let CheckOwnership = PublicationComponent('CheckOwnership');
 
@@ -64,10 +53,15 @@ const createNewResponse = (commentData) => {
         let parentComment = yield Comment.findById(commentData.parentID);
 
         if (parentComment) {
+
             delete commentData.parentID;
             yield Comment.create(commentData);
             parentComment.response = commentData._id;
             yield parentComment.save();
+
+            commentData.subjectCredential = parentComment.userID;
+
+            _sendNotification(commentData,'response');
 
             return MessageHandler.messageGenerator("The response was made", true);
         }
@@ -90,6 +84,20 @@ const removeComment = (commentData) => {
         .catch((err) => {
             throw err;
         })
+}
+
+const _sendNotification = (commentData,context) => {
+
+    const NotificationComponent = Studio.module('NotificationComponent');
+
+    let sendPushNotification = NotificationComponent('sendPushNotification');
+    let sendEmail = NotificationComponent('sendEmail');
+    let notificationData = {
+        context: context,
+        data: commentData
+    }
+
+    Promise.all([sendPushNotification(notificationData), sendEmail(notificationData)]);
 }
 
 

@@ -10,7 +10,7 @@ import router from './routes/';
 
 const app = express();
 const port = process.env.PORT || 3000;
-// Studio.use(Studio.plugin.timeout);
+Studio.use(Studio.plugin.retry({max:2}));
 config.loadClusterConfig();
 
 /*Loading envioroment vars from .env file,  this file is not available in the repository,

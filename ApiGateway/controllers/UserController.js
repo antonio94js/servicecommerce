@@ -43,10 +43,6 @@ const userUpdateProfile = (req, res, next) => {
 
     updateUserProfile(req.body)
         .then((response) => {
-            // if(req.body.field === 'fcmToken') {
-            //     // console.log("llamar");
-            //     // sendPushNotification({TokenFCM:req.body.value})
-            // }
 
             res.status(200).json(response);
         })
