@@ -11,90 +11,90 @@ const {SC_EMAIL} = process.env;
 
 const sendEmail = (notificationData) => {
 
-  co.wrap(function*() {
+    co.wrap(function*() {
 
-    let sg = config.getSendgridInstance();
+        let sg = config.getSendgridInstance();
 
-    let {data,context} = notificationData;
-    let retrieveUserField = UserComponent('retrieveUserField');
-    let message = {};
-    let subject = {};
+        let {data,context} = notificationData;
+        let retrieveUserField = UserComponent('retrieveUserField');
+        let message = {};
+        let subject = {};
 
-    let userData = yield retrieveUserField({credential:data.subjectcredential,field:'email'});
+        let userData = yield retrieveUserField({credential:data.subjectcredential,field:'email'});
 
-    if(!userData) return;
-    switch (context) {
+        if(!userData) return;
 
-      case 'comment':
+        switch (context) {
 
-      subject = `New question in ${data.publicationName}`;
-      message = `A client has made a new question in your publication ${data.publicationName} \n The question is: \n\n ${data.body}`;
+            case 'comment':
+                subject = `New question in ${data.publicationName}`;
+                message = `A client has made a new question in your publication ${data.publicationName} \n The question is: \n\n ${data.body}`;
+            break;
 
-      break;
-      case 'response':
-      subject = `New response in ${data.publicationName}`;
-      message = `The Seller has commented in the publication ${data.publicationName} \n The response is: \n\n ${data.body}`;
+            case 'response':
+                subject = `New response in ${data.publicationName}`;
+                message = `The Seller has commented in the publication ${data.publicationName} \n The response is: \n\n ${data.body}`;
+            break;
+            // case 'newOrder':
+            //
+            //     break;
+            // case 'cancelOrder':
+            //
+            //     break;
+            // case 'endOrder':
+            //
+            //     break;
+            default:
+            break;
 
-      break;
-      // case 'newOrder':
-      //
-      //     break;
-      // case 'cancelOrder':
-      //
-      //     break;
-      // case 'endOrder':
-      //
-      //     break;
-      default:
-      break;
+        }
 
-    }
+        let request = sg.emptyRequest({
+            method: 'POST',
+            path: '/v3/mail/send',
+            body: _generateBodyObject(userData, subject, message),
+        });
 
-    let request = sg.emptyRequest({
-      method: 'POST',
-      path: '/v3/mail/send',
-      body: {
-        personalizations: [
-          {
-            to: [
-              {
-                email: userData.email,
-              },
-            ],
-            subject: subject,
-          },
-        ],
-        from: {
-          email: SC_EMAIL,
-        },
-        content: [
-          {
-            type: 'text/html',
-            value: message,
-          },
-        ],
-        template_id : "14fe1dfe-29a4-48b4-a92e-b336c1e07177",
-      },
-    });
-
-    sg.API(request)
-    .then(response => {
-      console.log(response.statusCode);
-      // return MessageHandler.messageGenerator('Email sent successfully', true);
-    })
-    .catch(error => {
-      //error is an instance of SendGridError
-      //The full response is attached to error.response
-      console.log(error);
-      // throw MessageHandler.errorGenerator(error, 500);
-    });
-
-
-  })();
+        //SEND EMAIL THROUGH SENDGRID INSTANCE sg
+        sg.API(request)
+        .then(response => {
+            console.log(response.statusCode);
+            // return MessageHandler.messageGenerator('Email sent successfully', true);
+        })
+        .catch(error => {
+            //error is an instance of SendGridError
+            //The full response is attached to error.response
+            console.log(error);
+            // throw MessageHandler.errorGenerator(error, 500);
+        });
+    })();
 };
 
 /*HELPERS*/
 
+const _generateBodyObject = (userData, subject, message) => ({
+    personalizations: [
+        {
+            to: [
+                {
+                    email: userData.email,
+                },
+            ],
+            subject: subject,
+        },
+    ],
+    from: {
+        email: SC_EMAIL,
+    },
+    content: [
+        {
+            type: 'text/html',
+            value: message,
+        },
+    ],
+    template_id : "14fe1dfe-29a4-48b4-a92e-b336c1e07177",
+});
+
 export default {
-  sendEmail
+    sendEmail
 };
