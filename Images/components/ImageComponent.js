@@ -3,7 +3,7 @@ import _ from 'lodash';
 import aws from '../handler/awsHandler';
 import ImageService from '../business/ImageService';
 import MessagaeHandler from '../handler/MessageHandler'
-import ImageMiddelware from '../middelware/ImageMiddelware';
+import ImageMiddleware from '../middleware/ImageMiddleware';
 
 
 class ImageComponent {
@@ -22,6 +22,7 @@ class ImageComponent {
     getObjectImage(data) {
         // return {SignedURL:'https://mockimageurl.com'
         return aws.getSignedUrl(data);
+
     }
 
     * getBatchImage(data) {
@@ -51,9 +52,10 @@ class ImageComponent {
 
 
 let ImageObject = studio.serviceClass(ImageComponent);
-
+// ImageObject.getObjectImage.timeout(50);
 if (process.env.NODE_ENV !== 'test') {
-    ImageMiddelware.setMiddelware(ImageObject)
+    ImageMiddleware.setMiddleware(ImageObject)
+    // console.log(ImageObject);
 }
 
 // console.log(log);

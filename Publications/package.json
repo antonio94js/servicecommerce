@@ -1,35 +1,37 @@
 {
-    "name": "Publications-SC",
-    "version": "1.0.0",
-    "description": "Publication Microservices",
-    "main": "server.js",
-    "author": "Antonio Mejias and Alonso Salas",
-    "license": "MIT",
-    "scripts": {
-        "build": "",
-        "test": "mocha --compilers js:babel-register --require babel-polyfill",
-        "start": "nodemon app.js --exec babel-node --presets es2015,stage-2"
-    },
-    "dependencies": {
-        "co": "^4.6.0",
-        "dotenv": "^2.0.0",
-        "lodash": "^4.17.2",
-        "moment": "^2.17.0",
-        "mongoose": "^4.7.0",
-        "request-promise": "^4.1.1",
-        "studio": "^0.13.3",
-        "studio-cluster": "^0.3.5"
-    },
-    "devDependencies": {
-        "babel-cli": "^6.18.0",
-        "babel-polyfill": "^6.20.0",
-        "babel-preset-es2015": "^6.18.0",
-        "babel-preset-stage-2": "^6.18.0",
-        "babel-register": "^6.18.0",
-        "chai": "^3.5.0",
-        "mocha": "^3.2.0",
-        "nodemon": "^1.11.0",
-        "sinon": "^1.17.6",
-        "sinon-chai": "^2.8.0"
-    }
+  "name": "Publications-SC",
+  "version": "1.0.0",
+  "description": "Publication Microservices",
+  "main": "server.js",
+  "author": "Antonio Mejias and Alonso Salas",
+  "license": "MIT",
+  "scripts": {
+    "build": "",
+    "test": "export NODE_ENV=test && mocha --compilers js:babel-register --require babel-polyfill",
+    "start": "nodemon app.js --exec babel-node --presets es2015,stage-2"
+  },
+  "dependencies": {
+    "co": "^4.6.0",
+    "dotenv": "^2.0.0",
+    "hot-shots": "^4.3.1",
+    "lodash": "^4.17.2",
+    "moment": "^2.17.0",
+    "mongoose": "^4.7.0",
+    "request-promise": "^4.1.1",
+    "sendgrid": "^4.7.1",
+    "studio": "^0.13.3",
+    "studio-cluster": "^0.3.5"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-polyfill": "^6.20.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-2": "^6.18.0",
+    "babel-register": "^6.18.0",
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "nodemon": "^1.11.0",
+    "sinon": "^1.17.6",
+    "sinon-chai": "^2.8.0"
+  }
 }

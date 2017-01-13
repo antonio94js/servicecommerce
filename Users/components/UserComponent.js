@@ -30,6 +30,11 @@ class UserComponent {
         return yield UserService.updateUser(userData, setWish);
     }
 
+    * fcmTokenManagement (userData, setWish) {
+
+        return yield UserService.fcmTokenManagement(userData);
+    }
+
     * getUserProfile(userData) {
 
         return yield UserService.getUserAccount(userData);
@@ -40,6 +45,16 @@ class UserComponent {
 
         return yield UserService.getUserDetail(userData);
 
+    }
+
+    * retrieveUserField(userData) {
+
+        return yield UserService.retrieveUserField(userData);
+
+    }
+
+    * getUserBatch(userData) {
+        return yield UserService.getUserBatch(userData);
     }
 
 }
