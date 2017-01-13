@@ -6,7 +6,6 @@ import _ from 'lodash';
 import Promise from 'bluebird';
 
 const ImageComponent = Studio.module('ImageComponent');
-const EmailComponent = Studio.module('EmailComponent');
 
 const createNewProduct = (productData) => {
 
@@ -17,16 +16,11 @@ const createNewProduct = (productData) => {
         "content": "A new brand product has been created by you in your stock, for more information, please get in touch with us"
     };
 
-    let sendEmail = EmailComponent('sendEmail');
-
     return Product
         .create(productData)
         .then((product) => {
 
-            sendEmail(email);
-
-            return MessageHandler.messageGenerator(
-                "The product was created successfully", true);
+            return MessageHandler.messageGenerator("The product was created successfully", true);
 
         })
         .catch((err) => {
@@ -120,7 +114,6 @@ const getBatch = (ProductData) => {
         } else {
             products = yield Product.find({userID: ProductData.userID}).lean(true).select('-__v').populate('offer');
         }
-        // console.log(products);
 
         let data = {
             'guids': _.map(products, product => product._id),
@@ -162,9 +155,7 @@ const assignOffer = (OfferData) => {
         });
 };
 
-
 /*HELPERS*/
-
 
 const productBelongsToUser = (ProductData, property) => {
 

@@ -19,8 +19,7 @@ const sendEmail = (notificationData) => {
         let retrieveUserField = UserComponent('retrieveUserField');
         let message = {};
         let subject = {};
-
-        let userData = yield retrieveUserField({credential:data.subjectcredential,field:'email'});
+        let userData = yield retrieveUserField({credential:data.subjectCredential,field:'email'});
 
         if(!userData) return;
 
@@ -28,12 +27,12 @@ const sendEmail = (notificationData) => {
 
             case 'comment':
                 subject = `New question in ${data.publicationName}`;
-                message = `A client has made a new question in your publication ${data.publicationName} \n The question is: \n\n ${data.body}`;
+                message = `A client has made a new question in your publication ${data.publicationName} <br> The question is: <br><br> <blockquote> ${data.body} </blockquote>`;
             break;
 
             case 'response':
                 subject = `New response in ${data.publicationName}`;
-                message = `The Seller has commented in the publication ${data.publicationName} \n The response is: \n\n ${data.body}`;
+                message = `The Seller has commented in the publication ${data.publicationName} <br> The response is: <br><br> <blockquote> ${data.body} </blockquote>`;
             break;
             // case 'newOrder':
             //
@@ -54,17 +53,16 @@ const sendEmail = (notificationData) => {
             path: '/v3/mail/send',
             body: _generateBodyObject(userData, subject, message),
         });
+        console.log(request);
+        _sendMessage(request, sg);
 
-        _sendMessage(request);
     })();
 };
 
 /*HELPERS*/
 
-const _sendMessage = (request) => {
-
-    let sg = config.getSendgridInstance();
-
+const _sendMessage = (request, sg) => {
+    console.log('sendmessage');
     //SEND EMAIL THROUGH SENDGRID INSTANCE sg
     sg.API(request)
     .then(response => {
