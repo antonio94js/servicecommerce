@@ -10,7 +10,7 @@ import router from './routes/';
 
 const app = express();
 const port = process.env.PORT || 3000;
-// Studio.use(Studio.plugin.retry({max:4}));
+Studio.use(Studio.plugin.retry({max:2}));
 config.loadClusterConfig();
 
 /*Loading envioroment vars from .env file,  this file is not available in the repository,
@@ -19,13 +19,6 @@ dotenv.config({
     silent: true
 });
 
-// try {
-//     mongodb.connecToMongo();
-// } catch (e) {
-//     console.error(e);
-// }
-
-
 //Setting up the Express App
 
 app.use(bodyParser.json());
@@ -33,29 +26,42 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 
+app.use(config.CorssConfig);
+
 app.use(morgan('dev'));
 
 app.use("/api", router);
 
-app.get("/", function(req, res) {
-    res.send("Api Gateway");
-});
-
-
 app.use(function(req, res, next) {
-  res.status(404).send({message:"The resource that you try to access doesn't found"});
+
+    res.status(404).send({
+        Message: "No HTTP resource was found that matches the request URI",
+        Endpoint: req.url,
+        Method: req.method
+    });
 });
 
 app.use(function(err, req, res, next) {
-  // console.error(err.stack);
-  res.status(500).json(err);
+    // console.error(err.stack);
+    res.status(500).json(err);
 });
 
 
-app.listen(port, (error) => {
+const server = app.listen(port,'0.0.0.0', (error) => {
     if (error)
         throw error;
     else
         console.info(`sever running on port ${port}`);
 
 });
+
+
+/*Graceful Shutdown our Http Server*/
+
+const gracefulShutdown = () => {
+    server.close(() => {process.exit()})
+};
+
+process
+    .on('SIGINT', gracefulShutdown)
+    .on('SIGTERM', gracefulShutdown);

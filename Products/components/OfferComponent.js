@@ -16,5 +16,6 @@ class OfferComponent {
     }
 
 }
+
 //return a new instance from your Microservices component
 var serviceObj = Studio.serviceClass(OfferComponent);

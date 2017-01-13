@@ -13,7 +13,7 @@ const createProduct = (req, res, next) => {
             res.status(201).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         });
 };
 
@@ -27,7 +27,7 @@ const productUpdate = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         });
 
 };
@@ -42,7 +42,7 @@ const productDelete = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         });
 
 };
@@ -58,7 +58,7 @@ const productDetail = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         });
 
 };
@@ -70,10 +70,10 @@ const productBatch  = (req, res, next) => {
 
     getProductBatch(req.body)
         .then((response) => {
-            res.status(201).json(response);
+            res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         });
 };
 

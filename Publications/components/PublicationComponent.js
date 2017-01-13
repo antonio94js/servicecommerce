@@ -1,6 +1,6 @@
 import Studio from 'studio';
 import PublicationService from '../business/PublicationService';
-import PublicationMiddelware from '../middelware/PublicationMiddelware';
+import PublicationMiddleware from '../middleware/PublicationMiddleware';
 
 class PublicationComponent {
 
@@ -10,6 +10,7 @@ class PublicationComponent {
     }
 
     * updatePublication(publicationData) {
+
         return yield PublicationService.updatePublication(publicationData);
     }
 
@@ -28,9 +29,14 @@ class PublicationComponent {
         return yield PublicationService.getPublicationDetail(publicationData);
     }
 
-    * checkPublicationStatus(producData) {
+    * getBatch(publicationData) {
 
-        return yield PublicationService.checkPublicationStatus(producData);
+        return yield PublicationService.getPublicationBatch(publicationData);
+    }
+
+    * checkPublicationStatus(productData) {
+
+        return yield PublicationService.checkPublicationStatus(productData);
     }
 
     CheckOwnership(publicationData) {
@@ -39,8 +45,10 @@ class PublicationComponent {
     }
 
 }
-//return a new instance from your Microservices component
+
 let publication = Studio.serviceClass(PublicationComponent);
 
-PublicationMiddelware.CheckPublicationOwnership(publication, 'deletePublication', 'updatePublication',
-    'createPublication', 'CheckOwnership');
+if (process.env.NODE_ENV !== 'test') {
+    PublicationMiddleware.CheckPublicationOwnership(publication, 'deletePublication', 'updatePublication',
+        'createPublication', 'CheckOwnership');
+}

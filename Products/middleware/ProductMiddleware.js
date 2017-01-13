@@ -2,6 +2,7 @@ import ProductService from '../business/ProductService';
 import MessageHandler from '../handler/MessageHandler';
 
 const CheckProductOwnership = (Component,...properties) => {
+
     for (let property in Component) {
         if (Component.hasOwnProperty(property) && typeof Component[property] === 'function') {
             if(properties.includes(property)){

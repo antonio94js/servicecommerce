@@ -8,4 +8,10 @@ const router = Router();
 
 router.post('/token', UserController.userLogin);
 
+
+//TODO refresh token service
+
+// router.post('/token/refresh', UserController.userLogin);
+// router.post('/token/reject ', UserController.userLogin);
+
 export default router;

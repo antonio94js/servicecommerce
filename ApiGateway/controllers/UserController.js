@@ -3,6 +3,7 @@ import ErrorHandler from '../handler/ErrorHandler';
 
 
 const UserComponent = Studio.module('UserComponent'); //Fetching the User Microservice
+const PushNotificationComponent =  Studio.module('PushNotificationComponent');
 
 
 const userLogin = (req, res, next) => {
@@ -14,7 +15,7 @@ const userLogin = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         })
 
 
@@ -29,7 +30,7 @@ const userCreate = (req, res, next) => {
             res.status(201).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         })
 
 };
@@ -37,14 +38,32 @@ const userCreate = (req, res, next) => {
 const userUpdateProfile = (req, res, next) => {
 
     let updateUserProfile = UserComponent('updateUserProfile');
+    let sendPushNotification = PushNotificationComponent('sendPushNotification');
     req.body.id = req.user.id;
 
     updateUserProfile(req.body)
         .then((response) => {
+
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
+        })
+
+};
+
+const userFcmTokenManagement = (req, res, next) => {
+
+    let fcmTokenManagement = UserComponent('fcmTokenManagement');
+    // let sendPushNotification = PushNotificationComponent('sendPushNotification');
+    req.body.id = req.user.id;
+
+    fcmTokenManagement(req.body)
+        .then((response) => {
+            res.status(200).json(response);
+        })
+        .catch((err) => {
+            ErrorHandler(err, res, req, next);
         })
 
 };
@@ -58,9 +77,9 @@ const getUserProfile = (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((err) => {
-            ErrorHandler(err, res, next);
+            ErrorHandler(err, res, req, next);
         })
 
 };
 
-export default {userLogin,userCreate,userUpdateProfile,getUserProfile}
+export default {userLogin,userCreate,userUpdateProfile,getUserProfile,userFcmTokenManagement}

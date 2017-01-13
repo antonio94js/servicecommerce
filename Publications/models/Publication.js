@@ -1,4 +1,7 @@
-import mongoose, {Schema} from 'mongoose';
+import mongoose, {
+    Schema
+}
+from 'mongoose';
 import moment from 'moment'
 
 
@@ -23,7 +26,7 @@ const PublicationSchema = new Schema({
     status: {
         type: Number,
         enum: [0, 1],
-        default: 0,
+        default: 1,
     },
     publicationDetail: {
         type: String,
@@ -33,6 +36,9 @@ const PublicationSchema = new Schema({
         type: String,
         required: true,
     },
+    tags: [{
+        type: String
+    }],
     comments: [{
         type: String,
         ref: "Comment"
@@ -40,9 +46,9 @@ const PublicationSchema = new Schema({
 });
 
 
-PublicationSchema.set('toObject', {
-    virtuals: true
-});
+PublicationSchema.index({name: 'text',tags: 'text'}, {weights: {name: 10,tags: 5},name: "MyTextIndex"})
+
+PublicationSchema.set('toObject', {virtuals: true});
 
 
 export default mongoose.model('Publication', PublicationSchema);

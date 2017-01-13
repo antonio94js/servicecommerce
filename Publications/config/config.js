@@ -13,7 +13,7 @@ let {PRIVATE_TOKEN_KEY} = process.env;
 
 const getRedisObject = () => ({port: REDIS_PORT,host: REDIS_HOST, password: REDIS_PASS});
 
-const getMongoString = () => process.env.NETWORK_ENV === 'local' ? _getMongoStringLocal() : _getMongoStringRemote();
+const getMongoString = () => process.env.NETWORK_ENV === 'local' && !process.env.DOCKER_ENV ? _getMongoStringLocal() : _getMongoStringRemote();
 
 const getRedisString = () => '';
 
@@ -21,7 +21,8 @@ const loadClusterConfig = () => {
 
 
     if (process.env.NETWORK_ENV === 'local') {
-        const port = util.getRandomPort();
+        // const port = util.getRandomPort();
+        const port = 10123;
         Studio.use(studioCluster({
             rpcPort: port
         }));

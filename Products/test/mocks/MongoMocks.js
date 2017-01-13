@@ -6,7 +6,7 @@ const DuplicatedError = {
     "code": 11001
 };
 
-const findOne = (Offer) => {
+const findById = (Offer) => {
 
     if(OfferMock._id === Offer._id) {
 
@@ -18,4 +18,4 @@ const findOne = (Offer) => {
     }
 }
 
-export default {findOne,DuplicatedError}
+export default {findById,DuplicatedError}

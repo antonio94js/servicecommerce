@@ -9,11 +9,19 @@ const ImageComponent = Studio.module('ImageComponent');
 
 const createNewProduct = (productData) => {
 
+    let email = {
+        "toEmail" : "alosalasv@gmail.com",
+        "fromEmail" : "alosalasv@gmail.com",
+        "subject": "New product created at your stock",
+        "content": "A new brand product has been created by you in your stock, for more information, please get in touch with us"
+    };
+
     return Product
         .create(productData)
         .then((product) => {
-            return MessageHandler.messageGenerator(
-                "The product was created successfully", true);
+
+            return MessageHandler.messageGenerator("The product was created successfully", true);
+
         })
         .catch((err) => {
             if (err.code === 11000 || err.code === 11001)
@@ -50,13 +58,16 @@ const removeProduct = (ProductData) => {
                 userID: ProductData.product.userID,
                 productID: ProductData.product._id
             }).then((value) => {
+
                 if (value) {
                     Product
-                        .remove({_id: ProductData._id})
+                        .remove({
+                            _id: ProductData._id
+                        })
                         .then((response) => {
-                                resolve(MessageHandler.messageGenerator("Product deleted succefully",
-                                    true));
-                            })
+                            resolve(MessageHandler.messageGenerator("Product deleted succefully",
+                                true));
+                        })
                         .catch((err) => {
                             reject(MessageHandler.errorGenerator(
                                 "Something wrong happened deleting product", 500));
@@ -82,11 +93,11 @@ const getDetail = (ProductData) => {
         })
         .then((value) => {
             ProductData.product.SignedURL = value.SignedURL;
-            return MessageHandler.messageGenerator(ProductData.product, true, 'data');
+            return ProductData.product;
 
         })
         .catch((err) => {
-            return MessageHandler.messageGenerator(ProductData.product, true, 'data');
+            return ProductData.product;
         });
 };
 
@@ -95,7 +106,15 @@ const getBatch = (ProductData) => {
     return co.wrap(function*() {
 
         let ImageBatch = ImageComponent('getBatchImage');
-        let products = yield Product.find({userID: ProductData.userID}).lean(true).populate('offer');
+        let products = [];
+
+        /*Check if the operation is for publications batch or just simple listing*/
+        if(ProductData.isPublicationBatch) {
+            products = yield Product.find({_id:{$in:ProductData.productGuids}}).lean(true).select('-date -__v').populate('offer');
+        } else {
+            products = yield Product.find({userID: ProductData.userID}).lean(true).select('-__v').populate('offer');
+        }
+
         let data = {
             'guids': _.map(products, product => product._id),
             'ObjectType': 'product'
@@ -105,7 +124,7 @@ const getBatch = (ProductData) => {
             .then((images) => {
 
                 for (const product of products) {
-                    let img = _.find(images, image => image.id === product._id);
+                    let img = _.find(images, productImage => productImage.id === product._id);
                     if (img) {
                         product.SignedUrl = img.SignedUrl;
                     }
@@ -113,7 +132,7 @@ const getBatch = (ProductData) => {
 
                 return products;
 
-            }).catch((err) => {
+            }).catch((err) => { //If exist an error with the Image Microservice, return the products list without images
                 return products;
             });
     })();
@@ -125,20 +144,18 @@ const assignOffer = (OfferData) => {
             $set: {
                 offer: OfferData._id
             }
-        }).then(
-            (product) => {
-                return MessageHandler.messageGenerator(
-                    "Offer created successfully",
-                    true);
-            })
+        })
+        .then((product) => {
+            return MessageHandler.messageGenerator(
+                "Offer created successfully",
+                true);
+        })
         .catch((err) => {
             throw new Error(err);
         });
 };
 
-
 /*HELPERS*/
-
 
 const productBelongsToUser = (ProductData, property) => {
 

@@ -3,7 +3,7 @@ FROM node:latest
 #Set enviroment variables
 
 ENV appDir /var/www/app
-
+ENV DOCKER_ENV true
 # Create app directory
 RUN mkdir -p $appDir
 WORKDIR ${appDir}
