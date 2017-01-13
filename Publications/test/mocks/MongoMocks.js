@@ -13,7 +13,7 @@ const findOne = (publication) => {
 
     if (publication._id === PublicationMock._id) {
 
-        PublicationMock.save = () => PromiseHandler.resolver("culo");
+        PublicationMock.save = () => PromiseHandler.resolver("Something");
 
         return PromiseHandler.resolver(PublicationMock)
 
@@ -25,16 +25,12 @@ const findOne = (publication) => {
 
 const findOneNested = (data) => {
     let productData = data;
-    console.log('culos');
     return {
-        where: () => ({
-            select: () => ({
-                lean: () => {
-                    return (productData.productID === PublicationMock.productID &&
-                            PublicationMock.status === 1) ?
-                        PromiseHandler.resolver(PublicationMock) : PromiseHandler.resolver(null);
-                }
-            })
+        select: () => ({
+            lean: () => {
+                return (productData.productID === PublicationMock.productID) ?
+                    PromiseHandler.resolver(PublicationMock) : PromiseHandler.resolver(null);
+            }
         })
     }
 }
@@ -60,5 +56,5 @@ const findById = (id) => {
 
 
 export default {
-    findOne, DuplicatedError, findOneNested,findById
+    findOne, DuplicatedError, findOneNested, findById
 }

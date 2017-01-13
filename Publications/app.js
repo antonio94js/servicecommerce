@@ -7,6 +7,7 @@ import config from './config/config';
 const clientStatsD = new StatsD(); //Start a connection to DogStatsD Server
 
 Studio.use(Studio.plugin.retry({max:3}));
+Studio.use(Studio.plugin.timeout);
 Studio.use(Studio.plugin.timer(function(res){
 
     clientStatsD.timing(res.receiver, res.time); //Send metric to StastD Server

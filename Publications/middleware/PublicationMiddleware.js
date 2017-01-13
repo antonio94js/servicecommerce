@@ -8,6 +8,7 @@ const CheckPublicationOwnership = (Component, ...properties) => {
 
     for (let property in Component) {
         if (Component.hasOwnProperty(property) && typeof Component[property] === 'function') {
+            // Component[property].timeout(1);
             if (property === 'createPublication')
                 _checkProductOwnership(Component, property);
             else if (properties.includes(property))

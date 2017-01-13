@@ -23,16 +23,7 @@ const createNewComment = (commentData) => {
         return makeComment(commentData)
             .then((value) => {
 
-                // let sendPushNotification = NotificationComponent('sendPushNotification');
-                // let sendEmail = NotificationComponent('sendEmail');
-                // let notificationData = {
-                //     context: 'comment',
-                //     data: commentData
-                // }
-                //
-                // Promise.all([sendPushNotification(notificationData), sendEmail(notificationData)]);
-
-                sendNotification(commentData,'comment');
+                _sendNotification(commentData,'comment');
 
                 return MessageHandler.messageGenerator("Your question was made", true);
             })
@@ -70,16 +61,7 @@ const createNewResponse = (commentData) => {
 
             commentData.subjectCredential = parentComment.userID;
 
-            // let sendPushNotification = NotificationComponent('sendPushNotification');
-            // let sendEmail = NotificationComponent('sendEmail');
-            // let notificationData = {
-            //     context: 'response',
-            //     data: commentData
-            // }
-            //
-            // Promise.all([sendPushNotification(notificationData), sendEmail(notificationData)]);
-
-            sendNotification(commentData,'response');
+            _sendNotification(commentData,'response');
 
             return MessageHandler.messageGenerator("The response was made", true);
         }
@@ -104,7 +86,7 @@ const removeComment = (commentData) => {
         })
 }
 
-const sendNotification = (commentData,context) => {
+const _sendNotification = (commentData,context) => {
 
     const NotificationComponent = Studio.module('NotificationComponent');
 

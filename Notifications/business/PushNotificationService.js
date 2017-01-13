@@ -11,15 +11,11 @@ const UserComponent = Studio.module('UserComponent'); // Fetching User Microserv
 const sendPushNotification = (notificationData) => {
 
     co.wrap(function*() {
-        // const TokenFCM = yield getTokenFCM(NotificationData.userID);
         let {data, context} = notificationData
         let retrieveUserField = UserComponent('retrieveUserField');
-        let message = {};
+        // let message = {};
 
-        let userData = yield retrieveUserField({
-            credential: data.subjectCredential,
-            field: 'fcmTokens'
-        });
+        let userData = yield retrieveUserField({credential: data.subjectCredential,field: 'fcmTokens'});
 
         if (!userData) return;
 
@@ -27,21 +23,11 @@ const sendPushNotification = (notificationData) => {
 
             case 'comment':
 
-                // for (const token of userData.fcmTokens) {
-                //     message = _generateNotificationObject(token, 'New question in', data.publicationName);
-                //     fcm.send(message)
-                // }
-
                 _sendMessage(userData.fcmTokens,'New question in', data.publicationName)
 
-                // console.log(message);
                 break;
             case 'response':
 
-                // for (const token of userData.fcmTokens) {
-                //     message = _generateNotificationObject(token, 'New response in', data.publicationName);
-                //     fcm.send(message)
-                // }
                 _sendMessage(userData.fcmTokens,'New response in', data.publicationName)
 
                 break;
@@ -63,10 +49,12 @@ const sendPushNotification = (notificationData) => {
     })();
 };
 
+
+/*HELPERS*/
+
 const _sendMessage = (tokensList,title,body) => {
     for (const token of tokensList) {
-        message = _generateNotificationObject(token, title, body);
-        fcm.send(message)
+        fcm.send(_generateNotificationObject(token, title, body));
     }
 }
 
@@ -78,10 +66,6 @@ const _generateNotificationObject = (token, title, body) => ({
         icon: "e-commerce-icon-icon.png"
     }
 })
-
-
-
-/*HELPERS*/
 
 
 export default {

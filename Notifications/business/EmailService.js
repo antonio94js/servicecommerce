@@ -20,9 +20,11 @@ const sendEmail = (notificationData) => {
     let message = {};
     let subject = {};
 
-    let userData = yield retrieveUserField({credential:data.subjectcredential,field:'email'});
+    let userData = yield retrieveUserField({credential:data.subjectCredential,field:'email'});
+    // console.log(userData);
 
     if(!userData) return;
+
     switch (context) {
 
       case 'comment':

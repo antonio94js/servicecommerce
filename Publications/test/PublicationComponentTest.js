@@ -318,7 +318,7 @@ describe('#PublicationComponent', () => {
 
             checkPublicationStatus = PublicationComponent('checkPublicationStatus');
             productData = {
-                _id: "5ba01a4a-d140-4853-b927-254e9df58140"
+                productID: "5ba01a4a-d140-4853-b927-254e9df58140"
                     /*Here should be another fields, but they aren't required for this test*/
             }
 
@@ -336,13 +336,13 @@ describe('#PublicationComponent', () => {
                     expect(response).to.be.false;
                     done();
                 }).catch((err) => {
-                    // console.log(err);
+                    console.log(err);
                 });
 
         });
 
         it('Should be resolved with true when the publication status is 0', (done) => {
-
+            sandboxPublication.stub(Publication, "remove").returns(PromiseHandler.resolver(true));
             PublicationMock.status = 0;
             checkPublicationStatus(productData)
                 .then(function(response) {
@@ -356,13 +356,13 @@ describe('#PublicationComponent', () => {
 
         it('Should be resolved with true when the product does not belong to any publication', (done) => {
 
-            productData._id = "xxxxx-xxx-xx-xxxxx-xxxxxx"
+            productData.productID = "xxxxx-xxx-xx-xxxxx-xxxxxx"
             checkPublicationStatus(productData)
                 .then(function(response) {
                     expect(response).to.be.true;
                     done();
                 }).catch((err) => {
-                    // console.log(err);
+                    console.log(err);
                 });
 
         });
