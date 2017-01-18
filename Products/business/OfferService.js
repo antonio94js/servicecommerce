@@ -4,6 +4,7 @@ import Offer from '../models/offer';
 import ProductService from '../business/ProductService';
 import MessageHandler from '../handler/MessageHandler';
 import moment from 'moment';
+import common from '../utils/Common';
 
 const createNewOffer = (offerData) => {
     return co.wrap(function*() {
@@ -12,10 +13,10 @@ const createNewOffer = (offerData) => {
 
         if (!product) return MessageHandler.messageGenerator('Product not found', false);
 
-        if(isNaN(Date.parse(offerData.startDate)) || isNaN(Date.parse(offerData.endDate))){
-            throw MessageHandler.errorGenerator("Date not valid",400);
+        if(!common.dateValidate(offerData.startDate, offerData.endDate)){
+            throw MessageHandler.errorGenerator("Please check the Date fields format"  ,400);
         }
-        
+
         yield Offer.create(offerData);
 
         return yield ProductService.assignOffer(offerData);
@@ -35,8 +36,8 @@ const updateOffer = (offerData) => {
 
         if (!offer) return MessageHandler.messageGenerator('Offer not found', false);
 
-        if(isNaN(Date.parse(offerData.startDate)) || isNaN(Date.parse(offerData.endDate))){
-            throw MessageHandler.errorGenerator("Date not valid",400);
+        if(!common.dateValidate(offerData.startDate, offerData.endDate)){
+            throw MessageHandler.errorGenerator("Please check the Date fields format",400);
         }
 
         offer.startDate = offerData.startDate;

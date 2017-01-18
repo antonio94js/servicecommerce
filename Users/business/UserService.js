@@ -20,7 +20,7 @@ const createNewUser = (userData) => {
             return MessageHandler.messageGenerator("User created succefully", true); //resolve the promise
         })
         .catch((err) => {
-            // console.log(err);
+            console.log(err);
             if (err.code === 11000 || err.code === 11001)
                 throw MessageHandler.errorGenerator("The user already exist", 409); //reject the promise
 
