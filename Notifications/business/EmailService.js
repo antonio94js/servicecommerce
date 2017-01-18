@@ -9,9 +9,9 @@ const UserComponent = Studio.module('UserComponent'); // Fetching User Microserv
 
 const {SC_EMAIL} = process.env;
 
-const sendEmail = (notificationData) => {
+class EmailService {
 
-    co.wrap(function*() {
+    async sendEmail(notificationData){
 
         let sg = config.getSendgridInstance();
 
@@ -19,7 +19,7 @@ const sendEmail = (notificationData) => {
         let retrieveUserField = UserComponent('retrieveUserField');
         let message = {};
         let subject = {};
-        let userData = yield retrieveUserField({credential:data.subjectCredential,field:'email'});
+        let userData = await retrieveUserField({credential:data.subjectCredential,field:'email'});
 
         if(!userData) return;
 
@@ -56,8 +56,8 @@ const sendEmail = (notificationData) => {
         console.log(request);
         _sendMessage(request, sg);
 
-    })();
-};
+    }
+}
 
 /*HELPERS*/
 
@@ -100,6 +100,6 @@ const _generateBodyObject = (userData, subject, message) => ({
     template_id : "14fe1dfe-29a4-48b4-a92e-b336c1e07177",
 });
 
-export default {
-    sendEmail
-};
+const emailService = new EmailService();
+
+export default emailService;
