@@ -5,15 +5,21 @@ import mongodb from './config/db';
 import config from './config/config';
 
 const clientStatsD = new StatsD(); //Start a connection to DogStatsDServer
-
-Studio.use(Studio.plugin.retry({max: 3}));
+const beforeCall = (data) => {
+    console.log("llamandome");
+    console.log(data);
+}
+Studio.use(Studio.plugin.retry({max: 3,afterCall:function(options){
+            console.log("LLAMANDOME");
+        }}));
 // Studio.use(Studio.plugin.timeout);
 
 Studio.use(Studio.plugin.timer(function(res) {
 
     clientStatsD.timing(res.receiver, res.time); //Send metric to StastD Server
     clientStatsD.histogram(res.receiver, res.time); //Send metric to StastD Server
-    console.log('The receiver %s took %d ms to execute', res.receiver, res.time);
+    console.info('The receiver %s took %d ms to execute', res.receiver, res.time);
+
 }));
 
 clientStatsD.socket.on('error', (error) => {

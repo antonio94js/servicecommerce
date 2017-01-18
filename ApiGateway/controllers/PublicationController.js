@@ -59,7 +59,7 @@ const publicationDetail = (req, res, next) => {
     let getUserInfo = UserComponent('getUserInfo');
 
     let publicationData = {
-        '_id': req.params.publicationID
+        _id: req.params.publicationID
     }
     let publicationDetail = {};
 
@@ -68,8 +68,8 @@ const publicationDetail = (req, res, next) => {
 
             publicationDetail.publication = publication;
             let product = {
-                'productID': publication.productID,
-                'userID': publication.userID
+                productID: publication.productID,
+                userID: publication.userID
             }
 
             return getProductDetail(product)
@@ -79,7 +79,7 @@ const publicationDetail = (req, res, next) => {
             delete product.userID
             publicationDetail.publication.product = product;
             let user = {
-                'id': publicationDetail.publication.userID
+                id: publicationDetail.publication.userID
             };
 
             delete publicationDetail.publication.userID
@@ -87,7 +87,7 @@ const publicationDetail = (req, res, next) => {
             ProductService.setOffer(publicationDetail.publication.product)
 
             return getUserInfo(user)
-                .then((user) => {
+                .then(user => {
 
                     return user;
 
@@ -116,7 +116,7 @@ const publicationBatch = (req, res, next) => {
     let getUserBatch = UserComponent('getUserBatch');
 
     let publicationData = {
-        'queryText': req.query.queryText
+        queryText: req.query.queryText
     }
     let publicationsInfo = [];
 
