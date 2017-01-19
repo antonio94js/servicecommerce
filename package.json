@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "morgan": "^1.7.0",
+    "winston-papertrail": "^1.0.4"
+  }
+}
