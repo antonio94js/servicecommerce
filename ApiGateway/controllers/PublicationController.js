@@ -10,159 +10,123 @@ const UserComponent = Studio.module('UserComponent'); //Fetching the User Micros
 const CommentComponent = Studio.module('CommentComponent'); //Fetching the Comment Microservice
 
 
-const publicationCreate = (req, res, next) => {
+class PublicationController {
 
-    let createPublication = PublicationComponent('createPublication');
-    req.body.userID = req.user.id;
+    publicationCreate(req, res, next) {
+        const createPublication = PublicationComponent('createPublication');
+        req.body.userID = req.user.id;
 
-    createPublication(req.body)
-        .then((response) => {
-            res.status(201).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, req, next);
-        });
-
-};
-
-const publicationUpdate = (req, res, next) => {
-
-    let updatePublication = PublicationComponent('updatePublication');
-    req.body.userID = req.user.id;
-    updatePublication(req.body)
-        .then((response) => {
-            res.status(200).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, req, next);
-        });
-};
-
-const publicationDelete = (req, res, next) => {
-
-    let deletePublication = PublicationComponent('deletePublication');
-    req.body.userID = req.user.id;
-
-    deletePublication(req.body)
-        .then((response) => {
-            res.status(200).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, req, next);
-        });
-};
-
-const publicationDetail = (req, res, next) => {
-
-    let getDetail = PublicationComponent('getDetail');
-    let getProductDetail = ProductComponent('getProductDetail');
-    let getUserInfo = UserComponent('getUserInfo');
-
-    let publicationData = {
-        _id: req.params.publicationID
+        createPublication(req.body)
+            .then(response => res.status(201).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
     }
-    let publicationDetail = {};
 
-    getDetail(publicationData)
-        .then((publication) => {
+    publicationUpdate(req, res, next) {
+        const updatePublication = PublicationComponent('updatePublication');
+        req.body.userID = req.user.id;
 
-            publicationDetail.publication = publication;
-            let product = {
-                productID: publication.productID,
-                userID: publication.userID
-            }
-
-            return getProductDetail(product)
-        })
-        .then((product) => {
-
-            delete product.userID
-            publicationDetail.publication.product = product;
-            let user = {
-                id: publicationDetail.publication.userID
-            };
-
-            delete publicationDetail.publication.userID
-
-            ProductService.setOffer(publicationDetail.publication.product)
-
-            return getUserInfo(user)
-                .then(user => {
-
-                    return user;
-
-                }, (userError) => {
-
-                    return null;
-
-                })
-        })
-        .then((user) => {
-            publicationDetail.publication.user = user;
-            res.status(200).json(publicationDetail);
-        })
-        .catch((err) => {
-            // console.log(err);
-            ErrorHandler(err, res, req, next);
-        })
-
-};
-
-
-const publicationBatch = (req, res, next) => {
-
-    let getBatch = PublicationComponent('getBatch');
-    let getProductBatch = ProductComponent('getProductBatch');
-    let getUserBatch = UserComponent('getUserBatch');
-
-    let publicationData = {
-        queryText: req.query.queryText
+        updatePublication(req.body)
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
     }
-    let publicationsInfo = [];
 
-    getBatch(publicationData)
-        .then((publications) => {
+    publicationDelete(req, res, next) {
+        const deletePublication = PublicationComponent('deletePublication');
+        req.body.userID = req.user.id;
 
-            let productData = {
-                isPublicationBatch: true,
-                productGuids: _.map(publications, publication => publication.productID)
-            }
+        deletePublication(req.body)
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+    }
 
-            publicationsInfo.push(publications);
+    publicationDetail(req, res, next) {
+        const getDetail = PublicationComponent('getDetail');
+        const getProductDetail = ProductComponent('getProductDetail');
+        const getUserInfo = UserComponent('getUserInfo');
 
-            return getProductBatch(productData)
-        })
-        .then((products) => {
+        const publicationData = {
+            _id: req.params.publicationID
+        }
+        let publicationDetail = {};
 
-            let userData = {
-                userGuids: _.map(products, product => product.userID)
-            };
+        getDetail(publicationData)
+            .then((publication) => {
 
-            publicationsInfo.push(products);
+                publicationDetail.publication = publication;
+                let product = {
+                    productID: publication.productID,
+                    userID: publication.userID
+                }
 
-            return getUserBatch(userData).then((users) => {
-                console.log(users);
-                publicationsInfo.push(users)
-                return true;
-
-            }, (userError) => {
-                publicationsInfo.push(null)
-                return true;
-
+                return getProductDetail(product)
             })
-        })
-        .then(() => {
-            let publicationsBatch = PublicationService.joinPublicationData(...publicationsInfo);
-            res.status(200).json(publicationsBatch);
-        })
-        .catch((err) => {
+            .then((product) => {
 
-            ErrorHandler(err, res, req, next);
-        })
+                delete product.userID
+                publicationDetail.publication.product = product;
+                let user = {
+                    id: publicationDetail.publication.userID
+                };
 
-};
+                delete publicationDetail.publication.userID
 
+                ProductService.setOffer(publicationDetail.publication.product)
 
-export default {
-    publicationCreate, publicationDelete, publicationUpdate, publicationDetail, publicationBatch
+                return getUserInfo(user)
+                    .then(user => user)
+                    .catch(userError => null)
+            })
+            .then((user) => {
+                publicationDetail.publication.user = user;
+                res.status(200).json(publicationDetail);
+            })
+            .catch(err => ErrorHandler(err, res, req, next));
+
+    }
+
+    publicationBatch(req, res, next) {
+        const getBatch = PublicationComponent('getBatch');
+        const getProductBatch = ProductComponent('getProductBatch');
+        const getUserBatch = UserComponent('getUserBatch');
+
+        let publicationData = {
+            queryText: req.query.queryText
+        }
+        let publicationsInfo = [];
+
+        getBatch(publicationData)
+            .then((publications) => {
+
+                let productData = {
+                    isPublicationBatch: true,
+                    productGuids: _.map(publications, publication => publication.productID)
+                }
+
+                publicationsInfo.push(publications);
+
+                return getProductBatch(productData)
+            })
+            .then((products) => {
+
+                let userData = {
+                    userGuids: _.map(products, product => product.userID)
+                };
+
+                publicationsInfo.push(products);
+
+                return getUserBatch(userData)
+                    .then(users => publicationsInfo.push(users))
+                    .catch(userError => publicationsInfo.push(null))
+            })
+            .then(() => {
+                const publicationsBatch = PublicationService.joinPublicationData(...publicationsInfo);
+                res.status(200).json(publicationsBatch);
+            })
+            .catch(err => ErrorHandler(err, res, req, next));
+    }
+
 }
+
+const publicationController =  new PublicationController();
+
+export default publicationController;

@@ -3,49 +3,37 @@ import ErrorHandler from '../handler/ErrorHandler';
 
 const CommentComponent = Studio.module('CommentComponent'); //Fetching the Comment Microservice
 
-const publicationCreateResponse = (req, res, next) => {
+class CommentController {
 
-    let createCommentResponse = CommentComponent('createCommentResponse');
-    req.body.userID = req.user.id;
+    publicationCreateResponse(req, res, next) {
+        const createCommentResponse = CommentComponent('createCommentResponse');
+        req.body.userID = req.user.id;
 
-    createCommentResponse(req.body)
-        .then((response) => {
-            res.status(200).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, req, next);
-        })
+        createCommentResponse(req.body)
+            .then(response => res.status(201).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+    }
 
-};
+    publicationCreateComment(req, res, next) {
+        const createComment = CommentComponent('createComment');
+        req.body.userID = req.user.id;
 
-const publicationCreateComment = (req, res, next) => {
+        createComment(req.body)
+            .then(response => res.status(201).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+    }
 
-    let createComment = CommentComponent('createComment');
-    req.body.userID = req.user.id;
+    publicationDeleteComment(req, res, next) {
+        const deleteComment = CommentComponent('deleteComment');
+        req.body.userID = req.user.id;
 
-    createComment(req.body)
-        .then((response) => {
-            res.status(200).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res,req, next);
-        })
+        deleteComment(req.body)
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+    }
+}
 
-};
 
-const publicationDeleteComment = (req, res, next) => {
+const commentController = new CommentController();
 
-    let deleteComment = CommentComponent('deleteComment');
-    req.body.userID = req.user.id;
-
-    deleteComment(req.body)
-        .then((response) => {
-            res.status(200).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, req, next);
-        })
-
-};
-
-export default {publicationCreateResponse, publicationCreateComment,publicationDeleteComment}
+export default commentController

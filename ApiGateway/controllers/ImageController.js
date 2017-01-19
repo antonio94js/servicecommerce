@@ -6,71 +6,55 @@ const ImageComponent = Studio.module('ImageComponent'); //Fetching the Image Mic
 class ImageController {
 
     saveImage(req, res, next) {
-        let putObjectImage = ImageComponent('putObjectImage');
-        let imageData = {
-            'ObjectType': req.params.ObjectType,
-            'ID': req.params.ID,
-            'userID': req.user.id,
-            'file': req.body.file
+        const putObjectImage = ImageComponent('putObjectImage');
+        const imageData = {
+            ObjectType: req.params.ObjectType,
+            ID: req.params.ID,
+            userID: req.user.id,
+            file: req.body.file
         };
 
         putObjectImage(imageData)
-            .then((response) => {
-                res.status(200).json(response);
-            })
-            .catch((err) => {
-                ErrorHandler(err, res, req, next);
-            });
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
     }
 
     getImage(req, res, next) {
-        let getObjectImage = ImageComponent('getObjectImage');
-        let imageData = {
-            'ObjectType': req.params.ObjectType,
-            'ID': req.params.ID,
-            'userID': req.user.id,
+        const getObjectImage = ImageComponent('getObjectImage');
+        const imageData = {
+            ObjectType: req.params.ObjectType,
+            ID: req.params.ID,
+            userID: req.user.id,
         };
 
         getObjectImage(imageData)
-            .then((response) => {
-                res.status(200).json(response);
-            })
-            .catch((err) => {
-                ErrorHandler(err, res, req, next);
-            });
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
     }
 
     getBatchImage(req, res, next) {
-        let getBatchImage = ImageComponent('getBatchImage');
-        let imageData = {
-            'ObjectType': req.params.ObjectType,
-            'guids':req.body.guids
+        const getBatchImage = ImageComponent('getBatchImage');
+        const imageData = {
+            ObjectType: req.params.ObjectType,
+            guids: req.body.guids
         };
 
         getBatchImage(imageData)
-            .then((response) => {
-                res.status(200).json(response);
-            })
-            .catch((err) => {
-                ErrorHandler(err, res, req, next);
-            });
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
     }
 
-    deleteImage(req, res, next){
-        let deleteObjectImage = ImageComponent('deleteObjectImage');
-        let imageData = {
-            'ObjectType': req.params.ObjectType,
-            'ID': req.params.ID,
-            'userID': req.user.id
+    deleteImage(req, res, next) {
+        const deleteObjectImage = ImageComponent('deleteObjectImage');
+        const imageData = {
+            ObjectType: req.params.ObjectType,
+            ID: req.params.ID,
+            userID: req.user.id
         };
 
         deleteObjectImage(imageData)
-            .then((response) => {
-                res.status(200).json(response);
-            })
-            .catch((err) => {
-                ErrorHandler(err, res, req, next);
-            });
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
     }
 }
 
