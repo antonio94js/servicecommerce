@@ -30,7 +30,6 @@ class UserService {
 
                 throw MessageHandler.errorGenerator("Something wrong happened creating user", 500); //reject the promise
             });
-
     }
 
      userSignOn(userData) {
