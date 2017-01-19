@@ -4,7 +4,6 @@ import Wishlist from '../models/Whislist';
 import Common from '../utils/Common';
 import WishlistService from '../business/WishlistService';
 
-
 const UserComponent = Studio.module('UserComponent');
 
 class WishlistComponent {

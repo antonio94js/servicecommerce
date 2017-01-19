@@ -1,7 +1,6 @@
 import Studio from 'studio';
 import bcrypt from 'bcryptjs';
 import Promise from 'bluebird';
-import co from 'co';
 import _ from 'lodash';
 import MessageHandler from '../handler/MessageHandler';
 import User from '../models/User';
@@ -32,41 +31,26 @@ class UserService {
             });
     }
 
-     userSignOn(userData) {
+    async userSignOn(userData) {
 
-        return User
-            .findOne({
-                $or: [{
-                    email: userData.account
-                }, {
-                    username: userData.account
-                }]
-            })
-            .then((user) => {
-                if (!user || !bcrypt.compareSync(userData.password, user.password))
-                    return MessageHandler.messageGenerator("The credentials are invalid, please check it out",
-                        false);
+        const user = await User.findOne({$or: [{email: userData.account}, {username: userData.account}]});
 
-                let userID = {
-                    id: user._id,
-                    username: user.username
-                };
+        if (!user || !bcrypt.compareSync(userData.password, user.password))
+            return MessageHandler.messageGenerator("The credentials are invalid, please check it out",false);
 
-                return {
-                    success: true,
-                    token: jwtHandler.generateAccessToken(userID),
-                    refreshToken: jwtHandler.generateRefreshToken()
-                }
+        const userID = {
+            id: user._id,
+            username: user.username
+        };
 
-                // return MessageHandler.messageGenerator(jwtHandler.generateAccessToken(userID), true, 'token');
-
-            })
-            .catch((err) => {
-                throw new Error(err);
-            });
+        return {
+            success: true,
+            token: jwtHandler.generateAccessToken(userID),
+            refreshToken: jwtHandler.generateRefreshToken()
+        }
     }
 
-    updateUser(userData, setWish)  {
+    updateUser(userData, setWish) {
 
         return new Promise((resolve, reject) => {
 
@@ -151,19 +135,13 @@ class UserService {
 
             })
             .catch((err) => {
-                console.log(err);
                 return MessageHandler.messageGenerator(user, true, 'data');
             })
 
     }
 
-    getUserDetail(userData) {
-
-        return User
-            .findById(userData.id)
-            .lean(true)
-            .select('address username -_id'); //By the moment We will only select the user's address and username
-
+    async getUserDetail(userData) {
+        return await User.findById(userData.id).lean(true).select('address username -_id'); //By the moment We will only select the user's address and username
     }
 
     retrieveUserField(userData) {
@@ -199,7 +177,9 @@ class UserService {
 
 const _isValidateField = (data, setWish) => {
 
-    let {field, value} = data;
+    let {
+        field, value
+    } = data;
 
     if (setWish) { // to set new Wishlist into a user model
         data.fieldName = () => field;
@@ -230,31 +210,34 @@ const _proccessTokenArray = (action, fcmList, userData) => {
 
     switch (action) {
 
-        case 'add': {
-            if (fcmList.includes(userData.fcmToken)) {
+        case 'add':
+            {
+                if (fcmList.includes(userData.fcmToken)) {
+                    return fcmList;
+                }
+
+                fcmList.push(userData.fcmToken);
                 return fcmList;
             }
 
-            fcmList.push(userData.fcmToken);
-            return fcmList;
-        }
 
 
-
-        case 'update': {
-            for (let fcmToken of fcmList) {
-                if (userData.previousToken === fcmToken) {
-                    fcmToken = userData.fcmToken;
+        case 'update':
+            {
+                for (let fcmToken of fcmList) {
+                    if (userData.previousToken === fcmToken) {
+                        fcmToken = userData.fcmToken;
+                    }
                 }
+                return fcmList
             }
-            return fcmList
-        }
 
 
 
-        case 'delete': {
-            return _.filter(fcmList, fcmToken => fcmToken !== userData.fcmToken);
-        }
+        case 'delete':
+            {
+                return _.filter(fcmList, fcmToken => fcmToken !== userData.fcmToken);
+            }
 
         default:
             return false;

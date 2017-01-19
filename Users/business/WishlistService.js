@@ -1,24 +1,25 @@
-
 import co from 'co';
 import _ from 'lodash';
 import MessageHandler from '../handler/MessageHandler';
 import Wishlist from '../models/Whislist';
 
-const updateUserWishlist = (action, publicationData) => {
+class WishlistService {
 
-    return co.wrap(function*() {
-        let wishlist = yield Wishlist.findOne({userID: publicationData.userID});
+    async updateUserWishlist(action, publicationData) {
+
+        let wishlist = await Wishlist.findOne({userID: publicationData.userID});
 
         if (wishlist) {
 
-            let result = _proccessPublicationsArray(action, wishlist.publications, publicationData.data)
+            const result = _proccessPublicationsArray(action, wishlist.publications, publicationData.data)
 
             if (_.isArray(result)) {
                 wishlist.publications = result;
 
-                yield Wishlist.findByIdAndUpdate(wishlist._id, {$set: {'publications': wishlist.publications}});
+                await Wishlist.findByIdAndUpdate(wishlist._id, {$set: {'publications': wishlist.publications}});
 
-                let message = action === 'add' ? "Publication added successfully" : "Publication deleted successfully"
+                let message = action === 'add' ? "Publication added successfully" :
+                    "Publication deleted successfully"
 
                 return MessageHandler.messageGenerator(message, true);
 
@@ -30,8 +31,7 @@ const updateUserWishlist = (action, publicationData) => {
         } else {
             return MessageHandler.messageGenerator("The Wishlist does not exist", false);
         }
-    })();
-
+    }
 }
 
 const _proccessPublicationsArray = (action, publicationsList, item) => {
@@ -60,4 +60,6 @@ const _proccessPublicationsArray = (action, publicationsList, item) => {
     }
 };
 
-export default {updateUserWishlist}
+const wishlistService = new WishlistService();
+
+export default wishlistService
