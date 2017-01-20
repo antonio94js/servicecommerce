@@ -53,7 +53,7 @@ class EmailService {
             path: '/v3/mail/send',
             body: _generateBodyObject(userData, subject, message),
         });
-        console.log(request);
+        // console.log(request);
         _sendMessage(request, sg);
 
     }
@@ -62,7 +62,7 @@ class EmailService {
 /*HELPERS*/
 
 const _sendMessage = (request, sg) => {
-    console.log('sendmessage');
+    // console.log('sendmessage');
     //SEND EMAIL THROUGH SENDGRID INSTANCE sg
     sg.API(request)
     .then(response => {

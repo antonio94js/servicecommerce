@@ -20,4 +20,7 @@ class NotificationComponent {
 
 const notificationComponent = Studio.serviceClass(NotificationComponent);
 
+// notificationComponent.sendPushNotification.timeout(3000);
+// notificationComponent.sendEmail.timeout(3000);
+
 ErrorLoggerHanlder.setErrorLogger(notificationComponent);
