@@ -118,13 +118,15 @@ class PublicationService {
             .lean(true)
             .then((publication) => {
                 if (publication) {
-                    
-                    if(publication.status === 1) return false;
 
-                    this.removePublication({_id:publication._id});
+                    if (publication.status === 1) return false;
+
+                    this.removePublication({
+                        _id: publication._id
+                    });
                 }
 
-                    return true;
+                return true;
             });
     }
 
@@ -142,14 +144,12 @@ class PublicationService {
         }
     }
 
-    publicationBelongsToUser(publicationData, property) {
-        return Publication.findById(publicationData._id)
+    async publicationBelongsToUser(publicationData, property) {
+        return await Publication
+            .findById(publicationData._id)
             .where({
                 userID: publicationData.userID
             })
-            .then((product) => {
-                return product;
-            });
     }
 
 }

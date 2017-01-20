@@ -1,5 +1,6 @@
 import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
+import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
 import User from '../models/User';
 // import jwtHandler from '../handler/jwtHandler';
 // import bcrypt from 'bcryptjs';
@@ -7,9 +8,6 @@ import UserService from '../business/UserService';
 
 
 // const WishlistComponent = Studio.module('WishlistComponent');
-
-
-
 
 class UserComponent {
 
@@ -59,6 +57,8 @@ class UserComponent {
 
 }
 //return a new instance from your Microservices component
-let UserObject = Studio.serviceClass(UserComponent);
+const UserObject = Studio.serviceClass(UserComponent);
+
+ErrorLoggerHanlder.setErrorLogger(UserObject)
 
 // UserObject.getUserProfile.timeout(3000);

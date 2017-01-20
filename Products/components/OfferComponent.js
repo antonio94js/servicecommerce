@@ -1,5 +1,6 @@
 import Studio from 'studio';
 import OfferService from '../business/OfferService';
+import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
 
 class OfferComponent {
 
@@ -18,4 +19,5 @@ class OfferComponent {
 }
 
 //return a new instance from your Microservices component
-var serviceObj = Studio.serviceClass(OfferComponent);
+const offerComponent = Studio.serviceClass(OfferComponent);
+ErrorLoggerHanlder.setErrorLogger(offerComponent)

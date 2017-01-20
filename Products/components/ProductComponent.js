@@ -1,6 +1,7 @@
 import Studio from 'studio';
 import ProductService from '../business/ProductService';
-import Check from '../middleware/ProductMiddleware';
+import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
+import ProductMiddleware from '../middleware/ProductMiddleware';
 
 class ProductComponent {
 
@@ -34,6 +35,6 @@ class ProductComponent {
 }
 
 //return a new instance from your Microservices component
-var serviceObj = Studio.serviceClass(ProductComponent);
-
-Check.CheckProductOwnership(serviceObj, 'updateProduct', 'deleteProduct', 'getProductDetail', 'checkOwnership');
+const productComponent = Studio.serviceClass(ProductComponent);
+ErrorLoggerHanlder.setErrorLogger(productComponent)
+ProductMiddleware.CheckProductOwnership(productComponent, 'updateProduct', 'deleteProduct', 'getProductDetail', 'checkOwnership');

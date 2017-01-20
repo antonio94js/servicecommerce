@@ -169,7 +169,7 @@ describe('#PublicationComponent', () => {
             publicationData.publication.save = () => PromiseHandler.rejecter(MethodsMocks.UnhandledError);
             updatePublication(publicationData)
                 .then(function(response) {
-                    console.log(response);
+                    // console.log(response);
                 }).catch((err) => {
                     expect(err).to.not.be.undefined;
                     expect(MessageHandler.messageGenerator).to.have.been.called;

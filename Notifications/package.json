@@ -24,7 +24,9 @@
     "request-promise": "^4.1.1",
     "sendgrid": "^4.7.1",
     "studio": "^0.13.3",
-    "studio-cluster": "^0.3.5"
+    "studio-cluster": "^0.3.5",
+    "winston": "^2.3.0",
+    "winston-papertrail": "^1.0.4"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",

@@ -35,9 +35,9 @@ app.use("/api", router);
 app.use(function(req, res, next) {
 
     res.status(404).send({
-        Message: "No HTTP resource was found that matches the request URI",
-        Endpoint: req.url,
-        Method: req.method
+        message: "No HTTP resource was found that matches the request URI",
+        endpoint: req.url,
+        method: req.method
     });
 });
 

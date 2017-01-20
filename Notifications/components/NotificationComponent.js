@@ -1,4 +1,5 @@
 import Studio from 'studio';
+import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
 import NotificationService from '../business/PushNotificationService';
 import EmailService from '../business/EmailService';
 
@@ -17,4 +18,6 @@ class NotificationComponent {
 
 }
 
-Studio.serviceClass(NotificationComponent);
+const notificationComponent = Studio.serviceClass(NotificationComponent);
+
+ErrorLoggerHanlder.setErrorLogger(notificationComponent);
