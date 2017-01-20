@@ -66,7 +66,7 @@ class ProductService {
                                     "Something wrong happened deleting product", 500));
                             });
                     } else
-                        resolve(MessageHandler.messageGenerator("Product can not be deleted", false));
+                        resolve(MessageHandler.messageGenerator("Product can not be deleted, because is currently in an active publication", false));
                 })
                 .catch((err) => {
                     resolve(MessageHandler.messageGenerator(
@@ -99,7 +99,7 @@ class ProductService {
 
         /*Check if the operation is for publications batch or just simple listing*/
         if(productData.isPublicationBatch) {
-            products = await Product.find({_id:{$in:productData.productGuids}}).lean(true).select('-date -__v').populate('offer');
+            products = await Product.find({_id:{$in:productData.productGuids}}).lean(true).select('-date -__v -productDetail -quantity -name').populate('offer');
         } else {
             products = await Product.find({userID: productData.userID}).lean(true).select('-__v').populate('offer');
         }

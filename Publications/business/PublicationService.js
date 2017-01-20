@@ -87,19 +87,19 @@ class PublicationService {
                     $search: Common.sanitizeQuery(publicationData.queryText)
                 }
             })
-            .populate({
-                'path': 'comments',
-                'select': 'body date response',
-                'populate': {
-                    'path': 'response',
-                    'select': 'body  date',
-                }
-
-            })
+            // .populate({
+            //     'path': 'comments',
+            //     'select': 'body date response',
+            //     'populate': {
+            //         'path': 'response',
+            //         'select': 'body  date',
+            //     }
+            //
+            // })
             .where({
                 'status': 1 //change to 1
             })
-            .select('-__v')
+            .select('-__v -comments -tags -publicationDetail')
             .lean(true)
             .then((publications) => {
 
