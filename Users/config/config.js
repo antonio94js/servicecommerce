@@ -10,10 +10,10 @@ dotenv.config({
     silent: true
 });
 
-let { MONGO_DB, MONGO_USER, MONGO_PASS } = process.env;
-let { MONGO_HOST_LOCAL,MONGO_HOST_REMOTE, MONGO_PORT_LOCAL,MONGO_PORT_REMOTE} = process.env;
-let { REDIS_HOST, REDIS_PORT, REDIS_PASS } = process.env;
-let { PRIVATE_TOKEN_KEY } = process.env;
+const { MONGO_DB, MONGO_USER, MONGO_PASS } = process.env;
+const { MONGO_HOST_LOCAL,MONGO_HOST_REMOTE, MONGO_PORT_LOCAL,MONGO_PORT_REMOTE} = process.env;
+const { REDIS_HOST, REDIS_PORT, REDIS_PASS } = process.env;
+const { PRIVATE_TOKEN_KEY } = process.env;
 
 
 const getMongoString = () => process.env.NETWORK_ENV === 'local' && !process.env.DOCKER_ENV ? _getMongoLocalString() : _getMongoRemoteString();

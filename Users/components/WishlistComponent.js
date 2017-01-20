@@ -1,9 +1,9 @@
 import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
+import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
 import Wishlist from '../models/Whislist';
 import Common from '../utils/Common';
 import WishlistService from '../business/WishlistService';
-
 
 const UserComponent = Studio.module('UserComponent');
 
@@ -36,4 +36,6 @@ class WishlistComponent {
     }
 }
 
-Studio.serviceClass(WishlistComponent);
+const wishlistComponent = Studio.serviceClass(WishlistComponent);
+
+ErrorLoggerHanlder.setErrorLogger(wishlistComponent);

@@ -4,7 +4,7 @@ import config from './config';
 
 const clientStatsD = new StatsD(); //Start a connection to DogStatsDServer
 
-Studio.use(Studio.plugin.retry({max:3}));
+Studio.use(Studio.plugin.retry());
 Studio.use(Studio.plugin.timeout);
 
 Studio.use(Studio.plugin.timer(function(res){

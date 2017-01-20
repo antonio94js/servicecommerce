@@ -1,85 +1,55 @@
 import Studio from 'studio';
 import ErrorHandler from '../handler/ErrorHandler';
 
-
 const UserComponent = Studio.module('UserComponent'); //Fetching the User Microservice
-const PushNotificationComponent =  Studio.module('PushNotificationComponent');
+const PushNotificationComponent = Studio.module('PushNotificationComponent');
 
+class UserController {
 
-const userLogin = (req, res, next) => {
+    userLogin(req, res, next) {
+        const loginUser = UserComponent('loginUser');
 
-    let loginUser = UserComponent('loginUser');
+        loginUser(req.body)
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+    }
 
-    loginUser(req.body)
-        .then((response) => {
-            res.status(200).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, req, next);
-        })
+    userCreate(req, res, next) {
+        const createUser = UserComponent('createUser');
 
+        createUser(req.body)
+            .then(response => res.status(201).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+    };
 
-};
+    userUpdateProfile(req, res, next) {
+        const updateUserProfile = UserComponent('updateUserProfile');
+        req.body.id = req.user.id;
 
-const userCreate = (req, res, next) => {
+        updateUserProfile(req.body)
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+    }
 
-    let createUser = UserComponent('createUser');
+    userFcmTokenManagement(req, res, next) {
+        const fcmTokenManagement = UserComponent('fcmTokenManagement');
+        req.body.id = req.user.id;
 
-    createUser(req.body)
-        .then((response) => {
-            res.status(201).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, req, next);
-        })
+        fcmTokenManagement(req.body)
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+    }
 
-};
+    getUserProfile(req, res, next) {
+        const getUserProfile = UserComponent('getUserProfile');
 
-const userUpdateProfile = (req, res, next) => {
+        getUserProfile(req.user)
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
 
-    let updateUserProfile = UserComponent('updateUserProfile');
-    let sendPushNotification = PushNotificationComponent('sendPushNotification');
-    req.body.id = req.user.id;
+    }
+}
 
-    updateUserProfile(req.body)
-        .then((response) => {
+const userController = new UserController();
 
-            res.status(200).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, req, next);
-        })
-
-};
-
-const userFcmTokenManagement = (req, res, next) => {
-
-    let fcmTokenManagement = UserComponent('fcmTokenManagement');
-    // let sendPushNotification = PushNotificationComponent('sendPushNotification');
-    req.body.id = req.user.id;
-
-    fcmTokenManagement(req.body)
-        .then((response) => {
-            res.status(200).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, req, next);
-        })
-
-};
-
-const getUserProfile = (req, res, next) => {
-
-    let getUserProfile = UserComponent('getUserProfile');
-
-    getUserProfile(req.user)
-        .then((response) => {
-            res.status(200).json(response);
-        })
-        .catch((err) => {
-            ErrorHandler(err, res, req, next);
-        })
-
-};
-
-export default {userLogin,userCreate,userUpdateProfile,getUserProfile,userFcmTokenManagement}
+export default userController

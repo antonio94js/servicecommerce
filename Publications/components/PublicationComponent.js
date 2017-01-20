@@ -1,4 +1,5 @@
 import Studio from 'studio';
+import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
 import PublicationService from '../business/PublicationService';
 import PublicationMiddleware from '../middleware/PublicationMiddleware';
 
@@ -46,9 +47,9 @@ class PublicationComponent {
 
 }
 
-let publication = Studio.serviceClass(PublicationComponent);
+const publication = Studio.serviceClass(PublicationComponent);
 
 if (process.env.NODE_ENV !== 'test') {
-    PublicationMiddleware.CheckPublicationOwnership(publication, 'deletePublication', 'updatePublication',
-        'createPublication', 'CheckOwnership');
+    PublicationMiddleware.CheckPublicationOwnership(publication, 'deletePublication', 'updatePublication','createPublication', 'CheckOwnership');
+    ErrorLoggerHanlder.setErrorLogger(publication)
 }

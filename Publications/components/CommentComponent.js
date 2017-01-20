@@ -1,5 +1,6 @@
 import Studio from 'studio';
 import CommentService from '../business/CommentService';
+import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
 
 
 class CommentComponent {
@@ -23,4 +24,9 @@ class CommentComponent {
 
 }
 
-Studio.serviceClass(CommentComponent);
+const commentService = Studio.serviceClass(CommentComponent);
+
+
+if (process.env.NODE_ENV !== 'test') {
+    ErrorLoggerHanlder.setErrorLogger(commentService)
+}

@@ -5,33 +5,30 @@ import ProductService from '../business/ProductService';
 import MessageHandler from '../handler/MessageHandler';
 import moment from 'moment';
 
-const createNewOffer = (offerData) => {
-    return co.wrap(function*() {
+class OfferService {
 
-        let product = yield ProductService.productBelongsToUser(offerData);
+    async createNewOffer(offerData) {
+
+        let product = await ProductService.productBelongsToUser(offerData);
 
         if (!product) return MessageHandler.messageGenerator('Product not found', false);
 
         if(isNaN(Date.parse(offerData.startDate)) || isNaN(Date.parse(offerData.endDate))){
             throw MessageHandler.errorGenerator("Date not valid",400);
         }
-        
-        yield Offer.create(offerData);
 
-        return yield ProductService.assignOffer(offerData);
+        await Offer.create(offerData);
 
-    })();
+        return await ProductService.assignOffer(offerData);
+    }
 
-};
+    async updateOffer(offerData) {
 
-const updateOffer = (offerData) => {
-    return co.wrap(function*() {
-
-        let product = yield ProductService.productBelongsToUser(offerData);
+        let product = await ProductService.productBelongsToUser(offerData);
 
         if (!product) return MessageHandler.messageGenerator('Product not found', false);
 
-        let offer = yield Offer.findById(offerData._id);
+        let offer = await Offer.findById(offerData._id);
 
         if (!offer) return MessageHandler.messageGenerator('Offer not found', false);
 
@@ -51,13 +48,11 @@ const updateOffer = (offerData) => {
                 throw MessageHandler.errorGenerator("Something wrong happened updating offer",
                     500);
             });
-    })();
-};
+    }
 
-const removeOffer = (offerData) => {
-    return co.wrap(function*() {
+    async removeOffer(offerData) {
 
-        let product = yield ProductService.productBelongsToUser(offerData);
+        let product = await ProductService.productBelongsToUser(offerData);
 
         if (!(product && product.offer)) return MessageHandler.messageGenerator("Offer not found in yours", false);
 
@@ -70,10 +65,9 @@ const removeOffer = (offerData) => {
             }).catch((err) => {
                 throw MessageHandler.errorGenerator("Something wrong happened deleting offer", 500);
             });
-    })();
-};
+    }
+}
 
+const offerService = new OfferService();
 
-export default {
-    createNewOffer, updateOffer, removeOffer
-};
+export default offerService;

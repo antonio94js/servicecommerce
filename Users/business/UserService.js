@@ -1,114 +1,101 @@
 import Studio from 'studio';
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs';
 import Promise from 'bluebird';
-import co from 'co';
 import _ from 'lodash';
 import MessageHandler from '../handler/MessageHandler';
 import User from '../models/User';
 import jwtHandler from '../handler/jwtHandler';
 
+class UserService {
 
+    createNewUser(userData) {
 
-const createNewUser = (userData) => {
+        const WishlistComponent = Studio.module('WishlistComponent'); // Fetching the Whislist Microservice
 
-    const WishlistComponent = Studio.module('WishlistComponent'); // Fetching the Whislist Microservice
+        return User //return a promise
+            .create(userData)
+            .then((user) => {
+                WishlistComponent('createWishlist')(user.id); // Create a new Wishlist Ascinchronously
+                return MessageHandler.messageGenerator("User created succefully", true); //resolve the promise
+            })
+            .catch((err) => {
+                // console.log(err);
+                if (err.code === 11000 || err.code === 11001)
+                    throw MessageHandler.errorGenerator("The user already exist", 409); //reject the promise
 
-    return User //return a promise
-        .create(userData)
-        .then((user) => {
-            WishlistComponent('createWishlist')(user.id); // Create a new Wishlist Ascinchronously
-            return MessageHandler.messageGenerator("User created succefully", true); //resolve the promise
-        })
-        .catch((err) => {
-            // console.log(err);
-            if (err.code === 11000 || err.code === 11001)
-                throw MessageHandler.errorGenerator("The user already exist", 409); //reject the promise
+                if (err.name === 'ValidationError')
+                    throw MessageHandler.errorGenerator("Some fields on the request are invalid or missing",
+                        400);
 
-            if (err.name === 'ValidationError')
-                throw MessageHandler.errorGenerator("Some fields on the request are invalid or missing", 400);
+                throw MessageHandler.errorGenerator("Something wrong happened creating user", 500); //reject the promise
+            });
+    }
 
-            throw MessageHandler.errorGenerator("Something wrong happened creating user", 500); //reject the promise
-        });
+    async userSignOn(userData) {
 
-}
+        const user = await User.findOne({$or: [{email: userData.account}, {username: userData.account}]});
 
-const userSignOn = (userData) => {
+        if (!user || !bcrypt.compareSync(userData.password, user.password))
+            return MessageHandler.messageGenerator("The credentials are invalid, please check it out",false);
 
-    return User
-        .findOne({
-            $or: [{
-                email: userData.account
-            }, {
-                username: userData.account
-            }]
-        })
-        .then((user) => {
-            if (!user || !bcrypt.compareSync(userData.password, user.password))
-                return MessageHandler.messageGenerator("The credentials are invalid, please check it out",
-                    false);
+        const userID = {
+            id: user._id,
+            username: user.username
+        };
 
-            let userID = {
-                "id": user._id,
-                "username": user.username
-            };
+        return {
+            success: true,
+            token: jwtHandler.generateAccessToken(userID),
+            refreshToken: jwtHandler.generateRefreshToken()
+        }
+    }
 
-            return {
-                success: true,
-                token : jwtHandler.generateAccessToken(userID),
-                refreshToken : jwtHandler.generateRefreshToken()
+    updateUser(userData, setWish) {
+
+        return new Promise((resolve, reject) => {
+
+            if (_isValidateField(userData, setWish)) {
+
+                User
+                    .findByIdAndUpdate(userData.id, {
+                        $set: {
+                            [userData.fieldName()]: userData.value
+                        }
+                    }).then((value) => {
+                        resolve(MessageHandler.messageGenerator("User Updated successfully", true));
+                    })
+                    .catch((err) => {
+                        if (err.code === 11000 || err.code === 11001) {
+                            resolve(MessageHandler.messageGenerator("This email is already in use",
+                                false));
+                            // return;
+                        } else {
+                            reject(new Error("Error updating the user profile"));
+                        }
+                        //reject the promise
+                    })
+
+            } else {
+                reject(MessageHandler.errorGenerator("The field or the value for this action is invalid",
+                    400));
             }
 
-            // return MessageHandler.messageGenerator(jwtHandler.generateAccessToken(userID), true, 'token');
-
         })
-        .catch((err) => {
-            throw new Error(err);
-        });
-}
 
-const updateUser = (userData, setWish) => {
+    }
 
-    return new Promise((resolve, reject) => {
 
-        if (_isValidateField(userData, setWish)) {
+    async fcmTokenManagement(userData) {
 
-            User
-                .findByIdAndUpdate(userData.id, {
-                    $set: {
-                        [userData.fieldName()]: userData.value
-                    }
-                }).then((value) => {
-                    resolve(MessageHandler.messageGenerator("User Updated successfully", true));
-                })
-                .catch((err) => {
-                    if (err.code === 11000 || err.code === 11001) {
-                        resolve(MessageHandler.messageGenerator("This email is already in use", false));
-                        // return;
-                    } else {
-                        reject(new Error("Error updating the user profile"));
-                    }
-                    //reject the promise
-                })
+        // return co.wrap(function*() {
+        let user = await User.findById(userData.id);
 
-        } else {
-            reject(MessageHandler.errorGenerator("The field or the value for this action is invalid", 400));
-        }
-
-    })
-
-}
-
-const fcmTokenManagement = (userData) => {
-
-    return co.wrap(function*() {
-        let user = yield User.findById(userData.id);
-
-        let result = _proccessTokenArray(userData.action, user.fcmTokens, userData)
+        let result = _proccessTokenArray(userData.action, user.fcmTokens, userData);
 
         if (_.isArray(result)) {
             user.fcmTokens = result;
 
-            yield User.findByIdAndUpdate(userData.id, {
+            await User.findByIdAndUpdate(userData.id, {
                 $set: {
                     'fcmTokens': user.fcmTokens
                 }
@@ -122,18 +109,14 @@ const fcmTokenManagement = (userData) => {
             throw MessageHandler.errorGenerator("Invalid action for the FCM Token", 400);
         }
 
-    })();
+        // })();
 
-}
+    }
 
+    async getUserAccount(userData) {
 
-const getUserAccount = (userData) => {
-
-    const ImageComponent = Studio.module('ImageComponent');
-
-    return co.wrap(function*() {
-        let user = yield User.findById(userData.id).lean(true).populate('wishlist').select(
-            '-password -_id -__v');
+        const ImageComponent = Studio.module('ImageComponent');
+        let user = await User.findById(userData.id).lean(true).populate('wishlist').select('-password -_id -__v');
 
         if (!user) {
             return MessageHandler.messageGenerator('The user does not exist', false);
@@ -152,51 +135,43 @@ const getUserAccount = (userData) => {
 
             })
             .catch((err) => {
-                console.log(err);
                 return MessageHandler.messageGenerator(user, true, 'data');
             })
-    })();
 
+    }
+
+    async getUserDetail(userData) {
+        return await User.findById(userData.id).lean(true).select('address username -_id'); //By the moment We will only select the user's address and username
+    }
+
+    retrieveUserField(userData) {
+
+        return User
+            .findOne({
+                $or: [{
+                    _id: userData.credential
+                }, {
+                    username: userData.credential
+                }]
+            })
+            .lean(true)
+            .select(`-_id ${userData.field}`); //By the moment We will only select the user's address and username
+
+    }
+
+    getUserBatch(userData) {
+        // console.log(userData);
+        return User
+            .find({
+                _id: {
+                    $in: userData.userGuids
+                }
+            })
+            .lean(true)
+            .select('address username'); //By the moment We will only select the user's address and username
+
+    }
 }
-
-
-const getUserDetail = (userData) => {
-
-    return User
-        .findById(userData.id)
-        .lean(true)
-        .select('address username -_id'); //By the moment We will only select the user's address and username
-
-}
-
-const retrieveUserField = (userData) => {
-
-    return User
-        .findOne({
-            $or: [{
-                _id: userData.credential
-            }, {
-                username: userData.credential
-            }]
-        })
-        .lean(true)
-        .select(`-_id ${userData.field}`); //By the moment We will only select the user's address and username
-
-}
-
-const getUserBatch = (userData) => {
-    console.log(userData);
-    return User
-        .find({
-            _id: {
-                $in: userData.userGuids
-            }
-        })
-        .lean(true)
-        .select('address username'); //By the moment We will only select the user's address and username
-
-}
-
 
 /*Helpers*/
 
@@ -236,31 +211,40 @@ const _proccessTokenArray = (action, fcmList, userData) => {
     switch (action) {
 
         case 'add':
+            {
+                if (fcmList.includes(userData.fcmToken)) {
+                    return fcmList;
+                }
 
-            if (fcmList.includes(userData.fcmToken)) {
+                fcmList.push(userData.fcmToken);
                 return fcmList;
             }
 
-            fcmList.push(userData.fcmToken);
-            return fcmList;
+
 
         case 'update':
-
-            for (let fcmToken of fcmList) {
-                if (userData.previousToken === fcmToken) {
-                    fcmToken = userData.fcmToken;
+            {
+                for (let fcmToken of fcmList) {
+                    if (userData.previousToken === fcmToken) {
+                        fcmToken = userData.fcmToken;
+                    }
                 }
+                return fcmList
             }
-            return fcmList
+
+
 
         case 'delete':
-            return _.filter(fcmList, fcmToken => fcmToken !== userData.fcmToken);
+            {
+                return _.filter(fcmList, fcmToken => fcmToken !== userData.fcmToken);
+            }
+
         default:
             return false;
 
     }
 };
 
-export default {
-    createNewUser, userSignOn, updateUser, getUserAccount, getUserDetail, getUserBatch, fcmTokenManagement, retrieveUserField
-}
+const userService = new UserService();
+
+export default userService;

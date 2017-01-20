@@ -6,57 +6,55 @@ import {
     fcm
 }
 from '../config/config';
+
 const UserComponent = Studio.module('UserComponent'); // Fetching User Microservice
 
-const sendPushNotification = (notificationData) => {
+class PushNotificationService {
 
-    co.wrap(function*() {
-        let {data, context} = notificationData
-        let retrieveUserField = UserComponent('retrieveUserField');
-        // let message = {};
+    async sendPushNotification(notificationData) {
 
-        let userData = yield retrieveUserField({credential: data.subjectCredential,field: 'fcmTokens'});
+        // co.wrap(function*() {
+        const retrieveUserField = UserComponent('retrieveUserField');
+
+        let {
+            data, context
+        } = notificationData
+        let userData = await retrieveUserField({
+            credential: data.subjectCredential,
+            field: 'fcmTokens'
+        });
 
         if (!userData) return;
 
         switch (context) {
 
             case 'comment':
-
-                _sendMessage(userData.fcmTokens,'New question in', data.publicationName)
-
-                break;
+                {
+                    this.sendMessage(userData.fcmTokens, 'New question in', data.publicationName)
+                    break;
+                }
             case 'response':
+                {
+                    this.sendMessage(userData.fcmTokens, 'New response in', data.publicationName)
+                    break;
+                }
 
-                _sendMessage(userData.fcmTokens,'New response in', data.publicationName)
-
-                break;
-                // case 'newOrder':
-                //
-                //     break;
-                // case 'cancelOrder':
-                //
-                //     break;
-                // case 'endOrder':
-                //
-                //     break;
             default:
                 break;
+        }
+    }
+
+    sendMessage(tokensList, title, body) {
+        for (const token of tokensList) {
+            if (token) {
+                fcm.send(_generateNotificationObject(token, title, body)).then(() => {}).catch((err) => {})
+            }
 
         }
-
-
-    })();
-};
-
-
-/*HELPERS*/
-
-const _sendMessage = (tokensList,title,body) => {
-    for (const token of tokensList) {
-        fcm.send(_generateNotificationObject(token, title, body));
     }
 }
+
+/*HELPERS*/
 
 const _generateNotificationObject = (token, title, body) => ({
     to: token, // required fill with device token or topics
@@ -67,7 +65,5 @@ const _generateNotificationObject = (token, title, body) => ({
     }
 })
 
-
-export default {
-    sendPushNotification
-};
+const pushNotificationService = new PushNotificationService();
+export default pushNotificationService
