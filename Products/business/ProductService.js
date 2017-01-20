@@ -126,20 +126,8 @@ class ProductService {
             });
     }
 
-    assignOffer(OfferData) {
-        return Product.findByIdAndUpdate(OfferData.productID, {
-                $set: {
-                    offer: OfferData._id
-                }
-            })
-            .then((product) => {
-                return MessageHandler.messageGenerator(
-                    "Offer created successfully",
-                    true);
-            })
-            .catch((err) => {
-                throw new Error(err);
-            });
+    async assignOffer(OfferData) {
+        await Product.findByIdAndUpdate(OfferData.productID, {$set: {offer: OfferData._id}});
     }
 
     productBelongsToUser (productData, property) {
