@@ -2,7 +2,10 @@ import Studio from 'studio';
 import co from 'co';
 import MessageHandler from '../handler/MessageHandler';
 import Common from '../utils/Common';
-import {fcm} from '../config/config';
+import {
+    fcm
+}
+from '../config/config';
 
 const UserComponent = Studio.module('UserComponent'); // Fetching User Microservice
 
@@ -13,18 +16,25 @@ class PushNotificationService {
         // co.wrap(function*() {
         const retrieveUserField = UserComponent('retrieveUserField');
 
-        let {data, context} = notificationData
-        let userData = await retrieveUserField({credential: data.subjectCredential,field: 'fcmTokens'});
+        let {
+            data, context
+        } = notificationData
+        let userData = await retrieveUserField({
+            credential: data.subjectCredential,
+            field: 'fcmTokens'
+        });
 
         if (!userData) return;
 
         switch (context) {
 
-            case 'comment': {
+            case 'comment':
+                {
                     this.sendMessage(userData.fcmTokens, 'New question in', data.publicationName)
                     break;
                 }
-            case 'response': {
+            case 'response':
+                {
                     this.sendMessage(userData.fcmTokens, 'New response in', data.publicationName)
                     break;
                 }
@@ -36,7 +46,10 @@ class PushNotificationService {
 
     sendMessage(tokensList, title, body) {
         for (const token of tokensList) {
-            fcm.send(_generateNotificationObject(token, title, body));
+            if (token) {
+                fcm.send(_generateNotificationObject(token, title, body)).then(() => {}).catch((err) => {})
+            }
+
         }
     }
 }
