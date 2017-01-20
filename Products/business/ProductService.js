@@ -127,7 +127,7 @@ class ProductService {
     }
 
     async assignOffer(OfferData) {
-        await Product.findByIdAndUpdate(OfferData.productID, {$set: {offer: OfferData._id}});
+        return await Product.findByIdAndUpdate(OfferData.productID, {$set: {offer: OfferData._id}});
     }
 
     productBelongsToUser (productData, property) {
