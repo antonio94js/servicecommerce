@@ -101,7 +101,7 @@ class PublicationController {
                     isPublicationBatch: true,
                     productGuids: _.map(publications, publication => publication.productID)
                 }
-
+                // console.log(publications);
                 publicationsInfo.push(publications);
 
                 return getProductBatch(productData)
@@ -119,6 +119,7 @@ class PublicationController {
                     .catch(userError => publicationsInfo.push(null))
             })
             .then(() => {
+                // console.log(publicationsInfo);
                 const publicationsBatch = PublicationService.joinPublicationData(...publicationsInfo);
                 res.status(200).json(publicationsBatch);
             })
