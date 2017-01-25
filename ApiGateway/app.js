@@ -32,6 +32,13 @@ app.use(morgan('dev'));
 
 app.use("/api", router);
 
+app.post("/mercadopago/test",function(req, res, next){
+    console.log(req.query);
+    console.log(req.body);
+    console.log(req.method);
+    res.sendStatus(200);
+});
+
 app.use(function(req, res, next) {
 
     res.status(404).send({
