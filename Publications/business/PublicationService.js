@@ -7,7 +7,14 @@ import Common from '../utils/Common';
 
 class PublicationService {
 
-    createNewPublication(publicationData) {
+    async createNewPublication(publicationData) {
+
+        const isPaymentMethodAllowed = await checkPaymentMethod(publicationData);
+
+        if (!isPaymentMethodAllowed) return MessageHandler.messageGenerator(
+            `You have not activated - ${publicationData.paymentMethod} - selling method`, false,
+            'PaymentMethodException')
+
         return Publication //return a promise
             .create(publicationData)
             .then((publication) => {
@@ -87,24 +94,15 @@ class PublicationService {
                     $search: Common.sanitizeQuery(publicationData.queryText)
                 }
             })
-            // .populate({
-            //     'path': 'comments',
-            //     'select': 'body date response',
-            //     'populate': {
-            //         'path': 'response',
-            //         'select': 'body  date',
-            //     }
-            //
-            // })
             .where({
-                'status': 1 //change to 1
+                'status': 1
             })
             .select('-__v -comments -tags -publicationDetail')
             .lean(true)
             .then((publications) => {
 
                 if (publications.length === 0) throw MessageHandler.errorGenerator(
-                    "There aren't publications for what you are looking for", 200); //reject the promise
+                    "There aren't publications for what you are looking for", 200);
 
                 return publications;
             });
@@ -161,6 +159,12 @@ const setData = (publicationData, publication) => {
 
     publication.publicationDetail = !publicationDetail ? publication.publicationDetail : publicationDetail;
     publication.name = !name ? publication.name : name;
+};
+
+const checkPaymentMethod = ({paymentMethod, userID}) => {
+    const UserComponent = Studio.module('UserComponent');
+    const checkSellerPaymentMethods = UserComponent('checkSellerPaymentMethods');
+    return checkSellerPaymentMethods(paymentMethod, userID)
 };
 
 const publicationService = new PublicationService();

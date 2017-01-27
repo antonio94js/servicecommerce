@@ -28,5 +28,6 @@ const commentService = Studio.serviceClass(CommentComponent);
 
 
 if (process.env.NODE_ENV !== 'test') {
-    ErrorLoggerHanlder.setErrorLogger(commentService)
+    ErrorLoggerHanlder.setErrorLogger(commentService);
+    //code
 }

@@ -52,6 +52,13 @@ const UserSchema = new Schema({
         type: String,
         ref: 'Wishlist'
 
+    },
+    sellerProfile: {
+        type: String,
+        ref: 'SellerProfile',
+        "default": null
+
+
     }
 });
 

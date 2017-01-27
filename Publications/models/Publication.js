@@ -32,6 +32,11 @@ const PublicationSchema = new Schema({
         type: String,
         required: true,
     },
+    paymentMethod: {
+        type: String,
+        enum: ['automatic', 'manual', 'both'],
+        required: true,
+    },
     name: {
         type: String,
         required: true,
