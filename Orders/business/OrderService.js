@@ -7,6 +7,11 @@ import Promise from 'bluebird';
 
 class OrderService {
 
+    endPaymentProcess(PreferenceID) {
+        //recibir preferencia id que esta guardada en la orden para mandar notificacion de pago realizado al comprador y vendedor
+
+    }
+
 
 }
 

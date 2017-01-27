@@ -87,7 +87,7 @@ const _sendNotification = (commentData, context) => {
         .catch((err) => {
             // console.log(err);
             console.log("HAY UN ERROR - PUBLICANDO EN LA COLA");
-            RabbitQueueHandler.pushMessage(notificationData);
+            RabbitQueueHandler.pushMessage(notificationData, 'notification_queue');
         })
 }
 

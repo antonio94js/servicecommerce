@@ -5,6 +5,10 @@ import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
 
 class OrderComponent {
 
+    *endOrderProcedure(PreferenceID) {
+        return yield OrderService.endPaymentProcess(PreferenceID);
+    }
+
 }
 
 const orderService = Studio.serviceClass(OrderComponent);

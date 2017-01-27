@@ -20,6 +20,10 @@ const OrderSchema = new Schema({
     publicationID: {
         type: String,
         required: true,
+    },
+    preferenceID: {
+        type: String,
+        required: true,
     }
 });
 

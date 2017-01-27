@@ -32,13 +32,6 @@ app.use(morgan('dev'));
 
 app.use("/api", router);
 
-app.post("/mercadopago/test",function(req, res, next){
-    console.log(req.query);
-    console.log(req.body);
-    console.log(req.method);
-    res.sendStatus(200);
-});
-
 app.use(function(req, res, next) {
 
     res.status(404).send({
@@ -53,7 +46,6 @@ app.use(function(err, req, res, next) {
     res.status(500).json(err);
 });
 
-
 const server = app.listen(port,'0.0.0.0', (error) => {
     if (error)
         throw error;
@@ -61,7 +53,6 @@ const server = app.listen(port,'0.0.0.0', (error) => {
         console.info(`sever running on port ${port}`);
 
 });
-
 
 /*Graceful Shutdown our Http Server*/
 
