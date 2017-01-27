@@ -38,6 +38,15 @@ class OrderController {
         }
         res.sendStatus(200);
     }
+
+    pay(req, res, next){
+        const createOrder = OrderComponent('createOrder');
+        req.body.userID = req.user.id;
+
+        createOrder(req.body)
+            .then(response => res.status(201).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+    }
 }
 
 //HELPERS
