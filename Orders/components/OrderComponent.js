@@ -9,11 +9,15 @@ class OrderComponent {
         return yield OrderService.endPaymentProcess(PreferenceID);
     }
 
+    *createOrder(orderData) {
+        return yield OrderService.createOrder(orderData);
+    }
+
 }
 
-const orderService = Studio.serviceClass(OrderComponent);
+const orderComponent= Studio.serviceClass(OrderComponent);
 
 
 if (process.env.NODE_ENV !== 'test') {
-    ErrorLoggerHanlder.setErrorLogger(orderService)
+    ErrorLoggerHanlder.setErrorLogger(orderComponent)
 }

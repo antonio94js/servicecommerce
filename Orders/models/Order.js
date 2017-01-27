@@ -8,22 +8,49 @@ const OrderSchema = new Schema({
         required: true,
         unique: true,
     },
-    date: {
+    timeCreated: {
         type: Date,
         default: Date.now(),
     },
+    timePayed: {
+        type: Date,
+    },
     status: {
-        type: Number,
-        enum: [0, 1],
-        default: 1,
+        type: string,
+        enum: ['inprocess', 'processed','cancelled','finished'],
+        default: 'inprocess',
     },
-    publicationID: {
+    sellerID: {
         type: String,
         required: true,
     },
-    preferenceID: {
+    buyerID: {
         type: String,
         required: true,
+    },
+    productQuantity: {
+        type: number,
+        required: true,
+    },
+    totalPrice: {
+        type: number,
+        required: true,
+    },
+    unitPrice: {
+        type: number,
+        required: true,
+    },
+    publicationName: {
+        type: String,
+        required: true,
+    },
+    paymentOrderType: {
+        type: String,
+        enum: ['automatic', 'manual'],
+        required: true,
+    },
+    paymentLink: {
+        type: String,
     }
 });
 

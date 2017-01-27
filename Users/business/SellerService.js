@@ -9,8 +9,8 @@ import {getMercadoPagoToken} from '../config/mercadopago';
 
 class SellerService {
 
-    async getSellerToken(collectorID) {
-        const seller = await SellerProfile.findOne({collectorID});
+    async getSellerToken(sellerID) {
+        const seller = await SellerProfile.findOne({$or:[{collectorID:sellerID},{userID:sellerID}]});
         // console.log(seller);
         if (seller) {
             return seller.mercadoPagoToken;
