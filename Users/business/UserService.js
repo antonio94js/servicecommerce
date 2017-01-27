@@ -4,7 +4,10 @@ import Promise from 'bluebird';
 import _ from 'lodash';
 import MessageHandler from '../handler/MessageHandler';
 import User from '../models/User';
+import SellerProfile from '../models/SellerProfile';
 import jwtHandler from '../handler/jwtHandler';
+// import Common from '../utils/Common';
+// import request from 'request-promise';
 
 class UserService {
 
@@ -33,14 +36,37 @@ class UserService {
 
     async userSignOn(userData) {
 
-        const user = await User.findOne({$or: [{email: userData.account}, {username: userData.account}]});
+        const user = await User.findOne({
+            $or: [{
+                email: userData.account
+            }, {
+                username: userData.account
+            }]
+        }).populate({
+            'path': 'sellerProfile',
+            'select': '-_id -__v -userID',
+            'populate': {
+                'path': 'bankAccounts',
+                'select': '-_id -__v',
+            }
+
+        });
 
         if (!user || !bcrypt.compareSync(userData.password, user.password))
-            return MessageHandler.messageGenerator("The credentials are invalid, please check it out",false);
+            return MessageHandler.messageGenerator("The credentials are invalid, please check it out", false);
 
+        let sellerProfile = null;
+        if(user.sellerProfile && user.sellerProfile.status === 'active') {
+            sellerProfile = {};
+            sellerProfile.hasMercadoPago = !!user.sellerProfile.collectorID;
+            sellerProfile.hasBankAccount = user.sellerProfile.bankAccounts.length > 0;
+
+        }
+        console.log(sellerProfile);
         const userID = {
             id: user._id,
-            username: user.username
+            username: user.username,
+            sellerProfile
         };
 
         return {
@@ -50,11 +76,11 @@ class UserService {
         }
     }
 
-    updateUser(userData, setWish) {
+    updateUser(userData, isClosedField) {
 
         return new Promise((resolve, reject) => {
 
-            if (_isValidateField(userData, setWish)) {
+            if (_isValidateField(userData, isClosedField)) {
 
                 User
                     .findByIdAndUpdate(userData.id, {
@@ -116,7 +142,15 @@ class UserService {
     async getUserAccount(userData) {
 
         const ImageComponent = Studio.module('ImageComponent');
-        let user = await User.findById(userData.id).lean(true).populate('wishlist').select('-password -_id -__v');
+        let user = await User.findById(userData.id).lean(true).populate('wishlist').populate({
+            'path': 'sellerProfile',
+            'select': '-_id -__v -userID',
+            'populate': {
+                'path': 'bankAccounts',
+                'select': '-_id -__v',
+            }
+
+        }).select('-password -_id -__v');
 
         if (!user) {
             return MessageHandler.messageGenerator('The user does not exist', false);
@@ -175,18 +209,18 @@ class UserService {
 
 /*Helpers*/
 
-const _isValidateField = (data, setWish) => {
+const _isValidateField = (data, isClosedField) => {
 
     let {
         field, value
     } = data;
 
-    if (setWish) { // to set new Wishlist into a user model
+    if (isClosedField) { // to set new Wishlist into a user model
         data.fieldName = () => field;
         return true;
     }
 
-    if (['email', 'password', 'address', 'fcmToken'].includes(field)) {
+    if (['email', 'password', 'address'].includes(field)) {
         if (!value || value === '') {
             return false;
         }
@@ -198,18 +232,13 @@ const _isValidateField = (data, setWish) => {
         data.fieldName = () => field;
 
         return true;
-
     }
 
     return false;
-
-    // return true;
 };
 
 const _proccessTokenArray = (action, fcmList, userData) => {
-
     switch (action) {
-
         case 'add':
             {
                 if (fcmList.includes(userData.fcmToken)) {
@@ -219,9 +248,6 @@ const _proccessTokenArray = (action, fcmList, userData) => {
                 fcmList.push(userData.fcmToken);
                 return fcmList;
             }
-
-
-
         case 'update':
             {
                 for (let fcmToken of fcmList) {
@@ -231,9 +257,6 @@ const _proccessTokenArray = (action, fcmList, userData) => {
                 }
                 return fcmList
             }
-
-
-
         case 'delete':
             {
                 return _.filter(fcmList, fcmToken => fcmToken !== userData.fcmToken);
@@ -241,7 +264,6 @@ const _proccessTokenArray = (action, fcmList, userData) => {
 
         default:
             return false;
-
     }
 };
 

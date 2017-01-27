@@ -14,6 +14,8 @@ const UserComponent = Studio.module('UserComponent');
 
 router
     .post('/account', UserController.userCreate)
+    .post('/account/seller', isAuthenticated, UserController.userCreateSeller)
+    .put('/account/seller',isAuthenticated, UserController.userUpdateSeller)
     .put('/account', isAuthenticated, UserController.userUpdateProfile)
     .post('/account/fcm/management', isAuthenticated, UserController.userFcmTokenManagement)
     .get('/account', isAuthenticated, UserController.getUserProfile);

@@ -40,6 +40,30 @@ class UserController {
             .catch(err => ErrorHandler(err, res, req, next));
     }
 
+    userCreateSeller(req, res, next) {
+        const setSellerProfile = UserComponent('setSellerProfile');
+        req.body.userID = req.user.id;
+
+        setSellerProfile(req.body)
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+
+    }
+
+    userUpdateSeller(req, res, next) {
+        try {
+            const updateSellerProfile = UserComponent('updateSellerProfile');
+            req.body.userID = req.user.id;
+
+            updateSellerProfile(req.body)
+                .then(response => res.status(200).json(response))
+                .catch(err => ErrorHandler(err, res, req, next));
+        } catch (e) {
+            console.log(e);
+        }
+
+    }
+
     getUserProfile(req, res, next) {
         const getUserProfile = UserComponent('getUserProfile');
 
