@@ -16,7 +16,7 @@ const OrderSchema = new Schema({
         type: Date,
     },
     status: {
-        type: string,
+        type: String,
         enum: ['inprocess', 'processed','cancelled','finished'],
         default: 'inprocess',
     },
@@ -29,15 +29,15 @@ const OrderSchema = new Schema({
         required: true,
     },
     productQuantity: {
-        type: number,
+        type: Number,
         required: true,
     },
     totalPrice: {
-        type: number,
+        type: Number,
         required: true,
     },
     unitPrice: {
-        type: number,
+        type: Number,
         required: true,
     },
     publicationName: {

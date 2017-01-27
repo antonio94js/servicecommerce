@@ -40,12 +40,17 @@ class OrderController {
     }
 
     pay(req, res, next){
-        const createOrder = OrderComponent('createOrder');
-        req.body.userID = req.user.id;
+        try {
+            const createOrder = OrderComponent('createOrder');
+            // req.body.userID = req.user.id;
 
-        createOrder(req.body)
-            .then(response => res.status(201).json(response))
-            .catch(err => ErrorHandler(err, res, req, next));
+            createOrder(req.body)
+                .then(response => res.status(201).json(response))
+                .catch(err => ErrorHandler(err, res, req, next));
+        } catch (e) {
+            console.log(e);
+        }
+
     }
 }
 

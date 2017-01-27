@@ -12,8 +12,7 @@ from '../config/mercadopago';
 class OrderService {
 
     endPaymentProcess(PreferenceID) {
-        //recibir preferencia id que esta guardada en la orden para mandar notificacion de pago realizado al comprador y vendedor
-
+        return PreferenceID
     }
 
     async createOrder(orderData) {
@@ -24,14 +23,16 @@ class OrderService {
                 {
 
                     const preferenModel = {...preference};
-                    preferenModel.title = orderData.publicationName;
-                    preferenModel.quantity = orderData.productQuantity;
-                    preferenModel.unit_price = orderData.unitPrice;
-
+                    preferenModel.items[0].title = orderData.publicationName;
+                    preferenModel.items[0].quantity = orderData.productQuantity;
+                    preferenModel.items[0].unit_price = orderData.unitPrice;
+                    // console.log(preferenModel);
+                    // console.log(preference);
                     const sellerToken = await getSellerToken(orderData.sellerID);
+                    // console.log(sellerToken);
                     const mp = getMercadopagoInstance(sellerToken);
-                    const {reponse} = await mp.createPreference(preferenModel);
-                    orderData._id = reponse.id;
+                    const {response} = await mp.createPreference(preferenModel);
+                    orderData._id = response.id;
                     orderData.paymentLink = response.init_point;
 
                     return await Order.create(orderData);

@@ -7,7 +7,7 @@ import centralLogger from './config/central-logger';
 
 const clientStatsD = new StatsD(); //Start a connection to DogStatsD Server
 
-Studio.use(Studio.plugin.retry({max:3}));
+Studio.use(Studio.plugin.retry({max:2}));
 Studio.use(Studio.plugin.timeout);
 Studio.use(Studio.plugin.timer(function(res){
 
@@ -27,11 +27,11 @@ mongodb.connecToMongo();
 
 // PRUEBAS CON MERCADOPAGO
 
-var MP = require ("mercadopago");
+// var MP = require ("mercadopago");
 
 // var mp = new MP ("8431829414853032", "eEqj4BMuXNm4fkPqh2JKd7uLJJ4Eoxnb");
 
-var mp = new MP ('APP_USR-8431829414853032-012105-0b5ae5df27d6a3d3f492055b09fa4c5c__LC_LD__-230101543');
+// var mp = new MP ('APP_USR-8431829414853032-012105-0b5ae5df27d6a3d3f492055b09fa4c5c__LC_LD__-230101543');
 
 // mp.getAccessToken(function (err, accessToken){
 // 	console.log (err);
@@ -74,16 +74,16 @@ var mp = new MP ('APP_USR-8431829414853032-012105-0b5ae5df27d6a3d3f492055b09fa4c
    //          console.log (error);
    //      });
 
-   var getPayment = mp.get ("/v1/payments/2553795716");
-
-   getPayment.then (
-       function (paymentData) {
-           console.log(paymentData);
-       },
-       function (error) {
-           console.log(error);
-         //   return false;
-       });
+   // var getPayment = mp.get ("/v1/payments/2553795716");
+   //
+   // getPayment.then (
+   //     function (paymentData) {
+   //         console.log(paymentData);
+   //     },
+   //     function (error) {
+   //         console.log(error);
+   //       //   return false;
+   //     });
 
 // mp.createPreference (preference).then((response) => {
 //    console.log(response);
