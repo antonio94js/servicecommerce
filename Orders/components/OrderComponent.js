@@ -5,8 +5,8 @@ import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
 
 class OrderComponent {
 
-    *endOrderProcedure(PreferenceID) {
-        return yield OrderService.endPaymentProcess(PreferenceID);
+    *changeOrderStatus(orderData) {
+        return yield OrderService.changeOrderStatus(orderData);
     }
 
     *createOrder(orderData) {
