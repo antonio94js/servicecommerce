@@ -1,6 +1,7 @@
 import Studio from 'studio';
 import bcrypt from 'bcryptjs';
 import Promise from 'bluebird';
+import moment from 'moment';
 import _ from 'lodash';
 import MessageHandler from '../handler/MessageHandler';
 import User from '../models/User';
@@ -22,7 +23,7 @@ class UserService {
                 return MessageHandler.messageGenerator("User created succefully", true); //resolve the promise
             })
             .catch((err) => {
-                // console.log(err);
+
                 if (err.code === 11000 || err.code === 11001)
                     throw MessageHandler.errorGenerator("The user already exist", 409); //reject the promise
 
@@ -55,26 +56,55 @@ class UserService {
         if (!user || !bcrypt.compareSync(userData.password, user.password))
             return MessageHandler.messageGenerator("The credentials are invalid, please check it out", false);
 
-        let sellerProfile = null;
-        if(user.sellerProfile && user.sellerProfile.status === 'active') {
-            sellerProfile = {};
-            sellerProfile.hasMercadoPago = !!user.sellerProfile.collectorID;
-            sellerProfile.hasBankAccount = user.sellerProfile.bankAccounts.length > 0;
 
-        }
-        console.log(sellerProfile);
-        const userID = {
+        const refreshToken = jwtHandler.generateRefreshToken();
+        const tokenData = generateUserAccessToken(user, refreshToken);
+        const refreshTokens = user.refreshTokens.concat(refreshToken);
+
+        const userInfo = {
             id: user._id,
-            username: user.username,
-            sellerProfile
+            field: 'refreshTokens',
+            value: refreshTokens
         };
 
-        return {
-            success: true,
-            token: jwtHandler.generateAccessToken(userID),
-            refreshToken: jwtHandler.generateRefreshToken()
-        }
+        this.updateUser(userInfo,true);
+
+        return tokenData;
+
     }
+
+    async refreshUserToken(userData) {
+        const user = await User.findOne({username:userData.username});
+
+        if (!user) throw MessageHandler.errorGenerator('Invalid credentials',401);
+
+        if (user.refreshTokens.includes(userData.refreshToken)) {
+            const tokenData = generateUserAccessToken(user);
+            delete tokenData.refreshToken;
+            return tokenData;
+        }
+
+        throw MessageHandler.errorGenerator('Invalid refresh token',401);
+    }
+
+    async deleteRefreshToken(userData) {
+        const user = await User.findOne({username:userData.username});
+
+        if (!user) return null;
+
+        const refreshTokens = _.filter(user.refreshTokens,token => token !== userData.refreshToken)
+
+        const userInfo = {
+            id: user._id,
+            field: 'refreshTokens',
+            value: refreshTokens
+        };
+
+        this.updateUser(userInfo,true);
+
+        return true;
+    }
+
 
     updateUser(userData, isClosedField) {
 
@@ -82,8 +112,7 @@ class UserService {
 
             if (_isValidateField(userData, isClosedField)) {
 
-                User
-                    .findByIdAndUpdate(userData.id, {
+                User.findByIdAndUpdate(userData.id, {
                         $set: {
                             [userData.fieldName()]: userData.value
                         }
@@ -116,7 +145,7 @@ class UserService {
         // return co.wrap(function*() {
         let user = await User.findById(userData.id);
 
-        let result = _proccessTokenArray(userData.action, user.fcmTokens, userData);
+        const result = _proccessTokenArray(userData.action, user.fcmTokens, userData);
 
         if (_.isArray(result)) {
             user.fcmTokens = result;
@@ -150,13 +179,13 @@ class UserService {
                 'select': '-_id -__v',
             }
 
-        }).select('-password -_id -__v');
+        }).select('-password -_id -__v -refreshTokens');
 
         if (!user) {
             return MessageHandler.messageGenerator('The user does not exist', false);
         }
 
-        let getObjectImage = ImageComponent('getObjectImage'); // Fetching a service from ImageMicroservice
+        const getObjectImage = ImageComponent('getObjectImage'); // Fetching a service from ImageMicroservice
 
         return getObjectImage({
                 ObjectType: 'user',
@@ -194,7 +223,6 @@ class UserService {
     }
 
     getUserBatch(userData) {
-        // console.log(userData);
         return User
             .find({
                 _id: {
@@ -211,9 +239,7 @@ class UserService {
 
 const _isValidateField = (data, isClosedField) => {
 
-    let {
-        field, value
-    } = data;
+    let {field, value} = data;
 
     if (isClosedField) { // to set new Wishlist into a user model
         data.fieldName = () => field;
@@ -266,6 +292,30 @@ const _proccessTokenArray = (action, fcmList, userData) => {
             return false;
     }
 };
+
+const generateUserAccessToken = (user, refreshToken = null) => {
+    let sellerProfile = null;
+
+    if(user.sellerProfile && user.sellerProfile.status === 'active') {
+        sellerProfile = {};
+        sellerProfile.hasMercadoPago = !!user.sellerProfile.collectorID;
+        sellerProfile.hasBankAccount = user.sellerProfile.bankAccounts.length > 0;
+
+    }
+    // console.log(sellerProfile);
+    const userPayload = {
+        id: user._id,
+        username: user.username,
+        sellerProfile
+    };
+
+    return {
+        success: true,
+        token: jwtHandler.generateAccessToken(userPayload),
+        expirationTime: moment(new Date()).add(1,'days').utcOffset('-0400').format('DD/MM/YYYY hh:mm:ss'),
+        refreshToken
+    }
+}
 
 const userService = new UserService();
 

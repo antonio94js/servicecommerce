@@ -48,6 +48,10 @@ const UserSchema = new Schema({
         type: Array,
         "default": []
     },
+    refreshTokens: {
+        type: Array,
+        "default": []
+    },
     wishlist: {
         type: String,
         ref: 'Wishlist'

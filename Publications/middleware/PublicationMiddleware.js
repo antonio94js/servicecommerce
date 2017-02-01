@@ -52,7 +52,7 @@ const _checkUserOwnership = (Component, property) => {
                     data.publication = publication;
                     return true;
                 }
-                throw MessageHandler.errorGenerator('This publication do not belong to you', 400);
+                throw MessageHandler.errorGenerator("This publication doesn't belong to you", 400);
             });
     });
 };

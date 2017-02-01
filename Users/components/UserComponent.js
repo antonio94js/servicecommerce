@@ -14,14 +14,14 @@ class UserComponent {
         return yield UserService.createNewUser(userData);
     }
 
-    * loginUser(userData) {
-        return yield UserService.userSignOn(userData);
-    }
+    // * loginUser(userData) {
+    //     return yield UserService.userSignOn(userData);
+    // }
 
     //You just can update only one value (email, password or address), otherwise this service(method) will return 400
 
-    * updateUserProfile(userData, setWish) {
-        return yield UserService.updateUser(userData, setWish);
+    * updateUserProfile(userData, isClosedField) {
+        return yield UserService.updateUser(userData, isClosedField);
     }
 
     * setSellerProfile(userData) {
@@ -51,6 +51,10 @@ class UserComponent {
     * retrieveUserField(userData) {
         return yield UserService.retrieveUserField(userData);
     }
+
+    // * refreshUserToken(userData) {
+    //     return yield UserService.refreshUserToken(userData);
+    // }
 
     * fcmTokenManagement (userData, setWish) {
         return yield UserService.fcmTokenManagement(userData);

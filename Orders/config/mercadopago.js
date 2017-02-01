@@ -17,7 +17,7 @@ export const preference = {
       "failure" : "http://localhost/failure"
    },
    "auto_return" : 'all',
-   "notification_url" : 'http://186.90.94.116:3000/mercadopago/test'
+   "notification_url" : 'http://190.200.99.250:3000/api/order/notification'
 
 };
 

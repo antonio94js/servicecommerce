@@ -24,6 +24,16 @@ class PublicationComponent {
         return yield PublicationService.makeNewComment(commentData);
     }
 
+    // * getPublicationDetail(publicationData) {
+    //
+    //     return yield PublicationService.getPublicationDetail(publicationData);
+    // }
+    //
+    // * getPublicationBatch(publicationData) {
+    //
+    //     return yield PublicationService.getPublicationBatch(publicationData);
+    // }
+
 
     * getDetail(publicationData) {
 
@@ -40,9 +50,14 @@ class PublicationComponent {
         return yield PublicationService.checkPublicationStatus(productData);
     }
 
+    * CheckPublicationOwnership(productData) {
+
+        return yield PublicationService.checkPublicationStatus(productData);
+    }
+
     CheckOwnership(publicationData) {
 
-        return true;
+        return publicationData.publication;
     }
 
 }

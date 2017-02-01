@@ -1,7 +1,7 @@
 import Studio from 'studio';
 import mercadopago from '../config/mercadopago';
 import ErrorHandler from '../handler/ErrorHandler';
-const UserComponent = Studio.module('UserComponent'); //Fetching the User Microservice
+const SellerComponent = Studio.module('SellerComponent'); //Fetching the User Microservice
 
 const mp = mercadopago.mercadopagoInstance();  // Creating mercadopago instance with sc credentials
 
@@ -27,7 +27,7 @@ class MercadoPagoService {
 //HELPERS
 const getSellerMPToken = ({collector}) => {
 
-    const getSellerToken = UserComponent('getSellerToken');
+    const getSellerToken = SellerComponent('getSellerToken');
 
     return getSellerToken(collector.id)
     .then(token => token)

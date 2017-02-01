@@ -15,7 +15,7 @@ class OrderComponent {
 
 }
 
-const orderComponent= Studio.serviceClass(OrderComponent);
+const orderComponent = Studio.serviceClass(OrderComponent);
 
 
 if (process.env.NODE_ENV !== 'test') {

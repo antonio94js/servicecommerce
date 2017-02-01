@@ -7,6 +7,7 @@ const router = Router();
 /* The Base Path for this router is /oauth you can see it on index.js */
 
 router.post('/token', UserController.userLogin);
+router.post('/token/refresh', UserController.userRefresh);
 
 
 //TODO refresh token service

@@ -2,14 +2,23 @@ import Studio from 'studio';
 import ErrorHandler from '../handler/ErrorHandler';
 
 const UserComponent = Studio.module('UserComponent'); //Fetching the User Microservice
-const PushNotificationComponent = Studio.module('PushNotificationComponent');
+const SellerComponent = Studio.module('SellerComponent'); //Fetching the User Microservice
+const AuthComponent = Studio.module('AuthComponent');
 
 class UserController {
 
     userLogin(req, res, next) {
-        const loginUser = UserComponent('loginUser');
+        const loginUser = AuthComponent('loginUser');
 
         loginUser(req.body)
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+    }
+
+    userRefresh(req, res, next) {
+        const refreshUserToken = AuthComponent('refreshUserToken');
+
+        refreshUserToken(req.body)
             .then(response => res.status(200).json(response))
             .catch(err => ErrorHandler(err, res, req, next));
     }
@@ -41,7 +50,7 @@ class UserController {
     }
 
     userCreateSeller(req, res, next) {
-        const setSellerProfile = UserComponent('setSellerProfile');
+        const setSellerProfile = SellerComponent('setSellerProfile');
         req.body.userID = req.user.id;
 
         setSellerProfile(req.body)
@@ -52,7 +61,7 @@ class UserController {
 
     userUpdateSeller(req, res, next) {
         try {
-            const updateSellerProfile = UserComponent('updateSellerProfile');
+            const updateSellerProfile = SellerComponent('updateSellerProfile');
             req.body.userID = req.user.id;
 
             updateSellerProfile(req.body)
