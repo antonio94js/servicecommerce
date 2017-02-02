@@ -24,9 +24,14 @@ class OrderController {
 
                 const orderPreferenceID = await MercadoPagoService.getOrderPreference(payment);
 
-                const endPaymentProcess = OrderComponent('endPaymentProcess');
+                const changeOrderStatus = OrderComponent('changeOrderStatus');
 
-                endPaymentProcess(orderPreferenceID)
+                const orderData = {
+                    id : orderPreferenceID,
+                    status : 'processed'
+                };
+
+                changeOrderStatus(orderData)
                     .then((value) => {
                         console.log(value);
                     })

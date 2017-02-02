@@ -9,11 +9,55 @@ import {
     preference, getMercadopagoInstance
 }
 from '../config/mercadopago';
+import Common from '../utils/Common';
 
 class OrderService {
 
-    endPaymentProcess(PreferenceID) {
-        return "finalzo el pago";
+    async changeOrderStatus(orderData) {
+
+        const order = await Order.findById(orderData.id);
+
+        switch (orderData.status) {
+            case 'cancelled': {
+                if (order.status === 'inprocess') {
+                    order.status = 'cancelled';
+                    order.save();
+
+                    // orderData.subjectCredential = order.sellerID;
+                    // _sendNotification(orderData, 'CancelledOrder');
+
+                    return MessageHandler.MessageHandler('Order cancelled succesfully', true);
+                }
+            }
+
+            case 'processed': {
+                if (order.status === 'inprocess') {
+                    order.status = 'processed';
+                    order.save();
+
+                    //TODO send notification to both seller and buyer
+
+                    return MessageHandler.MessageHandler('Order processed succesfully', true);
+                }
+            }
+            case 'finished': {
+                if (order.status === 'processed') {
+                    order.status = 'finished';
+                    order.save();
+
+                    //TODO send notification to both seller and buyer
+
+                    return MessageHandler.MessageHandler('Order finished succesfully', true);
+                }
+            }
+            default:
+                throw MessageHandler.errorGenetor("Invalid order's status", 400);
+        }
+
+        throw MessageHandler.errorGenetor(`You can't change from status '${order.status}' to '${orderData.status}'`, 400);
+
+
+        //TODO mandar notificacion al vendedor y comprador
     }
 
     async createOrder(orderData) {
@@ -42,6 +86,19 @@ class OrderService {
                     orderData._id = response.id;
                     orderData.paymentLink = response.init_point;
 
+                    const productData = {
+                        id : publicationData.productID,
+                        orderQuantity : orderData.productQuantity
+                    };
+
+                    //TODO si el microservicio de producto se cae, usar cola de mensaje
+                    // removeFromStock(productData).then((value) => {
+                    //
+                    // }).catch(err => {
+                    //     console.log(err);
+                    //     RabbitQueueHandler.pushMessage(orderPreferenceID, 'product_queue');
+                    // });
+
                     orderData.subjectCredential = orderData.sellerID;
 
                     _sendNotification(orderData,'newOrder');
@@ -50,6 +107,9 @@ class OrderService {
                 }
             case 'manual':
                 {
+                    orderData._id = Common.generateID();
+                    await Order.create(orderData);
+                    //TODO enviar push al vendedor y email al comprador
                     break;
                 }
             default:
