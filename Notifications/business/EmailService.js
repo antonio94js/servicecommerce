@@ -6,6 +6,7 @@ import config from '../config/config';
 import MessageHandler from '../handler/MessageHandler';
 
 const UserComponent = Studio.module('UserComponent'); // Fetching User Microservice
+const SellerComponent = Studio.module('SellerComponent'); // Fetching User/Seller Microservice
 
 const {SC_EMAIL} = process.env;
 
@@ -17,11 +18,12 @@ class EmailService {
 
         let {data,context} = notificationData;
         let retrieveUserField = UserComponent('retrieveUserField');
+        let getBankAccounts = SellerComponent('getBankAccounts');
         let message = {};
         let subject = {};
-        let userData = await retrieveUserField({credential:data.subjectCredential,field:'email'});
+        let userTargetData = await retrieveUserField({credential:data.subjectCredential,field:['email']});
 
-        if(!userData) return;
+        if(!userTargetData) return;
 
         switch (context) {
 
@@ -34,9 +36,66 @@ class EmailService {
                 subject = `New response in ${data.publicationName}`;
                 message = `The Seller has commented in the publication ${data.publicationName} <br> The response is: <br><br> <blockquote> ${data.body} </blockquote>`;
             break;
-            // case 'newOrder':
-            //
-            //     break;
+            case 'newAutomaticOrder': {
+                if( data.receiverTarget === 'Seller'){
+
+                    let buyerData = await retrieveUserField({credential:data.buyerID,field:['email','username']});
+
+                    subject = `Congrats! Someone has purchased you a product from your publication ${data.publicationName}`;
+                    message = `<pre>The user <b>${buyerData.username} (${buyerData.email})</b> has purchased <b>${data.productQuantity}</b> products from your publication <b>${data.publicationName}</b> using the payment method <b>${data.paymentMethod}</b>, The amount you must get is ${data.totalPrice}.
+
+                                We suggest that you contact him, so that the purchase is completed successfully.
+
+                                Greetings.</pre>`;
+                }else{
+
+                }
+            break;
+            }
+            case 'newManualOrder': {
+                if( data.receiverTarget === 'Seller'){
+
+                    let buyerData = await retrieveUserField({credential:data.buyerID,field:['email','username']});
+
+                    subject = `Congrats! Someone has purchased you a product from your publication ${data.publicationName}`;
+                    message = `<pre>The user <b>${buyerData.username} (${buyerData.email})</b> has purchased <b>${data.productQuantity}</b> products from your publication <b>${data.publicationName}</b> using the payment method <b>${data.paymentMethod}</b>, The amount you must get is ${data.totalPrice}.
+
+                                We suggest that you contact him, so that the purchase can be completed successfully.
+
+                                Greetings.</pre>`;
+                }else{
+                    let sellerData = await retrieveUserField({credential:data.sellerID,field:['email','username']});
+                    let bankAccounts = await getBankAccounts(data.sellerID);
+
+                    subject = `Congrats! You have purchased a product from the publication ${data.publicationName}`;
+                    message = `<pre>The data of the order are as follows:
+
+                                Name of the publication: ${data.publicationName}
+                                Price of the product: ${data.unitPrice}
+                                Quantity of products: ${data.productQuantity}
+                                Total to pay: ${data.totalPrice}
+                                Payment method: ${data.paymentMethod}
+
+                                The seller's email is <b>${sellerData.email}</b>
+                                
+                                Below is the information that the seller offered to receive payments</pre>`;
+
+                                for (const bankAccount of bankAccounts) {
+                                    message += `<pre>
+                                                        BANK: ${bankAccount.bankName}
+                                                        ACCOUNT NUMBER: ${bankAccount.accountNumber}
+                                                        ACCOUNT'S OWNER: ${bankAccount.ownerAccountName}
+                                                        TYPE OF ID: ${bankAccount.refOwnerIdentity}
+                                                        ID: ${bankAccount.typeOwnerIdentity}
+                                                        ACOUNT TYPE: ${bankAccount.accountType}
+                                                </pre>`;
+                                }
+
+
+                }
+            break;
+            }
+
             // case 'cancelOrder':
             //
             //     break;
@@ -51,7 +110,7 @@ class EmailService {
         let request = sg.emptyRequest({
             method: 'POST',
             path: '/v3/mail/send',
-            body: _generateBodyObject(userData, subject, message),
+            body: _generateBodyObject(userTargetData, subject, message),
         });
         // console.log(request);
         _sendMessage(request, sg);
@@ -77,12 +136,12 @@ const _sendMessage = (request, sg) => {
     });
 };
 
-const _generateBodyObject = (userData, subject, message) => ({
+const _generateBodyObject = (userTargetData, subject, message) => ({
     personalizations: [
         {
             to: [
                 {
-                    email: userData.email,
+                    email: userTargetData.email,
                 },
             ],
             subject: subject,

@@ -29,6 +29,18 @@ class SellerService {
 
     }
 
+    async getBankAccounts(sellerID) {
+        const seller = await SellerProfile.findOne({userID:sellerID})
+                                        .populate({
+                                            'path': 'bankAccounts',
+                                            'select': '-_id -__v',
+                                        });
+        if (seller) {
+            return seller.bankAccounts;
+        }
+        return [];
+    }
+
     async setSellerProfile(userData) {
         const user = await User.findById(userData.userID);
 

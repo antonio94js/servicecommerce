@@ -64,10 +64,13 @@ class OrderService {
         const SellerComponent = Studio.module('SellerComponent');
         const PublicationComponent = Studio.module('PublicationComponent');
         const ProductComponent = Studio.module('ProductComponent');
+        const UserComponent = Studio.module('UserComponent');
 
         const CheckOwnership = PublicationComponent('CheckOwnership');
         const removeFromStock = ProductComponent('removeFromStock');
         const getSellerToken = SellerComponent('getSellerToken');
+        const getBankAccounts = SellerComponent('getBankAccounts');
+        const retrieveUserField = UserComponent('retrieveUserField');
 
         const publicationData = await CheckOwnership({_id:orderData.publicationID,userID: orderData.sellerID});
 
@@ -100,8 +103,12 @@ class OrderService {
                     // });
 
                     orderData.subjectCredential = orderData.sellerID;
+                    orderData.receiverTarget = 'Seller';
+                    _sendNotification(orderData,'newAutomaticOrder');
 
-                    _sendNotification(orderData,'newOrder');
+                    orderData.subjectCredential = orderData.buyerID;
+                    orderData.receiverTarget = 'Buyer';
+                    _sendNotification(orderData,'newAutomaticOrder');
 
                     return await Order.create(orderData);
                 }
@@ -109,6 +116,18 @@ class OrderService {
                 {
                     orderData._id = Common.generateID();
                     await Order.create(orderData);
+
+                    // const banckAccounts = await getBankAccounts(orderData.sellerID);
+                    // const sellerUsername = await retrieveUserField(orderData.sellerID);
+
+                    orderData.subjectCredential = orderData.buyerID;
+                    orderData.receiverTarget = 'Buyer';
+                    _sendNotification(orderData,'newManualOrder');
+
+                    orderData.subjectCredential = orderData.sellerID;
+                    orderData.receiverTarget = 'Seller';
+                    _sendNotification(orderData,'newManualOrder');
+
                     //TODO enviar push al vendedor y email al comprador
                     break;
                 }

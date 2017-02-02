@@ -61,8 +61,6 @@ const UserSchema = new Schema({
         type: String,
         ref: 'SellerProfile',
         "default": null
-
-
     }
 });
 

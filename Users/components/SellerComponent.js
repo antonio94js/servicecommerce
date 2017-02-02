@@ -12,6 +12,10 @@ class SellerComponent {
         return yield SellerService.setSellerProfile(sellerData);
     }
 
+    * getBankAccounts(sellerID) {
+        return yield SellerService.getBankAccounts(sellerID);
+    }
+
     * updateSellerProfile(sellerData) {
         return yield SellerService.updateSellerProfile(sellerData);
     }

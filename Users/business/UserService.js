@@ -208,7 +208,6 @@ class UserService {
     }
 
     retrieveUserField(userData) {
-
         return User
             .findOne({
                 $or: [{
@@ -219,7 +218,6 @@ class UserService {
             })
             .lean(true)
             .select(`-_id ${userData.field}`); //By the moment We will only select the user's address and username
-
     }
 
     getUserBatch(userData) {
