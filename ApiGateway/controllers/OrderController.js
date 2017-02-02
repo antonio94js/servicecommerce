@@ -59,9 +59,9 @@ class OrderController {
 
     getOrdersBatch(req, res, next) {
         const getOrdersBatch = OrderComponent('getOrdersBatch');
-        req.body.userID = req.user.id;
+        req.query.userID = req.user.id;
 
-        getOrdersBatch(req.body)
+        getOrdersBatch(req.query)
             .then(response => res.status(200).json(response))
             .catch(err => ErrorHandler(err, res, req, next));
     }

@@ -247,6 +247,7 @@ class OrderService {
         if (!order) return MessageHandler.errorGenerator("You can't review this order", 403);
 
         if (order.status === 'finished') {
+            orderReviewData._id = Common.generateID();
             orderReviewData.order = order._id;
             orderReviewData.sellerID = order.sellerID;
             const orderReview = await OrdeReview.create(orderReviewData);
