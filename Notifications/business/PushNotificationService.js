@@ -30,12 +30,47 @@ class PushNotificationService {
                     this.sendMessage(userData.fcmTokens, 'New response in', data.publicationName)
                     break;
                 }
-            case 'newOrder':
+            case 'newAutomaticOrder':
                 {
-                    this.sendMessage(userData.fcmTokens, 'New purchase in', data.publicationName)
+                    let buyerData = await retrieveUserField({credential:data.buyerID,field:['email','username']});
+
+                    this.sendMessage(userData.fcmTokens, 'New purchase by ${buyerData.username} in', data.publicationName);
                     break;
                 }
+            case 'newManualOrder':
+                {
+                    if( data.receiverTarget === 'Seller'){
+                        let buyerData = await retrieveUserField({credential:data.buyerID,field:['email','username']});
 
+                        this.sendMessage(userData.fcmTokens, 'New purchase by ${buyerData.username} in', data.publicationName);
+                    }
+                    break;
+                }
+            case 'cancelOrder':
+                {
+                    let buyerData = await retrieveUserField({credential:data.buyerID,field:['email','username']});
+
+                    this.sendMessage(userData.fcmTokens, 'A purchase has been canceled by ${buyerData.username}', data.publicationName)
+                    break;
+                }
+            case 'proccessOrder':
+                {
+                    if( data.receiverTarget === 'Seller'){
+                        let buyerData = await retrieveUserField({credential:data.buyerID,field:['email','username']});
+
+                        this.sendMessage(userData.fcmTokens, '${buyerData.username} has paid an order', data.publicationName)
+                    }else{
+                        let sellerData = await retrieveUserField({credential:data.sellerID,field:['email','username']});
+
+                        this.sendMessage(userData.fcmTokens, '${sellerData.username} has approved your payment', data.publicationName)
+                    }
+                    break;
+                }
+            case 'finished':
+                {    
+                    this.sendMessage(userData.fcmTokens, 'A purchase has finished', data.publicationName)
+                    break;
+                }
             default:
                 break;
         }

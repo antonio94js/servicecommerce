@@ -32,6 +32,9 @@ const SellerSchema = new Schema({
         enum: ['active', 'inactive'],
         required: true,
     },
+    sellerScore: {
+        type: Number
+    },
     bankAccounts: [{
         type: String,
         ref: "BankAccount"

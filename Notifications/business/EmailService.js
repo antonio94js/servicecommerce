@@ -77,7 +77,7 @@ class EmailService {
                                 Payment method: ${data.paymentMethod}
 
                                 The seller's email is <b>${sellerData.email}</b>
-                                
+
                                 Below is the information that the seller offered to receive payments</pre>`;
 
                                 for (const bankAccount of bankAccounts) {
@@ -95,13 +95,33 @@ class EmailService {
                 }
             break;
             }
+            case 'cancelOrder':{
+                let buyerData = await retrieveUserField({credential:data.buyerID,field:['email','username']});
 
-            // case 'cancelOrder':
-            //
-            //     break;
-            // case 'endOrder':
-            //
-            //     break;
+                subject = `An order of a purchased has been canceled`;
+                message = `The Buyer ${buyerData.username} who purchased ${data.productQuantity} products of your publication ${data.publicationName} has canceled the order`;
+            break;
+            }
+            case 'proccessOrder':{
+                if( data.receiverTarget === 'Seller'){
+
+                    let buyerData = await retrieveUserField({credential:data.buyerID,field:['email','username']});
+
+                    subject = `Congrats! your order has been successfully proccesed`;
+                    message = `The Order of your sell in which ${buyerData.username} bought ${data.productQuantity} products of your publication ${data.publicationName} for a price of ${data.totalPrice} has processed successfuly`;
+                }else{
+                    subject = `Congrats! your order has been successfully proccesed`;
+                    message = `The Order generated for your purchase of ${data.productQuantity} products in the publication ${data.publicationName} for a price of ${data.totalPrice} has processed successfuly`;
+                }
+            break;
+            }
+            case 'finished':{
+                let buyerData = await retrieveUserField({credential:data.buyerID,field:['email','username']});
+
+                subject = `Congrats! your order has been successfully ranked by ${buyerData.username}`;
+                message = `The Order of your sell in which ${buyerData.username} bought ${data.productQuantity} products of your publication ${data.publicationName} for a price of ${data.totalPrice} has finished successfuly`;
+            break;
+            }
             default:
             break;
 

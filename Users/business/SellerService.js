@@ -68,6 +68,11 @@ class SellerService {
 
     }
 
+    async updateScore({sellerID,totalScore}) {
+        await SellerProfile.update({sellerID}, { $set: { sellerScore: totalScore }});
+        return true;
+    }
+
     async updateSellerProfile(sellerData) {
         let sellerProfile = await SellerProfile.findOne({
             userID: sellerData.userID

@@ -4,6 +4,7 @@ import StatsD from 'hot-shots';
 import mongodb from './config/db';
 import config from './config/config';
 import centralLogger from './config/central-logger';
+import RabbitQueueHandler from './handler/RabbitQueueHandler';
 
 const clientStatsD = new StatsD(); //Start a connection to DogStatsD Server
 
@@ -24,6 +25,7 @@ clientStatsD.socket.on('error', (error) => {
 config.loadClusterConfig();
 
 mongodb.connecToMongo();
+RabbitQueueHandler.popMessages('order_queue');
 
 const gracefulShutdown = () => {mongodb.closeConnection(); setTimeout(() => {process.exit(1)}, 3000)};
 
