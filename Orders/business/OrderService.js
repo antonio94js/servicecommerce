@@ -1,4 +1,5 @@
 import Order from '../models/Order';
+import OrdeReview from '../models/OrderReview';
 import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
 import co from 'co';
@@ -18,43 +19,66 @@ class OrderService {
         const order = await Order.findById(orderData.id);
 
         switch (orderData.status) {
-            case 'cancelled': {
-                if (order.status === 'inprocess') {
-                    order.status = 'cancelled';
-                    order.save();
+            case 'cancelled':
+                {
+                    if (order.status === 'inprocess') {
 
-                    // orderData.subjectCredential = order.sellerID;
-                    // _sendNotification(orderData, 'CancelledOrder');
+                        if (orderData.userID !== order.buyerID) {
+                            throw MessageHandler.errorGenerator("You can't change this order to cancelled status",
+                                403)
+                        }
 
-                    return MessageHandler.MessageHandler('Order cancelled succesfully', true);
+                        order.status = 'cancelled';
+                        order.save();
+
+                        // orderData.subjectCredential = order.sellerID;
+                        // _sendNotification(orderData, 'CancelledOrder');
+
+                        return MessageHandler.messageGenerator('Order cancelled succesfully', true);
+                    }
                 }
-            }
 
-            case 'processed': {
-                if (order.status === 'inprocess') {
-                    order.status = 'processed';
-                    order.save();
+            case 'processed':
+                {
+                    if (order.status === 'inprocess') {
 
-                    //TODO send notification to both seller and buyer
+                        if ((order.paymentOrderType === 'automatic' && orderData.userID) || (order.paymentOrderType ===
+                                'manual' && orderData.userID !== order.sellerID)) {
+                            throw MessageHandler.errorGenerator("You can't change this order to processed status",
+                                403)
+                        }
 
-                    return MessageHandler.MessageHandler('Order processed succesfully', true);
+                        order.status = 'processed';
+                        order.save();
+
+                        //TODO send notification to both seller and buyer
+
+                        return MessageHandler.messageGenerator('Order processed succesfully', true);
+                    }
                 }
-            }
-            case 'finished': {
-                if (order.status === 'processed') {
-                    order.status = 'finished';
-                    order.save();
+            case 'finished':
+                {
+                    if (order.status === 'processed') {
 
-                    //TODO send notification to both seller and buyer
+                        if (orderData.userID !== order.buyerID) {
+                            throw MessageHandler.errorGenerator("You can't change this order to finished status",
+                                403)
+                        }
 
-                    return MessageHandler.MessageHandler('Order finished succesfully', true);
+                        order.status = 'finished';
+                        order.save();
+
+                        //TODO send notification to both seller and buyer
+
+                        return MessageHandler.messageGenerator('Order finished succesfully', true);
+                    }
                 }
-            }
             default:
                 throw MessageHandler.errorGenetor("Invalid order's status", 400);
         }
 
-        throw MessageHandler.errorGenetor(`You can't change from status '${order.status}' to '${orderData.status}'`, 400);
+        throw MessageHandler.errorGenetor(`You can't change from status '${order.status}' to '${orderData.status}'`,
+            400);
 
 
         //TODO mandar notificacion al vendedor y comprador
@@ -69,7 +93,10 @@ class OrderService {
         const removeFromStock = ProductComponent('removeFromStock');
         const getSellerToken = SellerComponent('getSellerToken');
 
-        const publicationData = await CheckOwnership({_id:orderData.publicationID,userID: orderData.sellerID});
+        const publicationData = await CheckOwnership({
+            _id: orderData.publicationID,
+            userID: orderData.sellerID
+        });
 
         switch (orderData.paymentOrderType) {
             case 'automatic':
@@ -87,21 +114,24 @@ class OrderService {
                     orderData.paymentLink = response.init_point;
 
                     const productData = {
-                        id : publicationData.productID,
-                        orderQuantity : orderData.productQuantity
+                        id: publicationData.productID,
+                        orderQuantity: orderData.productQuantity
                     };
 
                     //TODO si el microservicio de producto se cae, usar cola de mensaje
-                    // removeFromStock(productData).then((value) => {
-                    //
-                    // }).catch(err => {
-                    //     console.log(err);
-                    //     RabbitQueueHandler.pushMessage(orderPreferenceID, 'product_queue');
-                    // });
+                    removeFromStock(productData)
+                        .catch(err => {
+                            const productMessage = {
+                                data,
+                                component: 'ProductComponent',
+                                service: 'removeFromStock'
+                            }
+                            RabbitQueueHandler.pushMessage(productMessage, 'product_queue');
+                        });
 
                     orderData.subjectCredential = orderData.sellerID;
 
-                    _sendNotification(orderData,'newOrder');
+                    _sendNotification(orderData, 'newOrder');
 
                     return await Order.create(orderData);
                 }
@@ -114,14 +144,89 @@ class OrderService {
                 }
             default:
                 {
-                    throw MessageHandler.errorGenetor('Invalid payment method', 400)
+                    throw MessageHandler.errorGenerator('Invalid payment method', 400)
                 }
         }
     }
 
+    async getOrdersBatch(orderData) {
+
+        switch (orderData.userType) {
+            case 'seller':
+                {
+                    return await Order.find({
+                        buyerID: orderData.userID
+                    }).lean(true);
+                }
+
+            case 'buyer':
+                {
+                    return await Order.find({
+                        sellerID: orderData.userID
+                    }).lean(true);
+                }
+            default:
+                {
+                    throw MessageHandler.errorGenerator('Invalid user type', 400)
+                }
+        }
+
+    }
+
+
     async checkOrderStatus(publicationID) {
-        const order = await Order.find({publicationID}).where({status:{$in:['inprocess','processed']}})
+        const order = await Order.find({
+            publicationID
+        }).where({
+            status: {
+                $in: ['inprocess', 'processed']
+            }
+        })
+
+        console.log(!!order && order.length > 0);
         return !!order && order.length > 0;
+    }
+
+    async createReview(orderReviewData) {
+        const order = await Order.findById(orderReviewData.orderID).where({
+            buyerID: orderReviewData.userID
+        })
+
+        if (!order) return MessageHandler.errorGenerator("You can't review this order", 403);
+
+        if (order.status === 'finished') {
+            orderReviewData.order = order._id;
+            orderReviewData.sellerID = order.sellerID;
+            const orderReview = await OrdeReview.create(orderReviewData);
+            this.calculateTotalSellerScore(orderReview);
+            return MessageHandler.messageGenerator("Your review was done successfully", true);
+        }
+
+        return MessageHandler.messageGenerator("This order isn't finished yet", false);
+    }
+
+    async calculateTotalSellerScore({sellerID}) {
+        const SellerComponent = Studio.module('SellerComponent');
+        const updateScore = Studio.module('updateScore');
+
+        const reviews = OrdeReview.find({sellerID});
+        const totalScore = _.meanBy(reviews, 'orderScore');
+        const data = {
+            sellerID, totalScore
+        };
+
+        console.log("El total es: " + totalScore);
+
+        updateScore(data)
+            .catch((err) => {
+                console.log(err);
+                const userMessage = {
+                    data,
+                    component: 'SellerComponent',
+                    service: 'updateScore'
+                }
+                RabbitQueueHandler.pushMessage(userMessage, 'user_queue');
+            })
     }
 
 }

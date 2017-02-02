@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "bcryptjs": "^2.4.0",
+        "amqplib": "^0.5.1",
         "co": "^4.6.0",
         "dotenv": "^2.0.0",
         "hot-shots": "^4.3.1",

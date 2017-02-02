@@ -17,6 +17,14 @@ class OrderComponent {
         return yield OrderService.checkOrderStatus(publicationID);
     }
 
+    *getOrdersBatch(orderData) {
+        return yield OrderService.getOrdersBatch(orderData);
+    }
+
+    *createReview(orderData) {
+        return yield OrderService.createReview(orderData);
+    }
+
 }
 
 const orderComponent = Studio.serviceClass(OrderComponent);

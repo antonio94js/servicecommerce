@@ -50,18 +50,15 @@ class PublicationService {
 
     async removePublication(publicationData) {
 
-        const OrderComponent = Studio.module('OrderComponent');
-        const checkOrderStatus = OrderComponent('checkOrderStatus');
-
         try {
-
             const publication = await Publication.findById(publicationData._id);
 
             if (publication.status === 0) {
                 return this.remove(publication._id);
             }
 
-            const hasActiveOrder = await checkOrderStatus(publicationData._id);
+            const hasActiveOrder = await this._checkOrderStatus(publicationData);
+            // console.log(hasActiveOrder);
 
             if (!hasActiveOrder) {
                 return this.remove(publication._id);
@@ -71,7 +68,7 @@ class PublicationService {
                 "Publication can not be deleted, because is currently in an active order", false);
 
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             return MessageHandler.messageGenerator("Publication can not be deleted at the momment, Try again later",
                 false);
         }
@@ -146,23 +143,19 @@ class PublicationService {
 
     async changePublicationStatus(publicationData) {
         const publication = await Publication.findById(publicationData._id);
-        console.log(publicationData);
+        // console.log(publicationData);
         switch (parseInt(publicationData.newStatus)) {
             case 0: {
                 if (publication.status === 1) {
 
-                    //TODO make a checkorderstatus method
-                    const OrderComponent = Studio.module('OrderComponent');
-                    const checkOrderStatus = OrderComponent('checkOrderStatus');
+                    //TODO make a checkorderstatus metho
 
-                    const hasActiveOrder = await checkOrderStatus(publicationData._id);
+                    const hasActiveOrder =  await this._checkOrderStatus(publicationData);
 
                     if (!hasActiveOrder) {
-
                         publication.status = 0;
                         await publication.save();
                         return MessageHandler.messageGenerator("Publication have been changed to inactive status successfully", true)
-
                     }
 
                     return MessageHandler.messageGenerator(
@@ -228,6 +221,13 @@ class PublicationService {
             .where({
                 userID: publicationData.userID
             })
+    }
+
+    async _checkOrderStatus({_id}) {
+        const OrderComponent = Studio.module('OrderComponent');
+        const checkOrderStatus = OrderComponent('checkOrderStatus');
+
+        return await checkOrderStatus(_id);
     }
 
 }

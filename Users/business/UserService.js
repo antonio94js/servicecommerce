@@ -218,8 +218,7 @@ class UserService {
                 }]
             })
             .lean(true)
-            .select(`-_id ${userData.field}`); //By the moment We will only select the user's address and username
-
+            .select('-_id %s',...userData.field);
     }
 
     getUserBatch(userData) {

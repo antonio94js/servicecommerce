@@ -130,9 +130,9 @@ class ProductService {
         return await Product.findByIdAndUpdate(OfferData.productID, {$set: {offer: OfferData._id}});
     }
 
-    async removeFromStock(productData) {
-        const product = await Product.findById(productData.id);
-        const result = product.quantity - productData.orderQuantity;
+    async removeFromStock({id,orderQuantity}) {
+        const product = await Product.findById(id);
+        const result = product.quantity - orderQuantity;
         product.quantity = result < 0 ? 0 : result;
         return await product.save();
     }

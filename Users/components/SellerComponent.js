@@ -16,6 +16,10 @@ class SellerComponent {
         return yield SellerService.updateSellerProfile(sellerData);
     }
 
+    * updateScore(sellerData) {
+        return yield SellerService.updateScore(sellerData);
+    }
+
     * getSellerToken(collectorData) {
         return yield SellerService.getSellerToken(collectorData);
     }

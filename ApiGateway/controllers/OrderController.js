@@ -27,8 +27,8 @@ class OrderController {
                 const changeOrderStatus = OrderComponent('changeOrderStatus');
 
                 const orderData = {
-                    id : orderPreferenceID,
-                    status : 'processed'
+                    id: orderPreferenceID,
+                    status: 'processed'
                 };
 
                 changeOrderStatus(orderData)
@@ -36,7 +36,11 @@ class OrderController {
                         console.log(value);
                     })
                     .catch((err) => {
-                        console.log("HAY UN ERROR CON ENDPROCESS DE ORDENES- PUBLICANDO EN LA COLA");
+                        const orderMessage = {
+                            data: orderData,
+                            component: 'OrderComponent',
+                            service: 'changeOrderStatus'
+                        }
                         RabbitQueueHandler.pushMessage(orderPreferenceID, 'order_queue');
                     });
             }
@@ -44,18 +48,42 @@ class OrderController {
         res.sendStatus(200);
     }
 
-    pay(req, res, next){
-        try {
-            const createOrder = OrderComponent('createOrder');
-            // req.body.userID = req.user.id;
+    pay(req, res, next) {
+        const createOrder = OrderComponent('createOrder');
+        // req.body.userID = req.user.id;
 
-            createOrder(req.body)
-                .then(response => res.status(201).json(response))
-                .catch(err => ErrorHandler(err, res, req, next));
-        } catch (e) {
-            console.log(e);
-        }
+        createOrder(req.body)
+            .then(response => res.status(201).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+    }
 
+    getOrdersBatch(req, res, next) {
+        const getOrdersBatch = OrderComponent('getOrdersBatch');
+        req.body.userID = req.user.id;
+
+        getOrdersBatch(req.body)
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+    }
+
+    creteaOrderReview(req, res, next) {
+        const createReview = OrderComponent('createReview');
+        req.body.userID = req.user.id;
+        req.body.orderID = req.params.orderID;
+
+        createReview(req.body)
+            .then(response => res.status(201).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+    }
+
+    changeOrderStatus(req, res, next) {
+
+        const changeOrderStatus = OrderComponent('changeOrderStatus');
+        req.body.userID = req.user.id;
+
+        changeOrderStatus(req.body)
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
     }
 }
 
@@ -65,9 +93,9 @@ const checkPayment = payment => payment.response.status === 'approved';
 
 const getPayment = (paymentID) => {
 
-    return  mp.get(`/v1/payments/${paymentID}`)
+    return mp.get(`/v1/payments/${paymentID}`)
         .then(paymentData => paymentData)
-        .catch(error => false );
+        .catch(error => false);
 };
 
 const orderController = new OrderController();

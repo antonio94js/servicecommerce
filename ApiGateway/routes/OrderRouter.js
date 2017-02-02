@@ -2,6 +2,7 @@ import {Router}
 from 'express';
 import Studio from 'studio';
 import OrderController from '../controllers/OrderController';
+import isAuthenticated from '../policies/isAuthenticated';
 
 const router = Router();
 
@@ -9,6 +10,9 @@ const router = Router();
 
 router
     .post('/notification', OrderController.getMPNotification)
-    .post('/',OrderController.pay);
+    .post('/:orderID/review',isAuthenticated, OrderController.creteaOrderReview)
+    .put('/status',isAuthenticated,OrderController.changeOrderStatus)
+    .get('/batch',isAuthenticated,OrderController.getOrdersBatch)
+    .post('/',isAuthenticated,OrderController.pay)
 
 export default router;
