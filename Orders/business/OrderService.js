@@ -59,6 +59,11 @@ class OrderService {
         }
     }
 
+    async checkOrderStatus(publicationID) {
+        const order = await Order.find({publicationID}).where({status:{$in:['inprocess','processed']}})
+        return !!order && order.length > 0;
+    }
+
 }
 
 

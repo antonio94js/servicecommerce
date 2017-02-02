@@ -30,6 +30,20 @@ class PublicationController {
             .catch(err => ErrorHandler(err, res, req, next));
     }
 
+    publicationChangeStatus(req, res, next) {
+        const changePublicationStatus = PublicationComponent('changePublicationStatus');
+
+        const publicationData = {
+            _id: req.params.publicationID,
+            newStatus:req.params.newStatus,
+            userID: req.user.id
+        }
+
+        changePublicationStatus(publicationData)
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+    }
+
     publicationDelete(req, res, next) {
         const deletePublication = PublicationComponent('deletePublication');
         req.body.userID = req.user.id;
@@ -39,8 +53,31 @@ class PublicationController {
             .catch(err => ErrorHandler(err, res, req, next));
     }
 
-    publicationDetail(req, res, next) {
-        const getDetail = PublicationComponent('getDetail');
+    publicationDetailByOwner(req, res, next) {
+        const getPublicationDetailByOwner = PublicationComponent('getPublicationDetailByOwner');
+
+        const publicationData = {
+            _id: req.params.publicationID,
+            userID: req.user.id
+        }
+
+        getPublicationDetailByOwner(publicationData)
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+    }
+
+    publicationBatchByOwner(req, res, next) {
+        const getPublicationBatchByOwner = PublicationComponent('getPublicationBatchByOwner');
+        req.body.userID = req.user.id;
+
+        getPublicationBatchByOwner(req.body)
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+
+    }
+
+    publicationExpandDetail(req, res, next) {
+        const getExpandDetail = PublicationComponent('getExpandDetail');
         const getProductDetail = ProductComponent('getProductDetail');
         const getUserInfo = UserComponent('getUserInfo');
 
@@ -49,7 +86,7 @@ class PublicationController {
         }
         let publicationDetail = {};
 
-        getDetail(publicationData)
+        getExpandDetail(publicationData)
             .then((publication) => {
 
                 publicationDetail.publication = publication;
@@ -98,10 +135,10 @@ class PublicationController {
             .then((publications) => {
 
                 let productData = {
-                    isPublicationBatch: true,
-                    productGuids: _.map(publications, publication => publication.productID)
-                }
-                // console.log(publications);
+                        isPublicationBatch: true,
+                        productGuids: _.map(publications, publication => publication.productID)
+                    }
+                    // console.log(publications);
                 publicationsInfo.push(publications);
 
                 return getProductBatch(productData)
@@ -128,6 +165,6 @@ class PublicationController {
 
 }
 
-const publicationController =  new PublicationController();
+const publicationController = new PublicationController();
 
 export default publicationController;

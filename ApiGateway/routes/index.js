@@ -18,7 +18,7 @@ router
     .use('/product/offer', isAuthenticated, offerRouter)
     .use('/wishlist', isAuthenticated, wishlistRouter)
     .use('/image', isAuthenticated, ImageRouter)
-    .use('/publication', isAuthenticated, PublicationRouter)
+    .use('/publication', PublicationRouter)
     .use('/order', OrderRouter);
 
 

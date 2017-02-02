@@ -48,11 +48,38 @@ class PublicationService {
             });
     }
 
-    removePublication(publicationData) {
+    async removePublication(publicationData) {
+
+        const OrderComponent = Studio.module('OrderComponent');
+        const checkOrderStatus = OrderComponent('checkOrderStatus');
+
+        try {
+
+            const publication = await Publication.findById(publicationData._id);
+
+            if (publication.status === 0) {
+                return this.remove(publication._id);
+            }
+
+            const hasActiveOrder = await checkOrderStatus(publicationData._id);
+
+            if (!hasActiveOrder) {
+                return this.remove(publication._id);
+            }
+
+            return MessageHandler.messageGenerator(
+                "Publication can not be deleted, because is currently in an active order", false);
+
+        } catch (e) {
+            console.log(e);
+            return MessageHandler.messageGenerator("Publication can not be deleted at the momment, Try again later",
+                false);
+        }
+    }
+
+    remove(_id) {
         return Publication //return a promise
-            .remove({
-                _id: publicationData._id
-            })
+            .remove(_id)
             .then((publication) => {
                 return MessageHandler.messageGenerator(
                     "Publication deleted succefully", true); //resolve the promise
@@ -64,7 +91,8 @@ class PublicationService {
             });
     }
 
-    getPublicationDetail(publicationData) {
+
+    getExpandPublicationDetail(publicationData) {
         return Publication.findById(publicationData._id)
             .populate({
                 'path': 'comments',
@@ -106,6 +134,58 @@ class PublicationService {
 
                 return publications;
             });
+    }
+
+    async getPublicationDetailByOwner(publicationData) {
+        return await Publication.findById(publicationData._id).where({userID:publicationData.userID}).select('-__v').lean(true);
+    }
+
+    async getPublicationBatchByOwner(publicationData) {
+        return await Publication.find({userID: publicationData.userID}).select('-__v -comments').lean(true);
+    }
+
+    async changePublicationStatus(publicationData) {
+        const publication = await Publication.findById(publicationData._id);
+        console.log(publicationData);
+        switch (parseInt(publicationData.newStatus)) {
+            case 0: {
+                if (publication.status === 1) {
+
+                    //TODO make a checkorderstatus method
+                    const OrderComponent = Studio.module('OrderComponent');
+                    const checkOrderStatus = OrderComponent('checkOrderStatus');
+
+                    const hasActiveOrder = await checkOrderStatus(publicationData._id);
+
+                    if (!hasActiveOrder) {
+
+                        publication.status = 0;
+                        await publication.save();
+                        return MessageHandler.messageGenerator("Publication have been changed to inactive status successfully", true)
+
+                    }
+
+                    return MessageHandler.messageGenerator(
+                        "Publication can't change to inactive status, because is currently in an active order", false);
+                }
+
+                return MessageHandler.messageGenerator("Publication already is in inactive status", false);
+            }
+
+            case 1: {
+                if (publication.status === 0) {
+                    publication.status = 1;
+                    await publication.save();
+                    return MessageHandler.messageGenerator("Publication have been changed to active status successfully", true)
+                }
+                return MessageHandler.messageGenerator("Publication already is in active status", false)
+            }
+
+            default: {
+                throw MessageHandler.errorGenerator('Invalid publication status',400)
+            }
+
+        }
     }
 
     checkPublicationStatus(productData) {
@@ -155,10 +235,11 @@ class PublicationService {
 /*HELPERS*/
 const setData = (publicationData, publication) => {
 
-    let {publicationDetail, name} = publicationData;
+    let {publicationDetail, name, tags} = publicationData;
 
     publication.publicationDetail = !publicationDetail ? publication.publicationDetail : publicationDetail;
     publication.name = !name ? publication.name : name;
+    publication.tags = !tags || !_.isArray(tags) ? publication.tags : tags;
 };
 
 const checkPaymentMethod = ({paymentMethod, userID}) => {

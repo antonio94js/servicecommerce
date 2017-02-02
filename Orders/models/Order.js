@@ -40,6 +40,10 @@ const OrderSchema = new Schema({
         type: Number,
         required: true,
     },
+    publicationID: {
+        type: String,
+        required: true,
+    },
     publicationName: {
         type: String,
         required: true,

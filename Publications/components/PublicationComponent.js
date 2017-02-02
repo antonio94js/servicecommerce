@@ -35,15 +35,26 @@ class PublicationComponent {
     // }
 
 
-    * getDetail(publicationData) {
+    * getExpandDetail(publicationData) {
 
-        return yield PublicationService.getPublicationDetail(publicationData);
+        return yield PublicationService.getExpandPublicationDetail(publicationData);
     }
 
     * getBatch(publicationData) {
 
         return yield PublicationService.getPublicationBatch(publicationData);
     }
+
+    * getPublicationDetailByOwner(publicationData) {
+
+        return yield PublicationService.getPublicationDetailByOwner(publicationData);
+    }
+
+    * getPublicationBatchByOwner(publicationData) {
+
+        return yield PublicationService.getPublicationBatchByOwner(publicationData);
+    }
+
 
     * checkPublicationStatus(productData) {
 
@@ -53,6 +64,10 @@ class PublicationComponent {
     * CheckPublicationOwnership(productData) {
 
         return yield PublicationService.checkPublicationStatus(productData);
+    }
+
+    * changePublicationStatus(publicationData) {
+        return yield PublicationService.changePublicationStatus(publicationData);
     }
 
     CheckOwnership(publicationData) {
@@ -65,6 +80,6 @@ class PublicationComponent {
 const publication = Studio.serviceClass(PublicationComponent);
 
 if (process.env.NODE_ENV !== 'test') {
-    PublicationMiddleware.CheckPublicationOwnership(publication, 'deletePublication', 'updatePublication','createPublication', 'CheckOwnership');
+    PublicationMiddleware.CheckPublicationOwnership(publication, 'deletePublication', 'changePublicationStatus','updatePublication','createPublication','getPublicationDetailByOwner', 'CheckOwnership');
     ErrorLoggerHanlder.setErrorLogger(publication)
 }

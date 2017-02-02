@@ -13,6 +13,10 @@ class OrderComponent {
         return yield OrderService.createOrder(orderData);
     }
 
+    *checkOrderStatus(publicationID) {
+        return yield OrderService.checkOrderStatus(publicationID);
+    }
+
 }
 
 const orderComponent = Studio.serviceClass(OrderComponent);

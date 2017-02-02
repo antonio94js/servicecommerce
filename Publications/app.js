@@ -25,7 +25,7 @@ config.loadClusterConfig();
 
 mongodb.connecToMongo();
 
-const gracefulShutdown = () => {mongodb.closeConnection()};
+const gracefulShutdown = () => {mongodb.closeConnection();setTimeout(() => {process.exit(1)}, 3000)};
 
 process
     .on('SIGINT', gracefulShutdown)
