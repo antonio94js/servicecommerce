@@ -14,7 +14,7 @@ class PushNotificationService {
         const retrieveUserField = UserComponent('retrieveUserField');
 
         let {data, context} = notificationData
-        console.log({credential: data.subjectCredential,field: ['fcmTokens']});
+        // console.log({credential: data.subjectCredential,field: ['fcmTokens']});
         const userData = await retrieveUserField({credential: data.subjectCredential,field: ['fcmTokens']});
 // console.log(userData);
         if (!userData) return;
@@ -35,7 +35,7 @@ class PushNotificationService {
                 {
                     let buyerData = await retrieveUserField({credential:data.buyerID,field:['email','username']});
 
-                    this.sendMessage(userData.fcmTokens, 'New purchase by ${buyerData.username} in', data.publicationName);
+                    this.sendMessage(userData.fcmTokens, `New purchase by ${buyerData.username} in`, data.publicationName);
                     break;
                 }
             case 'newManualOrder':
@@ -43,7 +43,7 @@ class PushNotificationService {
                     if( data.receiverTarget === 'Seller'){
                         let buyerData = await retrieveUserField({credential:data.buyerID,field:['email','username']});
 
-                        this.sendMessage(userData.fcmTokens, 'New purchase by ${buyerData.username} in', data.publicationName);
+                        this.sendMessage(userData.fcmTokens, `New purchase by ${buyerData.username} in`, data.publicationName);
                     }
                     break;
                 }
@@ -51,7 +51,7 @@ class PushNotificationService {
                 {
                     let buyerData = await retrieveUserField({credential:data.buyerID,field:['email','username']});
 
-                    this.sendMessage(userData.fcmTokens, 'A purchase has been canceled by ${buyerData.username}', data.publicationName)
+                    this.sendMessage(userData.fcmTokens, `The user ${buyerData.username} has cancelled a purchase order in`, data.publicationName)
                     break;
                 }
             case 'proccessOrder':
@@ -59,17 +59,17 @@ class PushNotificationService {
                     if( data.receiverTarget === 'Seller'){
                         let buyerData = await retrieveUserField({credential:data.buyerID,field:['email','username']});
 
-                        this.sendMessage(userData.fcmTokens, '${buyerData.username} has paid an order', data.publicationName)
+                        this.sendMessage(userData.fcmTokens, `${buyerData.username} has paid a purchase order in`, data.publicationName)
                     }else{
                         let sellerData = await retrieveUserField({credential:data.sellerID,field:['email','username']});
 
-                        this.sendMessage(userData.fcmTokens, '${sellerData.username} has approved your payment', data.publicationName)
+                        this.sendMessage(userData.fcmTokens, `${sellerData.username} has approved your payment in`, data.publicationName)
                     }
                     break;
                 }
             case 'finished':
                 {
-                    this.sendMessage(userData.fcmTokens, 'A purchase has finished', data.publicationName)
+                    this.sendMessage(userData.fcmTokens, 'Your purchase order is finished', data.publicationName)
                     break;
                 }
             default:
