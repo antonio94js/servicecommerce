@@ -7,7 +7,7 @@ import config from './config/config';
 // import RabbitQueueHandler from './handler/RabbitQueueHandler';
 
 const clientStatsD = new StatsD(); //Start a connection to DogStatsDServer
-Studio.use(Studio.plugin.retry({max: 3}));
+Studio.use(Studio.plugin.retry({max: 1}));
 // Studio.use(Studio.plugin.timeout);
 
 Studio.use(Studio.plugin.timer(function(res) {

@@ -50,7 +50,7 @@ class OrderController {
 
     pay(req, res, next) {
         const createOrder = OrderComponent('createOrder');
-        // req.body.userID = req.user.id;
+        req.body.buyerID = req.user.id;
 
         createOrder(req.body)
             .then(response => res.status(201).json(response))
