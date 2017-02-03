@@ -1,8 +1,8 @@
 import rabbit from '../config/rabbit';
 import Promise from 'bluebird';
 import Studio from 'studio';
-Studio.use(Studio.plugin.retry({max: 3}));
-require('../components');
+// Studio.use(Studio.plugin.retry({max: 3}));
+// require('../components');
 
 const acknowledgments = {noAck: false}
 

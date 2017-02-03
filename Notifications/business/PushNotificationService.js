@@ -14,8 +14,9 @@ class PushNotificationService {
         const retrieveUserField = UserComponent('retrieveUserField');
 
         let {data, context} = notificationData
-        const userData = await retrieveUserField({credential: data.subjectCredential,field: 'fcmTokens'});
-
+        console.log({credential: data.subjectCredential,field: ['fcmTokens']});
+        const userData = await retrieveUserField({credential: data.subjectCredential,field: ['fcmTokens']});
+// console.log(userData);
         if (!userData) return;
 
         switch (context) {
@@ -67,7 +68,7 @@ class PushNotificationService {
                     break;
                 }
             case 'finished':
-                {    
+                {
                     this.sendMessage(userData.fcmTokens, 'A purchase has finished', data.publicationName)
                     break;
                 }

@@ -208,6 +208,14 @@ class UserService {
     }
 
     retrieveUserField(userData) {
+        var test = '';
+
+
+        for (const field of userData.field) {
+            test += field + ' ';
+        }
+
+        console.log(`-_id ${test}`);
         return User
             .findOne({
                 $or: [{
@@ -217,7 +225,7 @@ class UserService {
                 }]
             })
             .lean(true)
-            .select('-_id %s',...userData.field);
+            .select(`-_id ${test}`);
     }
 
     getUserBatch(userData) {

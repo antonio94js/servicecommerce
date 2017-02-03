@@ -57,7 +57,7 @@ const server = app.listen(port,'0.0.0.0', (error) => {
 /*Graceful Shutdown our Http Server*/
 
 const gracefulShutdown = () => {
-    server.close(() => {process.exit(1)})
+    server.close(() => {process.exit(0)})
 };
 
 process

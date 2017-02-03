@@ -1,8 +1,8 @@
 import rabbit from '../config/rabbit';
 import Promise from 'bluebird';
 import Studio from 'studio';
-Studio.use(Studio.plugin.retry({max: 3}));
-require('../components');
+// Studio.use(Studio.plugin.retry({max: 3}));
+// require('../components');
 
 const acknowledgments = {noAck: false}
 
@@ -41,7 +41,7 @@ const _callService = (notificationData) => {
     const NotificationComponent = Studio.module('NotificationComponent');
     const sendPushNotification = NotificationComponent('sendPushNotification');
     const sendEmail = NotificationComponent('sendEmail');
-    
+
     Promise.all([sendPushNotification(notificationData), sendEmail(notificationData)])
     .then(() => {
 

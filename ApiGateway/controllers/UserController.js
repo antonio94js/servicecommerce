@@ -28,7 +28,12 @@ class UserController {
 
         createUser(req.body)
             .then(response => res.status(201).json(response))
-            .catch(err => ErrorHandler(err, res, req, next));
+            .catch(err => {
+                console.log(err);
+                ErrorHandler(err, res, req, next)
+            }
+            );
+
     };
 
     userUpdateProfile(req, res, next) {
