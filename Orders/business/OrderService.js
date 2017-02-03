@@ -176,7 +176,6 @@ class OrderService {
 
                     //TODO si el microservicio de producto se cae, usar cola de mensaje
 
-
                     orderData.subjectCredential = orderData.sellerID;
                     orderData.receiverTarget = 'Seller';
                     _sendNotification(orderData, 'newAutomaticOrder');
@@ -190,13 +189,11 @@ class OrderService {
 
                     orderData.subjectCredential = orderData.buyerID;
                     orderData.receiverTarget = 'Buyer';
-                    _sendNotification('newManualOrder', {...orderData
-                    });
+                    _sendNotification('newManualOrder', {...orderData});
 
                     orderData.subjectCredential = orderData.sellerID;
                     orderData.receiverTarget = 'Seller';
-                    _sendNotification('newManualOrder', {...orderData
-                    });
+                    _sendNotification('newManualOrder', {...orderData});
 
                     _removeFromStock(productData);
 
@@ -252,7 +249,7 @@ class OrderService {
             buyerID: orderReviewData.userID
         })
 
-        if (!order) return MessageHandler.errorGenerator("You can't review this order", 403);
+        if (!order) throw MessageHandler.errorGenerator("You can't review this order", 403);
 
         if (order.status === 'finished') {
             orderReviewData._id = generateID();
@@ -266,15 +263,16 @@ class OrderService {
         return MessageHandler.messageGenerator("This order isn't finished yet", false);
     }
 
-    async calculateTotalSellerScore({
-        sellerID
-    }) {
+    async calculateTotalSellerScore({sellerID}) {
         const SellerComponent = Studio.module('SellerComponent');
-        const updateScore = Studio.module('updateScore');
+        const updateScore = SellerComponent('updateScore');
+        // console.log(sellerID);
 
-        const reviews = OrdeReview.find({
+        //TODO que no se pueda hacer review al mismo order type
+        const reviews = await OrdeReview.find({
             sellerID
         });
+
         const totalScore = _.meanBy(reviews, 'orderScore');
         const data = {
             sellerID, totalScore
@@ -331,6 +329,7 @@ const _removeFromStock = (data) => {
     const removeFromStock = ProductComponent('removeFromStock');
     removeFromStock(data)
         .catch(err => {
+            // console.log("publicando en la cola product");
             const productMessage = {
                 data,
                 component: 'ProductComponent',
