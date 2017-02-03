@@ -69,7 +69,8 @@ class SellerService {
     }
 
     async updateScore({sellerID,totalScore}) {
-        await SellerProfile.update({sellerID}, { $set: { sellerScore: totalScore }});
+        const a = await SellerProfile.update({sellerID:sellerID}, { $set: { sellerScore: totalScore }});
+        console.log(a);
         return true;
     }
 

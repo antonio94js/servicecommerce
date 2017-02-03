@@ -13,7 +13,6 @@ const OrderReviewSchema = new Schema({
     },
     sellerID : {
         type:String,
-        unique:true,
         required:true
     },
     timeCreated: {
