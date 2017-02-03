@@ -29,6 +29,10 @@ class ProductComponent {
         return yield ProductService.assignOffer(ProductData);
     }
 
+    *removeFromStock(ProductData) {
+        return yield ProductService.removeFromStock(ProductData);
+    }
+
     checkOwnership(productData) {
         return true;
     }

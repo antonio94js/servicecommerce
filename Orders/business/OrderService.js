@@ -10,14 +10,17 @@ import {
     preference, getMercadopagoInstance
 }
 from '../config/mercadopago';
-import Common from '../utils/Common';
+import {
+    generateID
+}
+from '../utils/Common';
 
 class OrderService {
 
     async changeOrderStatus(orderData) {
 
         const order = await Order.findById(orderData.id);
-
+        // console.log(orderData.status);
         switch (orderData.status) {
             case 'cancelled':
                 {
@@ -32,19 +35,20 @@ class OrderService {
                         order.save();
 
                         const OrderInfo = {
-                            publicationName : order.publicationName,
-                            productQuantity : order.productQuantity,
-                            totalPrice : order.totalPrice,
-                            buyerID : order.buyerID,
-                            sellerID : order.sellerID
+                            publicationName: order.publicationName,
+                            productQuantity: order.productQuantity,
+                            totalPrice: order.totalPrice,
+                            buyerID: order.buyerID,
+                            sellerID: order.sellerID
                         };
 
                         OrderInfo.subjectCredential = order.sellerID;
                         OrderInfo.receiverTarget = 'Seller';
-                        _sendNotification(OrderInfo,'cancelOrder');
+                        _sendNotification('cancelOrder', OrderInfo);
 
                         return MessageHandler.messageGenerator('Order cancelled succesfully', true);
                     }
+                    break;
                 }
 
             case 'processed':
@@ -61,23 +65,26 @@ class OrderService {
                         order.save();
 
                         const OrderInfo = {
-                            publicationName : order.publicationName,
-                            productQuantity : order.productQuantity,
-                            totalPrice : order.totalPrice,
-                            buyerID : order.buyerID,
-                            sellerID : order.sellerID
+                            publicationName: order.publicationName,
+                            productQuantity: order.productQuantity,
+                            totalPrice: order.totalPrice,
+                            buyerID: order.buyerID,
+                            sellerID: order.sellerID
                         };
 
                         OrderInfo.subjectCredential = order.buyerID;
                         OrderInfo.receiverTarget = 'Buyer';
-                        _sendNotification(OrderInfo,'proccessOrder');
+                        _sendNotification('proccessOrder', {...OrderInfo
+                        });
 
                         OrderInfo.subjectCredential = order.sellerID;
                         OrderInfo.receiverTarget = 'Seller';
-                        _sendNotification(OrderInfo,'proccessOrder');
+                        _sendNotification('proccessOrder', {...OrderInfo
+                        });
 
                         return MessageHandler.messageGenerator('Order processed succesfully', true);
                     }
+                    break;
                 }
             case 'finished':
                 {
@@ -92,25 +99,31 @@ class OrderService {
                         order.save();
 
                         const OrderInfo = {
-                            publicationName : order.publicationName,
-                            productQuantity : order.productQuantity,
-                            totalPrice : order.totalPrice,
-                            buyerID : order.buyerID,
-                            sellerID : order.sellerID
+                            publicationName: order.publicationName,
+                            productQuantity: order.productQuantity,
+                            totalPrice: order.totalPrice,
+                            buyerID: order.buyerID,
+                            sellerID: order.sellerID
                         };
 
                         OrderInfo.subjectCredential = order.sellerID;
                         OrderInfo.receiverTarget = 'Seller';
-                        _sendNotification(OrderInfo,'finished');
+                        _sendNotification('finished', {...OrderInfo
+                        });
 
                         return MessageHandler.messageGenerator('Order finished succesfully', true);
                     }
+                    break;
                 }
             default:
-                throw MessageHandler.errorGenetor("Invalid order's status", 400);
+                {
+                    throw MessageHandler.errorGenerator("Invalid order's status", 400);
+                }
+
         }
 
-        throw MessageHandler.errorGenetor(`You can't change from status '${order.status}' to '${orderData.status}'`,
+        throw MessageHandler.errorGenerator(
+            `You can't change the actual order from status '${order.status}' to '${orderData.status}'`,
             400);
 
 
@@ -120,11 +133,11 @@ class OrderService {
     async createOrder(orderData) {
         const SellerComponent = Studio.module('SellerComponent');
         const PublicationComponent = Studio.module('PublicationComponent');
-        const ProductComponent = Studio.module('ProductComponent');
+
         const UserComponent = Studio.module('UserComponent');
 
         const CheckOwnership = PublicationComponent('CheckOwnership');
-        const removeFromStock = ProductComponent('removeFromStock');
+
         const getSellerToken = SellerComponent('getSellerToken');
         const getBankAccounts = SellerComponent('getBankAccounts');
         const retrieveUserField = UserComponent('retrieveUserField');
@@ -133,6 +146,14 @@ class OrderService {
             _id: orderData.publicationID,
             userID: orderData.sellerID
         });
+
+        const productData = {
+            id: publicationData.productID,
+            orderQuantity: orderData.productQuantity
+        };
+
+        //TODO VALIDAR QUE EL paymentOrderType SEA IGUAL O ESTE INCLUDO EN EL DE publicationData
+        //TODO calcular el totalPrice apartir del unitPrice x productQuantity
 
         switch (orderData.paymentOrderType) {
             case 'automatic':
@@ -144,55 +165,42 @@ class OrderService {
 
                     const sellerToken = await getSellerToken(orderData.sellerID);
                     const mp = getMercadopagoInstance(sellerToken);
-                    const {response} = await mp.createPreference(preferenModel);
+                    const {
+                        response
+                    } = await mp.createPreference(preferenModel);
 
                     orderData._id = response.id;
                     orderData.paymentLink = response.init_point;
 
-                    const productData = {
-                        id: publicationData.productID,
-                        orderQuantity: orderData.productQuantity
-                    };
+                    _removeFromStock(productData);
 
                     //TODO si el microservicio de producto se cae, usar cola de mensaje
-                    removeFromStock(productData)
-                        .catch(err => {
-                            const productMessage = {
-                                data,
-                                component: 'ProductComponent',
-                                service: 'removeFromStock'
-                            }
-                            RabbitQueueHandler.pushMessage(productMessage, 'product_queue');
-                        });
+
 
                     orderData.subjectCredential = orderData.sellerID;
                     orderData.receiverTarget = 'Seller';
-                    _sendNotification(orderData,'newAutomaticOrder');
-
-                    // orderData.subjectCredential = orderData.buyerID;
-                    // orderData.receiverTarget = 'Buyer';
-                    // _sendNotification(orderData,'newAutomaticOrder');
+                    _sendNotification(orderData, 'newAutomaticOrder');
 
                     return await Order.create(orderData);
                 }
             case 'manual':
                 {
-                    orderData._id = Common.generateID();
-                    await Order.create(orderData);
-
-                    // const banckAccounts = await getBankAccounts(orderData.sellerID);
-                    // const sellerUsername = await retrieveUserField(orderData.sellerID);
+                    orderData._id = generateID();
+                    const order = await Order.create(orderData);
 
                     orderData.subjectCredential = orderData.buyerID;
                     orderData.receiverTarget = 'Buyer';
-                    _sendNotification(orderData,'newManualOrder');
+                    _sendNotification('newManualOrder', {...orderData
+                    });
 
                     orderData.subjectCredential = orderData.sellerID;
                     orderData.receiverTarget = 'Seller';
-                    _sendNotification(orderData,'newManualOrder');
+                    _sendNotification('newManualOrder', {...orderData
+                    });
 
-                    //TODO enviar push al vendedor y email al comprador
-                    break;
+                    _removeFromStock(productData);
+
+                    return order;
                 }
             default:
                 {
@@ -207,14 +215,14 @@ class OrderService {
             case 'seller':
                 {
                     return await Order.find({
-                        buyerID: orderData.userID
+                        sellerID: orderData.userID
                     }).lean(true);
                 }
 
             case 'buyer':
                 {
                     return await Order.find({
-                        sellerID: orderData.userID
+                        buyerID: orderData.userID
                     }).lean(true);
                 }
             default:
@@ -247,7 +255,7 @@ class OrderService {
         if (!order) return MessageHandler.errorGenerator("You can't review this order", 403);
 
         if (order.status === 'finished') {
-            orderReviewData._id = Common.generateID();
+            orderReviewData._id = generateID();
             orderReviewData.order = order._id;
             orderReviewData.sellerID = order.sellerID;
             const orderReview = await OrdeReview.create(orderReviewData);
@@ -258,11 +266,15 @@ class OrderService {
         return MessageHandler.messageGenerator("This order isn't finished yet", false);
     }
 
-    async calculateTotalSellerScore({sellerID}) {
+    async calculateTotalSellerScore({
+        sellerID
+    }) {
         const SellerComponent = Studio.module('SellerComponent');
         const updateScore = Studio.module('updateScore');
 
-        const reviews = OrdeReview.find({sellerID});
+        const reviews = OrdeReview.find({
+            sellerID
+        });
         const totalScore = _.meanBy(reviews, 'orderScore');
         const data = {
             sellerID, totalScore
@@ -276,7 +288,7 @@ class OrderService {
                 const userMessage = {
                     data,
                     component: 'SellerComponent',
-                    service: 'updateScore'
+                        service: 'updateScore'
                 }
                 RabbitQueueHandler.pushMessage(userMessage, 'user_queue');
             })
@@ -288,7 +300,7 @@ class OrderService {
 
 /*HELPERS*/
 
-const _sendNotification = (orderData, context) => {
+const _sendNotification = (context, orderData) => {
 
     const NotificationComponent = Studio.module('NotificationComponent');
     const sendPushNotification = NotificationComponent('sendPushNotification');
@@ -301,6 +313,8 @@ const _sendNotification = (orderData, context) => {
         data: orderData
     };
 
+    // console.log(notificationData);
+
     Promise.all([sendPushNotification(notificationData), sendEmail(notificationData)])
         .then((value) => {
             console.log(value);
@@ -310,6 +324,20 @@ const _sendNotification = (orderData, context) => {
             console.log("HAY UN ERROR - PUBLICANDO EN LA COLA");
             RabbitQueueHandler.pushMessage(notificationData, 'notification_queue');
         })
+}
+
+const _removeFromStock = (data) => {
+    const ProductComponent = Studio.module('ProductComponent');
+    const removeFromStock = ProductComponent('removeFromStock');
+    removeFromStock(data)
+        .catch(err => {
+            const productMessage = {
+                data,
+                component: 'ProductComponent',
+                service: 'removeFromStock'
+            }
+            RabbitQueueHandler.pushMessage(productMessage, 'product_queue');
+        });
 }
 
 const orderService = new OrderService();
