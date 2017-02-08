@@ -74,13 +74,11 @@ class OrderService {
 
                         OrderInfo.subjectCredential = order.buyerID;
                         OrderInfo.receiverTarget = 'Buyer';
-                        _sendNotification('proccessOrder', {...OrderInfo
-                        });
+                        _sendNotification('proccessOrder', {...OrderInfo});
 
                         OrderInfo.subjectCredential = order.sellerID;
                         OrderInfo.receiverTarget = 'Seller';
-                        _sendNotification('proccessOrder', {...OrderInfo
-                        });
+                        _sendNotification('proccessOrder', {...OrderInfo});
 
                         return MessageHandler.messageGenerator('Order processed succesfully', true);
                     }
@@ -127,13 +125,12 @@ class OrderService {
             400);
 
 
-        //TODO mandar notificacion al vendedor y comprador
+
     }
 
     async createOrder(orderData) {
         const SellerComponent = Studio.module('SellerComponent');
         const PublicationComponent = Studio.module('PublicationComponent');
-
         const UserComponent = Studio.module('UserComponent');
 
         const CheckOwnership = PublicationComponent('CheckOwnership');
@@ -152,29 +149,29 @@ class OrderService {
             orderQuantity: orderData.productQuantity
         };
 
-        //TODO VALIDAR QUE EL paymentOrderType SEA IGUAL O ESTE INCLUDO EN EL DE publicationData
-        //TODO calcular el totalPrice apartir del unitPrice x productQuantity
+        if(publicationData.paymentMethod !== 'both' && orderData.paymentOrderType !==  publicationData.paymentMethod) {
+            throw MessageHandler.errorGenerator("This publication doesn't allow this payment method", 400)
+        }
+
+        orderData.totalPrice = orderData.unitPrice * orderData.productQuantity;
 
         switch (orderData.paymentOrderType) {
             case 'automatic':
                 {
                     const preferenModel = _.cloneDeep(preference);
-                    preferenModel.items[0].title = orderData.publicationName;
-                    preferenModel.items[0].quantity = orderData.productQuantity;
-                    preferenModel.items[0].unit_price = orderData.unitPrice;
+                    _setPreferenceData(preferenModel,orderData)
+                    // preferenModel.items[0].title = orderData.publicationName;
+                    // preferenModel.items[0].quantity = orderData.productQuantity;
+                    // preferenModel.items[0].unit_price = orderData.unitPrice;
 
                     const sellerToken = await getSellerToken(orderData.sellerID);
                     const mp = getMercadopagoInstance(sellerToken);
-                    const {
-                        response
-                    } = await mp.createPreference(preferenModel);
+                    const {response} = await mp.createPreference(preferenModel);
 
                     orderData._id = response.id;
                     orderData.paymentLink = response.init_point;
 
                     _removeFromStock(productData);
-
-                    //TODO si el microservicio de producto se cae, usar cola de mensaje
 
                     orderData.subjectCredential = orderData.sellerID;
                     orderData.receiverTarget = 'Seller';
@@ -240,7 +237,6 @@ class OrderService {
             }
         })
 
-        console.log(!!order && order.length > 0);
         return !!order && order.length > 0;
     }
 
@@ -252,6 +248,10 @@ class OrderService {
         if (!order) throw MessageHandler.errorGenerator("You can't review this order", 403);
 
         if (order.status === 'finished') {
+
+            const review =  OrdeReview.findOne({order:order._id});
+            if (review) return MessageHandler.messageGenerator("This order already has been reviewed", true);
+
             orderReviewData._id = generateID();
             orderReviewData.order = order._id;
             orderReviewData.sellerID = order.sellerID;
@@ -266,9 +266,7 @@ class OrderService {
     async calculateTotalSellerScore({sellerID}) {
         const SellerComponent = Studio.module('SellerComponent');
         const updateScore = SellerComponent('updateScore');
-        // console.log(sellerID);
 
-        //TODO que no se pueda hacer review al mismo order type
         const reviews = await OrdeReview.find({
             sellerID
         });
@@ -278,15 +276,13 @@ class OrderService {
             sellerID, totalScore
         };
 
-        console.log("El total es: " + totalScore);
-
         updateScore(data)
             .catch((err) => {
                 console.log(err);
                 const userMessage = {
                     data,
                     component: 'SellerComponent',
-                        service: 'updateScore'
+                    service: 'updateScore'
                 }
                 RabbitQueueHandler.pushMessage(userMessage, 'user_queue');
             })
@@ -297,7 +293,11 @@ class OrderService {
 
 
 /*HELPERS*/
-
+const _setPreferenceData = (preferenModel,{publicationName,productQuantity,unitPrice})=> {
+    preferenModel.items[0].title = publicationName;
+    preferenModel.items[0].quantity = productQuantity;
+    preferenModel.items[0].unit_price = unitPrice;
+}
 const _sendNotification = (context, orderData) => {
 
     const NotificationComponent = Studio.module('NotificationComponent');
