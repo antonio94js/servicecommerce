@@ -7,7 +7,7 @@ import centralLogger from './config/central-logger';
 
 const clientStatsD = new StatsD(); //Start a connection to DogStatsD Server
 
-Studio.use(Studio.plugin.retry({max:3}));
+Studio.use(Studio.plugin.retry({max:1}));
 Studio.use(Studio.plugin.timeout);
 Studio.use(Studio.plugin.timer(function(res){
 
