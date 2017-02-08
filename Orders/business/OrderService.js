@@ -178,7 +178,7 @@ class OrderService {
 
                     orderData.subjectCredential = orderData.sellerID;
                     orderData.receiverTarget = 'Seller';
-                    _sendNotification(orderData, 'newAutomaticOrder');
+                    _sendNotification('newAutomaticOrder',orderData);
 
                     return await Order.create(orderData);
                 }
