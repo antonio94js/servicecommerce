@@ -6,9 +6,10 @@
     "author": "Antonio Mejias and Alonso Salas",
     "license": "MIT",
     "scripts": {
-        "build": "",
         "test": "mocha --compilers js:babel-register --require babel-polyfill",
-        "start": "nodemon app.js --exec babel-node --presets es2015,stage-2"
+        "build": "babel source -d dist --require babel-polyfill",
+        "start": "nodemon source/app.js --exec babel-node",
+        "serve": "pm2 start dist/app.js --name='userms' --no-daemon"
     },
     "dependencies": {
         "bcryptjs": "^2.4.0",

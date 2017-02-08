@@ -8,7 +8,9 @@
   "scripts": {
     "build": "",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js --exec babel-node --presets es2015,stage-2"
+    "build": "babel source -d dist",
+    "start": "nodemon source/app.js --exec babel-node --presets es2015,stage-2",
+    "serve": "pm2 start dist/app.js --name='apigateway' --no-daemon"
   },
   "dependencies": {
     "amqplib": "^0.5.1",
