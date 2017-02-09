@@ -27,11 +27,11 @@ config.loadClusterConfig();
 mongodb.connecToMongo();
 // RabbitQueueHandler.popMessages('product_queue');
 
-const gracefulShutdown = () => {mongodb.closeConnection();};
-
-process
-    .on('SIGINT', gracefulShutdown)
-    .on('SIGTERM', gracefulShutdown);
+// const gracefulShutdown = () => {mongodb.closeConnection();};
+//
+// process
+//     .on('SIGINT', gracefulShutdown)
+//     .on('SIGTERM', gracefulShutdown);
 
 
 
