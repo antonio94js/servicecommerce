@@ -12,8 +12,9 @@
         "serve": "pm2 start dist/app.js --name='userms' --no-daemon"
     },
     "dependencies": {
-        "bcryptjs": "^2.4.0",
         "amqplib": "^0.5.1",
+        "bcryptjs": "^2.4.0",
+        "bluebird": "^3.4.7",
         "co": "^4.6.0",
         "dotenv": "^2.0.0",
         "hot-shots": "^4.3.1",

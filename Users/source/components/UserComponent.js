@@ -4,6 +4,7 @@ import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
 import User from '../models/User';
 import UserService from '../business/UserService';
 import SellerService from '../business/SellerService';
+import {registerMicroservice} from '../handler/StopComponentHandler';
 
 
 // const WishlistComponent = Studio.module('WishlistComponent');
@@ -69,5 +70,6 @@ class UserComponent {
 const UserObject = Studio.serviceClass(UserComponent);
 
 ErrorLoggerHanlder.setErrorLogger(UserObject)
+registerMicroservice(UserObject);
 
 // UserObject.getUserProfile.timeout(3000);
