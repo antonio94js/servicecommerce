@@ -2,7 +2,7 @@ import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
 import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
 import SellerService from '../business/SellerService';
-
+import {registerMicroservice} from '../handler/StopComponentHandler';
 
 // const WishlistComponent = Studio.module('WishlistComponent');
 
@@ -37,5 +37,5 @@ class SellerComponent {
 const sellerComponent = Studio.serviceClass(SellerComponent);
 
 ErrorLoggerHanlder.setErrorLogger(sellerComponent)
-
+registerMicroservice(sellerComponent);
 // UserObject.getUserProfile.timeout(3000);

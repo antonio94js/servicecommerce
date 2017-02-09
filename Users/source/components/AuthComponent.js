@@ -2,7 +2,7 @@ import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
 import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
 import UserService from '../business/UserService';
-
+import {registerMicroservice} from '../handler/StopComponentHandler';
 
 // const WishlistComponent = Studio.module('WishlistComponent');
 
@@ -21,5 +21,5 @@ class AuthComponent {
 const authComponent = Studio.serviceClass(AuthComponent);
 
 ErrorLoggerHanlder.setErrorLogger(authComponent)
-
+registerMicroservice(authComponent);
 // UserObject.getUserProfile.timeout(3000);

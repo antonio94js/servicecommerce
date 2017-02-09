@@ -17,7 +17,7 @@ export const preference = {
       "failure" : "http://localhost/failure"
    },
    "auto_return" : 'all',
-   "notification_url" : 'http://186.90.75.229:3000/api/order/notification'
+   "notification_url" : 'http://190.207.115.181:3000/api/order/notification'
 
 };
 

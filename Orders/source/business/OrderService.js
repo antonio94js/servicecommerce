@@ -250,8 +250,8 @@ class OrderService {
 
         if (order.status === 'finished') {
 
-            const review =  OrdeReview.findOne({order:order._id});
-            if (review) return MessageHandler.messageGenerator("This order already has been reviewed", true);
+            // const review =  OrdeReview.findOne({order:order._id});
+            // if (review) return MessageHandler.messageGenerator("This order already has been reviewed", true);
 
             orderReviewData._id = generateID();
             orderReviewData.order = order._id;
