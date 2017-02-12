@@ -7,6 +7,7 @@ import ProductService from '../services/ProductService';
 const PublicationComponent = Studio.module('PublicationComponent'); //Fetching the Publication Microservice
 const ProductComponent = Studio.module('ProductComponent'); //Fetching the Product Microservice
 const UserComponent = Studio.module('UserComponent'); //Fetching the User Microservice
+const OrderComponent = Studio.module('OrderComponent'); //Fetching the Order Microservice
 const CommentComponent = Studio.module('CommentComponent'); //Fetching the Comment Microservice
 
 
@@ -80,6 +81,7 @@ class PublicationController {
         const getExpandDetail = PublicationComponent('getExpandDetail');
         const getProductDetail = ProductComponent('getProductDetail');
         const getUserInfo = UserComponent('getUserInfo');
+        const getOrderReviewsAsSeller = OrderComponent('getOrderReviewsAsSeller');
 
         const publicationData = {
             _id: req.params.publicationID
@@ -105,8 +107,6 @@ class PublicationController {
                     id: publicationDetail.publication.userID
                 };
 
-                delete publicationDetail.publication.userID
-
                 ProductService.setOffer(publicationDetail.publication.product)
 
                 return getUserInfo(user)
@@ -114,7 +114,16 @@ class PublicationController {
                     .catch(userError => null)
             })
             .then((user) => {
-                publicationDetail.publication.user = user;
+                publicationDetail.publication.seller = user;
+                const sellerID = publicationDetail.publication.userID;
+                delete publicationDetail.publication.userID
+                // console.log(sellerID
+                return getOrderReviewsAsSeller(sellerID,4)
+                    .then(orderReviews => orderReviews)
+                    .catch(reviewsError => null)
+            })
+            .then((orderReviews) => {
+                publicationDetail.publication.orderReviews = orderReviews;
                 res.status(200).json(publicationDetail);
             })
             .catch(err => ErrorHandler(err, res, req, next));

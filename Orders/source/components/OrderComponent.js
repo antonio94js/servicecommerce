@@ -1,6 +1,7 @@
 import Studio from 'studio';
 import OrderService from '../business/OrderService';
 import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
+import {registerMicroservice} from '../handler/StopComponentHandler';
 
 
 class OrderComponent {
@@ -25,6 +26,10 @@ class OrderComponent {
         return yield OrderService.createReview(orderData);
     }
 
+    *getOrderReviewsAsSeller(sellerID,limit = null) {
+        return yield OrderService.getOrderReviewsAsSeller(sellerID,limit);
+    }
+
 }
 
 const orderComponent = Studio.serviceClass(OrderComponent);
@@ -32,4 +37,5 @@ const orderComponent = Studio.serviceClass(OrderComponent);
 
 if (process.env.NODE_ENV !== 'test') {
     ErrorLoggerHanlder.setErrorLogger(orderComponent)
+    registerMicroservice(orderComponent);
 }

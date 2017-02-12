@@ -2,6 +2,7 @@ import Studio from 'studio';
 import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
 import PublicationService from '../business/PublicationService';
 import PublicationMiddleware from '../middleware/PublicationMiddleware';
+import {registerMicroservice} from '../handler/StopComponentHandler';
 
 class PublicationComponent {
 
@@ -77,9 +78,10 @@ class PublicationComponent {
 
 }
 
-const publication = Studio.serviceClass(PublicationComponent);
+const publicationComponent = Studio.serviceClass(PublicationComponent);
 
 if (process.env.NODE_ENV !== 'test') {
-    PublicationMiddleware.CheckPublicationOwnership(publication, 'deletePublication', 'changePublicationStatus','updatePublication','createPublication','getPublicationDetailByOwner', 'CheckOwnership');
-    ErrorLoggerHanlder.setErrorLogger(publication)
+    PublicationMiddleware.CheckPublicationOwnership(publicationComponent, 'deletePublication', 'changePublicationStatus','updatePublication','createPublication','getPublicationDetailByOwner', 'CheckOwnership');
+    ErrorLoggerHanlder.setErrorLogger(publicationComponent);
+    registerMicroservice(publicationComponent);
 }
