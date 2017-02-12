@@ -86,8 +86,19 @@ class UserController {
             .catch(err => ErrorHandler(err, res, req, next));
 
     }
+
+    getSellerReviews(req, res, next){
+        const getSellerReviews = SellerComponent('getSellerReviews');
+
+        const sellerData = { username: req.params.username };
+
+        getSellerReviews(sellerData)
+            .then(response => res.status(200).json(response))
+            .catch(err => ErrorHandler(err, res, req, next));
+
+    }
 }
 
 const userController = new UserController();
 
-export default userController
+export default userController;

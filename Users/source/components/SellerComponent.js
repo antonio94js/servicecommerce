@@ -32,6 +32,10 @@ class SellerComponent {
         return yield SellerService.checkSellerPaymentMethods(paymentMethod,userID);
     }
 
+    * getSellerReviews (sellerData) {
+        return yield SellerService.getSellerReviews(sellerData);
+    }
+
 }
 //return a new instance from your Microservices component
 const sellerComponent = Studio.serviceClass(SellerComponent);

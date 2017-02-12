@@ -1,3 +1,4 @@
+import Studio from 'studio';
 import SellerProfile from '../models/SellerProfile';
 import User from '../models/User';
 import BankAccount from '../models/BankAccount';
@@ -183,6 +184,34 @@ class SellerService {
                     throw MessageHandler.errorGenerator('Invalid payment method', 400)
                 }
         }
+    }
+
+    async getSellerReviews({username}) {
+        const user = await User.findOne({
+            username : username
+        });
+
+        if(!user) return MessageHandler.messageGenerator("User doesn't exist", false);
+
+        const seller = await SellerProfile.findOne({
+            userID : user._id
+        });
+
+        if (seller && seller.sellerScore) {
+            const OrderComponent = Studio.module('OrderComponent');
+            const getOrderReviewsAsSeller = OrderComponent('getOrderReviewsAsSeller');
+
+            const response = {};
+            response.totalSellerScore = seller.sellerScore;
+
+            const reviews = await getOrderReviewsAsSeller(seller.userID);
+
+            response.sellerReviews = reviews;
+
+            return response;
+        }
+
+        return MessageHandler.messageGenerator("Seller profile not found", false);
     }
 
 }

@@ -18,6 +18,7 @@ router
     .put('/account/seller',isAuthenticated, UserController.userUpdateSeller)
     .put('/account', isAuthenticated, UserController.userUpdateProfile)
     .post('/account/fcm/management', isAuthenticated, UserController.userFcmTokenManagement)
-    .get('/account', isAuthenticated, UserController.getUserProfile);
+    .get('/account', isAuthenticated, UserController.getUserProfile)
+    .get('/profile/:username/seller', UserController.getSellerReviews);
 
 export default router;

@@ -4,6 +4,7 @@ import studioCluster from 'studio-cluster';
 import config from './config/config';
 import centralLogger from './config/central-logger';
 import RabbitQueueHandler from './handler/RabbitQueueHandler';
+import {stopMicroservices} from './handler/StopComponentHandler';
 
 const clientStatsD = new StatsD(); //Start a connection to DogStatsDServer
 
@@ -26,6 +27,19 @@ clientStatsD.socket.on('error', (error) => {
 
 config.loadClusterConfig();
 RabbitQueueHandler.popMessages();
+
+const gracefulShutdown = () => {
+
+    stopMicroservices();
+    setTimeout(function() {
+        // console.log("chao");
+        process.exit(0);
+    }, 1000);
+};
+
+process
+    .on('SIGINT', gracefulShutdown)
+    .on('SIGTERM', gracefulShutdown);
 
 //Load the Microservices
 require("./components");

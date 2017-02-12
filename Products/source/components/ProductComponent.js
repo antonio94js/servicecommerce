@@ -2,6 +2,7 @@ import Studio from 'studio';
 import ProductService from '../business/ProductService';
 import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
 import ProductMiddleware from '../middleware/ProductMiddleware';
+import {registerMicroservice} from '../handler/StopComponentHandler';
 
 class ProductComponent {
 
@@ -42,3 +43,4 @@ class ProductComponent {
 const productComponent = Studio.serviceClass(ProductComponent);
 ErrorLoggerHanlder.setErrorLogger(productComponent)
 ProductMiddleware.CheckProductOwnership(productComponent, 'updateProduct', 'deleteProduct', 'getProductDetail', 'checkOwnership');
+registerMicroservice(productComponent);
