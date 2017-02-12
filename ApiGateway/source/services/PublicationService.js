@@ -10,9 +10,9 @@ const joinPublicationData = (publications, products, users) => {
             // console.log("product");
             ProductService.setOffer(publication.product);
 
-            if(users) publication.user = _.cloneDeep(_.find(users, user => publication.userID === user._id));
+            if(users) publication.seller = _.cloneDeep(_.find(users, user => publication.userID === user._id));
             // console.log("user");
-            Common.removeNativeID(publication.product,publication.user)
+            Common.removeNativeID(publication.product,publication.seller)
 
         }
 

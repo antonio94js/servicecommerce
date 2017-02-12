@@ -4,6 +4,7 @@ import aws from '../handler/awsHandler';
 import ImageService from '../business/ImageService';
 import MessagaeHandler from '../handler/MessageHandler'
 import ImageMiddleware from '../middleware/ImageMiddleware';
+import {registerMicroservice} from '../handler/StopComponentHandler';
 import 'babel-polyfill';
 
 
@@ -55,11 +56,10 @@ class ImageComponent {
 let ImageObject = studio.serviceClass(ImageComponent);
 // ImageObject.getObjectImage.timeout(50);
 if (process.env.NODE_ENV !== 'test') {
-    ImageMiddleware.setMiddleware(ImageObject)
-    // console.log(ImageObject);
-}
+    ImageMiddleware.setMiddleware(ImageObject);
+    registerMicroservice(ImageObject);
 
-// console.log(log);
+}
 
 /*tomar en cuanta la posibilida de manejar una base de datos para llevar el control de los usuarios y/o productos
 junto con el nombre de la imagen que se les fue generado, para poder recueperar la imagen desde aws S3, esto con

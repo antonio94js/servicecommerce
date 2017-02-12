@@ -4,6 +4,7 @@ import StatsD from 'hot-shots';
 import mongodb from './config/db';
 import config from './config/config';
 import centralLogger from './config/central-logger';
+import {stopMicroservices} from './handler/StopComponentHandler';
 
 const clientStatsD = new StatsD(); //Start a connection to DogStatsD Server
 
@@ -25,7 +26,19 @@ config.loadClusterConfig();
 
 mongodb.connecToMongo();
 
-const gracefulShutdown = () => {mongodb.closeConnection();};
+const gracefulShutdown = () => {
+    mongodb.closeConnection()
+        .then(value => closeApp(0))
+        .catch(err => closeApp(1))
+
+    function closeApp(status) {
+        stopMicroservices();
+        setTimeout(function() {
+            // console.log("chao");
+            process.exit(status);
+        }, 1000);
+    }
+};
 
 process
     .on('SIGINT', gracefulShutdown)

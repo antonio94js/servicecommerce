@@ -1,5 +1,5 @@
 import Order from '../models/Order';
-import OrdeReview from '../models/OrderReview';
+import OrderReview from '../models/OrderReview';
 import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
 import co from 'co';
@@ -161,9 +161,6 @@ class OrderService {
                 {
                     const preferenModel = _.cloneDeep(preference);
                     _setPreferenceData(preferenModel,orderData)
-                    // preferenModel.items[0].title = orderData.publicationName;
-                    // preferenModel.items[0].quantity = orderData.productQuantity;
-                    // preferenModel.items[0].unit_price = orderData.unitPrice;
 
                     const sellerToken = await getSellerToken(orderData.sellerID);
                     const mp = getMercadopagoInstance(sellerToken);
@@ -241,6 +238,10 @@ class OrderService {
         return !!order && order.length > 0;
     }
 
+    async getOrderReviewsAsSeller(sellerID,orderLimit) {
+        return await OrderReview.find({sellerID}).populate({'path':'order','select':'publicationName'}).select('-_id -__v -sellerID').limit(orderLimit);
+    }
+
     async createReview(orderReviewData) {
         const order = await Order.findById(orderReviewData.orderID).where({
             buyerID: orderReviewData.userID
@@ -250,13 +251,13 @@ class OrderService {
 
         if (order.status === 'finished') {
 
-            // const review =  OrdeReview.findOne({order:order._id});
+            // const review =  await OrderReview.findOne({order:order._id})
             // if (review) return MessageHandler.messageGenerator("This order already has been reviewed", true);
 
             orderReviewData._id = generateID();
             orderReviewData.order = order._id;
             orderReviewData.sellerID = order.sellerID;
-            const orderReview = await OrdeReview.create(orderReviewData);
+            const orderReview = await OrderReview.create(orderReviewData);
             this.calculateTotalSellerScore(orderReview);
             return MessageHandler.messageGenerator("Your review was done successfully", true);
         }
@@ -268,7 +269,7 @@ class OrderService {
         const SellerComponent = Studio.module('SellerComponent');
         const updateScore = SellerComponent('updateScore');
 
-        const reviews = await OrdeReview.find({
+        const reviews = await OrderReview.find({
             sellerID
         });
 

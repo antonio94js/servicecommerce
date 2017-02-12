@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import config from '../config/config';
-import bluebird from 'bluebird';
+import Promise from 'bluebird';
 
 const mongodb = mongoose.connection;
 //Here, we're telling to mongoose to use our own promises library, in this case Bluebird
-mongoose.Promise = bluebird;
+mongoose.Promise = Promise;
 
 const connecToMongo = () => {
 
@@ -13,12 +13,13 @@ const connecToMongo = () => {
 };
 
 const closeConnection = () => {
+    return new Promise((resolve, reject) => {
+        mongoose.connection.close((err, value) => {
+            if (err) reject(err)
+            else resolve(value)
 
-    mongoose.connection.close(() => {
-        console.log('Mongoose default connection with DB is closed through app termination');
-        process.exit(0);
+        });
     });
-
 };
 
 mongodb.on("connected", () => {
@@ -30,15 +31,16 @@ mongodb.on("error", (err) => {
     mongoose.disconnect();
 });
 
-mongodb.on('reconnected', function () {
+mongodb.on('reconnected', function() {
     console.log('Reconnected to MongoDB');
 });
 
-mongodb.on('disconnected', function () {
-  console.log('Disconnected from MongoDB');
+mongodb.on('disconnected', function() {
+    console.log('Disconnected from MongoDB');
 });
 
 
+
 export default {
-    connecToMongo,closeConnection
+    connecToMongo, closeConnection
 };

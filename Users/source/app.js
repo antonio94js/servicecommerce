@@ -5,10 +5,7 @@ import mongodb from './config/db';
 import centralLogger from './config/central-logger';
 import config from './config/config';
 import RabbitQueueHandler from './handler/RabbitQueueHandler';
-import {
-    stopMicroservices
-}
-from './handler/StopComponentHandler';
+import {stopMicroservices} from './handler/StopComponentHandler';
 
 const clientStatsD = new StatsD(); //Start a connection to DogStatsDServer
 Studio.use(Studio.plugin.retry({
