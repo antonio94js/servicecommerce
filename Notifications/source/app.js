@@ -32,13 +32,13 @@ const gracefulShutdown = () => {
 
     stopMicroservices();
     setTimeout(function() {
-        // console.log("chao");
         process.exit(0);
     }, 1000);
 };
 
 process
     .on('SIGINT', gracefulShutdown)
+    .on('SIGQUIT', gracefulShutdown)
     .on('SIGTERM', gracefulShutdown);
 
 //Load the Microservices

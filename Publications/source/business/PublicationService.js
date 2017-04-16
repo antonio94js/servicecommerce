@@ -115,15 +115,41 @@ class PublicationService {
     }
 
     getPublicationBatch(publicationData) {
+        if (publicationData.getLatest) {
+            return this.getLatestPublications();
+        }
+
+        return this.getPublicationBatchByQuery(publicationData);
+    }
+
+    getPublicationBatchByQuery({queryText}) {
         return Publication.find({
                 $text: {
-                    $search: Common.sanitizeQuery(publicationData.queryText)
+                    $search: Common.sanitizeQuery(queryText)
                 }
             })
             .where({
                 'status': 1
             })
             .select('-__v -comments -tags -publicationDetail')
+            .lean(true)
+            .then((publications) => {
+
+                if (publications.length === 0) throw MessageHandler.errorGenerator(
+                    "There aren't publications for what you are looking for", 200);
+
+                return publications;
+            });
+    }
+
+    getLatestPublications() {
+        return Publication.find()
+            .where({
+                'status': 1
+            })
+            .select('-__v -comments -tags -publicationDetail')
+            .sort({ date: 'desc' })
+            .limit(8)
             .lean(true)
             .then((publications) => {
 
@@ -184,7 +210,7 @@ class PublicationService {
 
     checkPublicationStatus(productData) {
         return Publication.findOne({
-                'productID': productData.productID
+                productID: productData.productID
             })
             .select('-__v')
             .lean(true)
@@ -204,7 +230,7 @@ class PublicationService {
 
     async makeNewComment(commentData) {
         let publication = await Publication.findOne({
-            '_id': commentData.publicationID
+            _id: commentData.publicationID
         });
 
         if (publication) {

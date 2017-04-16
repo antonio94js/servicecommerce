@@ -41,6 +41,7 @@ const gracefulShutdown = () => {
 
 process
     .on('SIGINT', gracefulShutdown)
+    .on('SIGQUIT', gracefulShutdown)
     .on('SIGTERM', gracefulShutdown);
 
 

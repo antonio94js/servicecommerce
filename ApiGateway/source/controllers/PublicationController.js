@@ -36,7 +36,7 @@ class PublicationController {
 
         const publicationData = {
             _id: req.params.publicationID,
-            newStatus:req.params.newStatus,
+            newStatus: req.params.newStatus,
             userID: req.user.id
         }
 
@@ -117,8 +117,8 @@ class PublicationController {
                 publicationDetail.publication.seller = user;
                 const sellerID = publicationDetail.publication.userID;
                 delete publicationDetail.publication.userID
-                // console.log(sellerID
-                return getOrderReviewsAsSeller(sellerID,4)
+                    // console.log(sellerID
+                return getOrderReviewsAsSeller(sellerID, 4)
                     .then(orderReviews => orderReviews)
                     .catch(reviewsError => null)
             })
@@ -131,13 +131,21 @@ class PublicationController {
     }
 
     publicationBatch(req, res, next) {
+        try {
+
+
         const getBatch = PublicationComponent('getBatch');
         const getProductBatch = ProductComponent('getProductBatch');
         const getUserBatch = UserComponent('getUserBatch');
 
-        let publicationData = {
-            queryText: req.query.queryText
+        let publicationData = {};
+        if (req.query.queryText) {
+            publicationData.queryText = req.query.queryText
+
+        } else {
+            publicationData.getLatest = true
         }
+
         let publicationsInfo = [];
 
         getBatch(publicationData)
@@ -170,6 +178,11 @@ class PublicationController {
                 res.status(200).json(publicationsBatch);
             })
             .catch(err => ErrorHandler(err, res, req, next));
+        } catch (e) {
+            console.log(e);
+        } finally {
+
+        }
     }
 
 }
