@@ -8,8 +8,7 @@ import UserService from './UserService';
 import request from 'request-promise';
 import {
     getMercadoPagoToken
-}
-from '../config/mercadopago';
+} from '../config/mercadopago';
 import 'babel-polyfill';
 
 class SellerService {
@@ -22,7 +21,7 @@ class SellerService {
                 userID: sellerID
             }]
         });
-        // console.log(seller);
+        // TODO validate if token no expiro, si es asi, refresh it
         if (seller) {
             return seller.mercadoPagoToken;
         }
@@ -32,11 +31,13 @@ class SellerService {
     }
 
     async getBankAccounts(sellerID) {
-        const seller = await SellerProfile.findOne({userID:sellerID})
-                                        .populate({
-                                            'path': 'bankAccounts',
-                                            'select': '-_id -__v',
-                                        });
+        const seller = await SellerProfile.findOne({
+                userID: sellerID
+            })
+            .populate({
+                'path': 'bankAccounts',
+                'select': '-_id -__v',
+            });
         if (seller) {
             return seller.bankAccounts;
         }
@@ -70,8 +71,17 @@ class SellerService {
 
     }
 
-    async updateScore({sellerID,totalScore}) {
-        await SellerProfile.findOneAndUpdate({userID:sellerID}, { $set: { sellerScore: totalScore }});
+    async updateScore({
+        sellerID,
+        totalScore
+    }) {
+        await SellerProfile.findOneAndUpdate({
+            userID: sellerID
+        }, {
+            $set: {
+                sellerScore: totalScore
+            }
+        });
         return true;
     }
 
@@ -105,12 +115,16 @@ class SellerService {
                 }
             case 'deleteBankAccount':
                 {
-                    const seller = await sellerProfile.findOne({userID: sellerData.userID})
+                    const seller = await SellerProfile.findOne({
+                        userID: sellerData.userID
+                    })
 
-                    if(!seller || seller.bankAccounts.length === 0) return MessageHandler.messageGenerator("Your seller profile is not ready yet to do this action", false);
+                    if (!seller || seller.bankAccounts.length === 0) return MessageHandler.messageGenerator("Your seller profile is not ready yet to do this action", false);
 
                     if (seller.bankAccounts.length > 1) {
-                        await BankAccount.remove({accountNumber: sellerData.accountNumber});
+                        await BankAccount.remove({
+                            accountNumber: sellerData.accountNumber
+                        });
                         seller.bankAccounts = _.filter(seller.bankAccounts, account => account !== sellerData.accountNumber);
                         seller.save();
                         return MessageHandler.messageGenerator("Account deleted successfully", true);
@@ -139,9 +153,11 @@ class SellerService {
                 }
             case 'deleteMercadoPago':
                 {
-                    const seller = await sellerProfile.findOne({userID: sellerData.userID})
+                    const seller = await SellerProfile.findOne({
+                        userID: sellerData.userID
+                    })
 
-                    if(!seller || !sellerProfile.collectorID) return MessageHandler.messageGenerator("Your seller profile is not ready yet to do this action", false);
+                    if (!seller || !sellerProfile.collectorID) return MessageHandler.messageGenerator("Your seller profile is not ready yet to do this action", false);
 
                     //CHECK IF THE SELLER DOESNT HAVE AN ACTIVE ORDER WITH MERCADOPAGO PAYMENT METHOD IN PROCESS
 
@@ -185,15 +201,17 @@ class SellerService {
         }
     }
 
-    async getSellerReviews({username}) {
+    async getSellerReviews({
+        username
+    }) {
         const user = await User.findOne({
-            username : username
+            username: username
         });
 
-        if(!user) return MessageHandler.messageGenerator("User doesn't exist", false);
+        if (!user) return MessageHandler.messageGenerator("User doesn't exist", false);
 
         const seller = await SellerProfile.findOne({
-            userID : user._id
+            userID: user._id
         });
 
         if (seller && seller.sellerScore) {
@@ -215,7 +233,9 @@ class SellerService {
 
 }
 
-const getMpRequestModel = ({mercardoPagoAuthCode}) => {
+const getMpRequestModel = ({
+    mercardoPagoAuthCode
+}) => {
     // console.log(mercardoPagoAuthCode);
     const mpData = {
         'client_secret': getMercadoPagoToken(),

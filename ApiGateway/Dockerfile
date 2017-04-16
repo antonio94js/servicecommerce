@@ -13,13 +13,17 @@ RUN npm i -g pm2
 RUN npm i -g yarn
 RUN yarn
 
+
 # Bundle app source
 ADD . /var/www/app
+
+# Compilate the app
+RUN npm run build
 
 # Exposing app port
 EXPOSE 3000
 EXPOSE 10119
 
 # Staring App
-CMD ["npm", "run", "build"]
-CMD ["npm", "run", "serve"]
+ENTRYPOINT ["pm2", "start"]
+CMD ["dist/app.js","--name=apigateway","--no-daemon"]

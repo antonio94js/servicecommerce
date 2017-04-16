@@ -239,7 +239,7 @@ class OrderService {
     }
 
     async getOrderReviewsAsSeller(sellerID,orderLimit) {
-        return await OrderReview.find({sellerID}).populate({'path':'order','select':'publicationName'}).select('-_id -__v -sellerID').limit(orderLimit);
+        return await OrderReview.find({sellerID}).populate({'path':'order','select':'publicationName'}).sort({timeCreated: 'desc'}).select('-_id -__v -sellerID').limit(orderLimit);
     }
 
     async createReview(orderReviewData) {
@@ -251,8 +251,8 @@ class OrderService {
 
         if (order.status === 'finished') {
 
-            // const review =  await OrderReview.findOne({order:order._id})
-            // if (review) return MessageHandler.messageGenerator("This order already has been reviewed", true);
+            const review =  await OrderReview.findOne({order:order._id})
+            if (review) return MessageHandler.messageGenerator("This order already has been reviewed", true);
 
             orderReviewData._id = generateID();
             orderReviewData.order = order._id;

@@ -41,8 +41,8 @@ const gracefulShutdown = () => {
 
     function closeApp(status) {
         stopMicroservices();
+        console.log("killing");
         setTimeout(function() {
-            // console.log("chao");
             process.exit(status);
         }, 1000);
     }
@@ -50,6 +50,7 @@ const gracefulShutdown = () => {
 
 process
     .on('SIGINT', gracefulShutdown)
+    .on('SIGQUIT', gracefulShutdown)
     .on('SIGTERM', gracefulShutdown);
 
 //Load the Microservices

@@ -24,15 +24,15 @@ class UserController {
     }
 
     userCreate(req, res, next) {
+
         const createUser = UserComponent('createUser');
 
         createUser(req.body)
             .then(response => res.status(201).json(response))
             .catch(err => {
-                console.log(err);
+                // console.log(err);
                 ErrorHandler(err, res, req, next)
-            }
-            );
+            });
 
     };
 

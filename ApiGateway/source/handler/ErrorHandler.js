@@ -10,13 +10,13 @@ const ErrorHandler = (err, res, req, next) => {
             break;
 
         case 'ROUTE_NOT_FOUND':
-            res.status(500);
+            res.status(503);
             // console.log(req);
             let error = {
                 resource: req.originalUrl,
                 message: 'The resource that you try to access is not available for now'
             }
-            next(error);
+            res.json(error);
             break;
 
         default:

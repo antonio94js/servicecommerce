@@ -7,6 +7,7 @@ import ImageMiddleware from '../middleware/ImageMiddleware';
 import {registerMicroservice} from '../handler/StopComponentHandler';
 import 'babel-polyfill';
 
+// const s3 = new AwsHandler('servicecommerce');
 
 class ImageComponent {
 

@@ -34,7 +34,6 @@ const gracefulShutdown = () => {
     function closeApp(status) {
         stopMicroservices();
         setTimeout(function() {
-            // console.log("chao");
             process.exit(status);
         }, 1000);
     }
@@ -42,6 +41,7 @@ const gracefulShutdown = () => {
 
 process
     .on('SIGINT', gracefulShutdown)
+    .on('SIGQUIT', gracefulShutdown)
     .on('SIGTERM', gracefulShutdown);
 
 
