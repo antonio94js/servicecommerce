@@ -6,12 +6,15 @@
     "author": "Antonio Mejias and Alonso Salas",
     "license": "MIT",
     "scripts": {
-        "build": "",
         "test": "mocha --compilers js:babel-register --require babel-polyfill",
-        "start": "nodemon app.js --exec babel-node --presets es2015,stage-2"
+        "build": "babel source -d dist --require babel-polyfill",
+        "start": "nodemon source/app.js --exec babel-node",
+        "serve": "pm2 start dist/app.js --name='userms' --no-daemon"
     },
     "dependencies": {
+        "amqplib": "^0.5.1",
         "bcryptjs": "^2.4.0",
+        "bluebird": "^3.4.7",
         "co": "^4.6.0",
         "dotenv": "^2.0.0",
         "hot-shots": "^4.3.1",
@@ -20,6 +23,8 @@
         "moment": "^2.17.0",
         "mongoose": "^4.7.0",
         "rand-token": "^0.3.0",
+        "request": "^2.79.0",
+        "request-promise": "^4.1.1",
         "studio": "^0.13.3",
         "studio-cluster": "^0.3.5",
         "winston": "^2.3.0",

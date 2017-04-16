@@ -1,7 +1,6 @@
 FROM node:latest
 
 #Set enviroment variables
-
 ENV appDir /var/www/app
 
 # Create app directory
@@ -10,12 +9,21 @@ WORKDIR ${appDir}
 
 # Install app dependencies
 ADD package.json /var/www/app/
-RUN npm install -g yarn
+RUN npm i -g pm2
+RUN npm i -g yarn
 RUN yarn
+
 
 # Bundle app source
 ADD . /var/www/app
 
+# Compilate the app
+RUN npm run build
+
+# Exposing app port
 EXPOSE 3000
 EXPOSE 10119
-CMD [ "npm", "start" ]
+
+# Staring App
+ENTRYPOINT ["pm2", "start"]
+CMD ["dist/app.js","--name=apigateway","--no-daemon"]
