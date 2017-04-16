@@ -23,7 +23,7 @@ const closeConnection = () => {
 };
 
 mongodb.on("connected", () => {
-    console.log("Connected to MongoDB successfully");
+    console.log("Connected to MongoDB successfullyxxx");
 })
 
 mongodb.on("error", (err) => {
@@ -36,7 +36,7 @@ mongodb.on('reconnected', function() {
 });
 
 mongodb.on('disconnected', function() {
-    console.log('Disconnected from MongoDB');
+    console.log('Disconnected from MongoDBXXXXXXXXXXXX');
 });
 
 

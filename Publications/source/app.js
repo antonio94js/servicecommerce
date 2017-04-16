@@ -34,7 +34,6 @@ const gracefulShutdown = () => {
     function closeApp(status) {
         stopMicroservices();
         setTimeout(function() {
-            // console.log("chao");
             process.exit(status);
         }, 1000);
     }

@@ -47,9 +47,11 @@ class EmailService {
                     subject = `Congrats! Someone has purchased you a product from your publication ${data.publicationName}`;
                     message = `<pre>The user <b>${buyerData.username} (${buyerData.email})</b> has purchased <b>${data.productQuantity}</b> products from your publication <b>${data.publicationName}</b> using the payment method <b>${data.paymentMethod}</b>, The amount you must get is ${data.totalPrice} BsF.
 
-                                We suggest that you contact him, so that the purchase is completed successfully.
+                                We suggest that you contact him, so that the purchase is completed successfully.</pre>
 
-                                Greetings.</pre>`;
+<pre style="text-align: left;">
+
+    Greetings.</pre>`;
                 }else{
 
                 }
@@ -65,9 +67,11 @@ class EmailService {
                     subject = `Someone has purchased you a product from your publication ${data.publicationName}`;
                     message = `<pre>The user <b>${buyerData.username} (${buyerData.email})</b> has purchased <b>${data.productQuantity}</b> products from your publication <b>${data.publicationName}</b> using the payment method <b>${data.paymentMethod}</b>, The amount you must get is ${data.totalPrice} BsF.
 
-                                We suggest that you contact him, so that the purchase can be completed successfully.
+We suggest that you contact him, so that the purchase can be completed successfully.</pre>
 
-                                Greetings.</pre>`;
+<pre style="text-align: left;">
+
+    Greetings.</pre>`;
                 }else{
                     console.log('entro a compra manual por buyer');
                     console.log(userTargetData);
@@ -75,7 +79,7 @@ class EmailService {
                     let bankAccounts = await getBankAccounts(data.sellerID);
 
                     subject = `You have purchased a product from the publication ${data.publicationName}`;
-                    message = `<pre>The data of the order are as follows:
+                    message = `<pre style="text-align: left;"> The data of the order are as follows:
 
     Name of the publication: ${data.publicationName}
     Price of the product: ${data.unitPrice}
@@ -88,7 +92,7 @@ class EmailService {
     Below is the information that the seller offered to receive payments</pre>`;
 
                                 for (const bankAccount of bankAccounts) {
-                                    message += `<pre>
+                                    message += `<pre style="text-align: left;">
         BANK: ${bankAccount.bankName}
         ACCOUNT NUMBER: ${bankAccount.accountNumber}
         ACCOUNT'S OWNER: ${bankAccount.ownerAccountName}
