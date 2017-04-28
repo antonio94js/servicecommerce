@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
       "build": "",
-      "test": "export NODE_ENV=test && mocha --compilers js:babel-register --require babel-polyfill",
+      "test": "export NODE_ENV=test && mocha --compilers js:babel-register --require babel-polyfill source/test/",
       "build": "babel source -d dist --require babel-polyfill",
       "start": "nodemon source/app.js --exec babel-node --presets es2015,stage-2",
       "serve": "pm2 start dist/app.js --name='publicationms' --no-daemon"

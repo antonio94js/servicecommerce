@@ -12,11 +12,11 @@ const findOne = (user) => {
 
     if(UserMock.email === userEmail.email || UserMock.username === userUsername.username ) {
 
-        return PromiseHandler.resolver(UserMock)
+        return {populate: () => PromiseHandler.resolver(UserMock)}
     }
     else {
 
-        return PromiseHandler.resolver(null)
+        return {populate: () => PromiseHandler.resolver(null)}
     }
 }
 

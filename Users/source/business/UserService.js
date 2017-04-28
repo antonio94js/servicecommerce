@@ -172,6 +172,7 @@ class UserService {
     async getUserAccount(userData) {
 
         const ImageComponent = Studio.module('ImageComponent');
+
         let user = await User.findById(userData.id).lean(true).populate('wishlist').populate({
             'path': 'sellerProfile',
             'select': '-_id -__v -userID',
@@ -216,7 +217,7 @@ class UserService {
             test += field + ' ';
         }
 
-        console.log(`-_id ${test}`);
+        // console.log(`-_id ${test}`);
         return User
             .findOne({
                 $or: [{

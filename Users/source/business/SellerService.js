@@ -31,6 +31,7 @@ class SellerService {
     }
 
     async getBankAccounts(sellerID) {
+        
         const seller = await SellerProfile.findOne({
                 userID: sellerID
             })
@@ -71,10 +72,7 @@ class SellerService {
 
     }
 
-    async updateScore({
-        sellerID,
-        totalScore
-    }) {
+    async updateScore({sellerID,totalScore}) {
         await SellerProfile.findOneAndUpdate({
             userID: sellerID
         }, {
@@ -201,9 +199,7 @@ class SellerService {
         }
     }
 
-    async getSellerReviews({
-        username
-    }) {
+    async getSellerReviews({username}) {
         const user = await User.findOne({
             username: username
         });
@@ -233,9 +229,7 @@ class SellerService {
 
 }
 
-const getMpRequestModel = ({
-    mercardoPagoAuthCode
-}) => {
+const getMpRequestModel = ({mercardoPagoAuthCode}) => {
     // console.log(mercardoPagoAuthCode);
     const mpData = {
         'client_secret': getMercadoPagoToken(),

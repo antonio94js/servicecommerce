@@ -15,22 +15,10 @@ class UserComponent {
         return yield UserService.createNewUser(userData);
     }
 
-    // * loginUser(userData) {
-    //     return yield UserService.userSignOn(userData);
-    // }
-
     //You just can update only one value (email, password or address), otherwise this service(method) will return 400
 
     * updateUserProfile(userData, isClosedField) {
         return yield UserService.updateUser(userData, isClosedField);
-    }
-
-    * setSellerProfile(userData) {
-        return yield SellerService.setSellerProfile(userData);
-    }
-
-    * updateSellerProfile(userData) {
-        return yield SellerService.updateSellerProfile(userData);
     }
 
     * getUserProfile(userData) {
@@ -45,31 +33,20 @@ class UserComponent {
         return yield UserService.getUserBatch(userData);
     }
 
-    * getSellerToken(collectorData) {
-        return yield SellerService.getSellerToken(collectorData);
-    }
-
     * retrieveUserField(userData) {
         return yield UserService.retrieveUserField(userData);
     }
-
-    // * refreshUserToken(userData) {
-    //     return yield UserService.refreshUserToken(userData);
-    // }
 
     * fcmTokenManagement (userData, setWish) {
         return yield UserService.fcmTokenManagement(userData);
     }
 
-    * checkSellerPaymentMethods (paymentMethod,userID) {
-        return yield SellerService.checkSellerPaymentMethods(paymentMethod,userID);
-    }
-
 }
 //return a new instance from your Microservices component
 const UserObject = Studio.serviceClass(UserComponent);
-
-ErrorLoggerHanlder.setErrorLogger(UserObject)
-registerMicroservice(UserObject);
+if (process.env.NODE_ENV !== 'test') {
+    ErrorLoggerHanlder.setErrorLogger(UserObject)
+    registerMicroservice(UserObject);
+}
 
 // UserObject.getUserProfile.timeout(3000);
