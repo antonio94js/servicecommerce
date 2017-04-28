@@ -1,9 +1,8 @@
 FROM node:latest
 
 #Set enviroment variables
-
 ENV appDir /var/www/app
-ENV DOCKER_ENV true
+
 # Create app directory
 RUN mkdir -p $appDir
 WORKDIR ${appDir}
@@ -17,7 +16,13 @@ RUN yarn
 # Bundle app source
 ADD . /var/www/app
 
+# Compilate the app
+RUN npm run build
+
 EXPOSE 10122
+
 # Staring App
-CMD ["npm", "run", "build"]
-CMD ["npm", "run", "serve"]
+ENTRYPOINT ["pm2", "start"]
+CMD ["dist/app.js","--name=notification","--no-daemon"]
+
+#4966381606477980
