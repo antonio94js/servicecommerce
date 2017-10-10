@@ -10,29 +10,38 @@ class PublicationService {
 
     async createNewPublication(publicationData) {
 
-        const isPaymentMethodAllowed = await checkPaymentMethod(publicationData);
+        const isPaymentMethodAllowed = await this.checkPaymentMethod(publicationData);
 
         if (!isPaymentMethodAllowed) return MessageHandler.messageGenerator(
             `You have not activated - ${publicationData.paymentMethod} - selling method`, false,
             'PaymentMethodException')
 
-        return Publication //return a promise
-            .create(publicationData)
-            .then((publication) => {
+        try {
+            await Publication.create(publicationData)
+            return MessageHandler.messageGenerator("Publication created succefully", true);
+        } catch (err) {
+            if (err.code === 11000 || err.code === 11001)
+                throw MessageHandler.errorGenerator("The publication already exist", 409);
 
-                return MessageHandler.messageGenerator(
-                    "Publication created succefully", true); //resolve the promise
-            })
-            .catch((err) => {
-
-                if (err.code === 11000 || err.code === 11001)
-                    throw MessageHandler.errorGenerator(
-                        "The publication already exist", 409); //reject the promise
-                // console.log("aqui" + err);
-                throw MessageHandler.errorGenerator(
-                    "Something wrong happened creating publication",
-                    500); //reject the promise
-            });
+            throw MessageHandler.errorGenerator("Something wrong happened creating publication",500); //reject the promise
+        }
+        // return Publication //return a promise
+        //     .create(publicationData)
+        //     .then((publication) => {
+        //
+        //         return MessageHandler.messageGenerator(
+        //             "Publication created succefully", true); //resolve the promise
+        //     })
+        //     .catch((err) => {
+        //         if (err.code === 11000 || err.code === 11001)
+        //             throw MessageHandler.errorGenerator(
+        //                 "The publication already exist", 409); //reject the promise
+        //         // console.log("aqui" + err);
+        //         throw MessageHandler.errorGenerator(
+        //             "Something wrong happened creating publication",
+        //             500); //reject the promise
+        //
+        //     });
     }
 
     updatePublication(publicationData) {
@@ -257,6 +266,14 @@ class PublicationService {
         return await checkOrderStatus(_id);
     }
 
+   checkPaymentMethod({paymentMethod, userID}) {
+    //    console.log("asdfasd");
+        const SellerComponent = Studio.module('SellerComponent');
+        // console.log("asdasdasd");
+        const checkSellerPaymentMethods = SellerComponent('checkSellerPaymentMethods');
+        return checkSellerPaymentMethods(paymentMethod, userID)
+    }
+
 }
 
 /*HELPERS*/
@@ -269,11 +286,11 @@ const setData = (publicationData, publication) => {
     publication.tags = !tags || !_.isArray(tags) ? publication.tags : tags;
 };
 
-const checkPaymentMethod = ({paymentMethod, userID}) => {
-    const UserComponent = Studio.module('UserComponent');
-    const checkSellerPaymentMethods = UserComponent('checkSellerPaymentMethods');
-    return checkSellerPaymentMethods(paymentMethod, userID)
-};
+// const checkPaymentMethod = ({paymentMethod, userID}) => {
+//     const UserComponent = Studio.module('UserComponent');
+//     const checkSellerPaymentMethods = UserComponent('checkSellerPaymentMethods');
+//     return checkSellerPaymentMethods(paymentMethod, userID)
+// };
 
 const publicationService = new PublicationService();
 

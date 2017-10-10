@@ -38,5 +38,7 @@ class WishlistComponent {
 
 const wishlistComponent = Studio.serviceClass(WishlistComponent);
 
-ErrorLoggerHanlder.setErrorLogger(wishlistComponent);
-registerMicroservice(wishlistComponent);
+if (process.env.NODE_ENV !== 'test') {
+    ErrorLoggerHanlder.setErrorLogger(wishlistComponent);
+    registerMicroservice(wishlistComponent);
+}

@@ -15,6 +15,8 @@ import {
     PublicationMock
 }
 from './mocks/Fixtures';
+
+import PublicationService from '../business/PublicationService';
 import MongoMocks from './mocks/MongoMocks';
 import MethodsMocks from './mocks/MethodsMocks';
 
@@ -61,6 +63,7 @@ describe('#PublicationComponent', () => {
 
             createPublication = PublicationComponent('createPublication');
 
+
             publicationRequestData = {
                 "_id": "4d64e0e4-5471-47ea-aedc-59075a912ecb",
                 "productID": "5ba01a4a-d140-4853-b927-254e9df58140",
@@ -71,25 +74,27 @@ describe('#PublicationComponent', () => {
         });
 
         it('Should get success true when its created successfully ', (done) => {
-
+            sandboxPublication.stub(PublicationService, "checkPaymentMethod").returns(PromiseHandler.resolver(true));
             sandboxPublication.stub(Publication, "create").returns(PromiseHandler.resolver(true));
+
             createPublication(publicationRequestData)
                 .then(function(response) {
                     expect(response.success).to.be.true;
                     done()
-                });
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
 
         });
 
 
         it('Should get status 409 when the promise its rejected by duplicated publication', (done) => {
-
-            sandboxPublication.stub(Publication, "create").returns(PromiseHandler.rejecter(
-                MongoMocks.DuplicatedError));
+            sandboxPublication.stub(PublicationService, "checkPaymentMethod").returns(PromiseHandler.resolver(true));
+            sandboxPublication.stub(Publication, "create", () => PromiseHandler.rejecter(MongoMocks.DuplicatedError));
             createPublication(publicationRequestData)
-                .then((response) => {
-
-                }).catch((err) => {
+                .catch((err) => {
+                    // console.log(err);
                     expect(MessageHandler.errorGenerator).to.have.been.calledWithExactly(
                         "The publication already exist", 409);
                     expect(err.statusCode).to.be.equals(409);
@@ -100,16 +105,32 @@ describe('#PublicationComponent', () => {
         });
 
         it('Should get status 500 when the promise its rejected by unhandled error', (done) => {
+                sandboxPublication.stub(PublicationService, "checkPaymentMethod").returns(PromiseHandler.resolver(true));
+                sandboxPublication.stub(Publication, "create", () => PromiseHandler.rejecter(MethodsMocks.UnhandledError));
+                // done();
+                createPublication(publicationRequestData)
+                    .then(function(response) {
 
-            sandboxPublication.stub(Publication, "create").returns(PromiseHandler.rejecter(
-                MethodsMocks.UnhandledError));
+                    })
+                    .catch((err) => {
+                        // console.log(err);
+                        expect(MessageHandler.errorGenerator).to.have.been.calledWithExactly(
+                            "Something wrong happened creating publication", 500);
+                        expect(err.statusCode).to.be.equals(500);
+                        done()
+                    });
+
+        });
+
+
+        it('Should get success false when checkPaymentMethod return false', (done) => {
+            sandboxPublication.stub(PublicationService, "checkPaymentMethod").returns(PromiseHandler.resolver(false));
+            sandboxPublication.stub(Publication, "create").returns(PromiseHandler.resolver(true));
             createPublication(publicationRequestData)
                 .then((response) => {
-
-                }).catch((err) => {
-                    expect(MessageHandler.errorGenerator).to.have.been.calledWithExactly(
-                        "Something wrong happened creating publication", 500);
-                    expect(err.statusCode).to.be.equals(500);
+                    // console.log(err);
+                    expect(MessageHandler.messageGenerator).to.have.been.called;
+                    expect(response.success).to.be.false;
                     done()
                 });
 
@@ -199,6 +220,7 @@ describe('#PublicationComponent', () => {
         beforeEach(() => {
 
             // sandboxPublication.stub(User, "findByIdAndUpdate").returns(PromiseHandler.resolver(true));
+            sandboxPublication.stub(Publication, "findById").returns(PromiseHandler.resolver(PublicationMock));
             deletePublication = PublicationComponent('deletePublication');
             publicationData = {
                 _id: "4d64e0e4-5471-47ea-aedc-59075a912eca",
@@ -223,8 +245,7 @@ describe('#PublicationComponent', () => {
 
         it('Should get status 500 when the promise its rejected by unhandled error', (done) => {
 
-            sandboxPublication.stub(Publication, "remove").returns(PromiseHandler.rejecter(
-                MethodsMocks.UnhandledError));
+            sandboxPublication.stub(Publication, "remove",() => PromiseHandler.rejecter(MethodsMocks.UnhandledError));
 
             deletePublication(publicationData)
                 .then(function(response) {
@@ -237,6 +258,35 @@ describe('#PublicationComponent', () => {
                 })
 
         });
+
+        it('Should get succes true when publication status is 1 and doesnt has an active order', (done) => {
+            PublicationMock.status = 1;
+            sandboxPublication.stub(Publication, "remove").returns(PromiseHandler.resolver(true));
+            sandboxPublication.stub(PublicationService, "_checkOrderStatus").returns(PromiseHandler.resolver(false));
+
+            deletePublication(publicationData)
+                .then(function(response) {
+                    expect(response).to.not.be.undefined;
+                    expect(MessageHandler.messageGenerator).to.have.been.called;
+                    expect(response.success).to.be.true;
+                    done();
+                })
+        });
+
+        it('Should get succes false when publication status is 1 and it has an active order', (done) => {
+            // PublicationMock.status = 1;
+            sandboxPublication.stub(Publication, "remove",() => PromiseHandler.rejecter(MethodsMocks.UnhandledError));
+            sandboxPublication.stub(PublicationService, "_checkOrderStatus").returns(PromiseHandler.resolver(true));
+
+            deletePublication(publicationData)
+                .then(function(response) {
+                    expect(response).to.not.be.undefined;
+                    expect(MessageHandler.messageGenerator).to.have.been.called;
+                    expect(response.success).to.be.false;
+                    done();
+                })
+        });
+
 
     });
 
@@ -389,7 +439,7 @@ describe('#PublicationComponent', () => {
 
             sandboxPublication.stub(Publication, "findById", MongoMocks.findById);
 
-            getPublicationDetail = PublicationComponent('getDetail');
+            getPublicationDetail = PublicationComponent('getExpandDetail');
             publicationData = {
                 _id: "4d64e0e4-5471-47ea-aedc-59075a912ecb"
 
@@ -420,9 +470,7 @@ describe('#PublicationComponent', () => {
 
             PublicationMock.status = 0;
             getPublicationDetail(publicationData)
-                .then(function(publication) {
-
-                }).catch((err) => {
+                .catch((err) => {
                     expect(err).not.to.be.undefined;
                     expect(MessageHandler.errorGenerator).to.have.been.called;
                     done();
@@ -435,9 +483,7 @@ describe('#PublicationComponent', () => {
 
             publicationData._id = "xxxxx-xxx-xx-xxxxx-xxxxxx";
             getPublicationDetail(publicationData)
-                .then(function(publication) {
-
-                }).catch((err) => {
+                .catch((err) => {
                     expect(err).not.to.be.undefined;
                     expect(MessageHandler.errorGenerator).to.have.been.called;
                     done();

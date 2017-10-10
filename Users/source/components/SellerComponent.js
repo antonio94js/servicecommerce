@@ -2,7 +2,7 @@ import Studio from 'studio';
 import MessageHandler from '../handler/MessageHandler';
 import ErrorLoggerHanlder from '../handler/ErrorLoggerHandler';
 import SellerService from '../business/SellerService';
-import {registerMicroservice} from '../handler/StopComponentHandler';
+import { registerMicroservice } from '../handler/StopComponentHandler';
 
 // const WishlistComponent = Studio.module('WishlistComponent');
 
@@ -40,6 +40,10 @@ class SellerComponent {
 //return a new instance from your Microservices component
 const sellerComponent = Studio.serviceClass(SellerComponent);
 
-ErrorLoggerHanlder.setErrorLogger(sellerComponent)
-registerMicroservice(sellerComponent);
+if (process.env.NODE_ENV !== 'test') {
+
+    ErrorLoggerHanlder.setErrorLogger(sellerComponent)
+    registerMicroservice(sellerComponent);
+}
+
 // UserObject.getUserProfile.timeout(3000);

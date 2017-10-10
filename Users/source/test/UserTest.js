@@ -21,8 +21,6 @@ let sandboxUser;
 
 beforeEach(() => {
     sandboxUser = sinon.sandbox.create();
-
-
 });
 
 afterEach(() => {
@@ -67,7 +65,7 @@ describe('#UserService', () => {
             MessageHandler.messageGenerator.restore();
         });
 
-        it('Should get success true when its resolve ', (done) => {
+        it('Should get success true when its resolve', (done) => {
 
             sandboxUser.stub(User, "create").returns(PromiseHandler.resolver(UserMock));
             UserService.createNewUser(userData)
@@ -110,71 +108,71 @@ describe('#UserService', () => {
         });
     });
 
-    describe('#LoginUser', () => {
-
-        let userCredentials;
-
-        before(() => {
-            sinon.spy(MessageHandler,'errorGenerator');
-            sinon.spy(MessageHandler,'messageGenerator');
-        });
-
-        after(() => {
-            MessageHandler.errorGenerator.restore();
-            MessageHandler.messageGenerator.restore();
-        });
-
-        beforeEach(() => {
-
-            sandboxUser.stub(User, "findOne", MongoMocks.findOne);
-            sandboxUser.stub(jwtHandler, "generateAccessToken").returns('aUHuaqw2990ajaKHafkKAKDgqueOAQUEaiudfq');
-
-
-            userCredentials = {"password": "123","account": "servi@gmail.com"};
-
-        });
-
-        it('Should get success false when the password is invalid ', (done) => {
-
-            userCredentials.password = "12345"; // invalid password
-            UserService.userSignOn(userCredentials)
-                .then(function(response) {
-                    expect(response).to.not.be.undefined;
-                    expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("The credentials are invalid, please check it out", false);
-                    expect(response.success).to.be.false;
-                    done();
-                });
-
-        });
-
-        it('Should get success false when the email is invalid ', (done) => {
-
-            userCredentials.account = "s@gmail.com"; // invalid email
-            UserService.userSignOn(userCredentials)
-                .then(function(response) {
-                    expect(response).to.not.be.undefined;
-                    expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("The credentials are invalid, please check it out", false);
-                    expect(response.success).to.be.false;
-                    done();
-                });
-
-        });
-
-        it('Should get success equals true when credentials are valids ', (done) => {
-
-            UserService.userSignOn(userCredentials)
-                .then(function(response) {
-                    expect(response).to.not.be.undefined;
-                    expect(MessageHandler.messageGenerator).to.have.been.called;
-                    expect(response.success).to.be.true;
-                    done();
-                })
-                .catch((err) => {
-                    // console.log(err);
-                })
-
-        });
-    });
+    // describe('#LoginUser', () => {
+    //
+    //     let userCredentials;
+    //
+    //     before(() => {
+    //         sinon.spy(MessageHandler,'errorGenerator');
+    //         sinon.spy(MessageHandler,'messageGenerator');
+    //     });
+    //
+    //     after(() => {
+    //         MessageHandler.errorGenerator.restore();
+    //         MessageHandler.messageGenerator.restore();
+    //     });
+    //
+    //     beforeEach(() => {
+    //
+    //         sandboxUser.stub(User, "findOne", MongoMocks.findOne);
+    //         sandboxUser.stub(jwtHandler, "generateAccessToken").returns('aUHuaqw2990ajaKHafkKAKDgqueOAQUEaiudfq');
+    //
+    //
+    //         userCredentials = {"password": "123","account": "servi@gmail.com"};
+    //
+    //     });
+    //
+    //     it('Should get success false when the password is invalid ', (done) => {
+    //
+    //         userCredentials.password = "12345"; // invalid password
+    //         UserService.userSignOn(userCredentials)
+    //             .then(function(response) {
+    //                 expect(response).to.not.be.undefined;
+    //                 expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("The credentials are invalid, please check it out", false);
+    //                 expect(response.success).to.be.false;
+    //                 done();
+    //             });
+    //
+    //     });
+    //
+    //     it('Should get success false when the email is invalid ', (done) => {
+    //
+    //         userCredentials.account = "s@gmail.com"; // invalid email
+    //         UserService.userSignOn(userCredentials)
+    //             .then(function(response) {
+    //                 expect(response).to.not.be.undefined;
+    //                 expect(MessageHandler.messageGenerator).to.have.been.calledWithExactly("The credentials are invalid, please check it out", false);
+    //                 expect(response.success).to.be.false;
+    //                 done();
+    //             });
+    //
+    //     });
+    //
+    //     it('Should get success equals true when credentials are valids ', (done) => {
+    //
+    //         UserService.userSignOn(userCredentials)
+    //             .then(function(response) {
+    //                 expect(response).to.not.be.undefined;
+    //                 expect(MessageHandler.messageGenerator).to.have.been.called;
+    //                 expect(response.success).to.be.true;
+    //                 done();
+    //             })
+    //             .catch((err) => {
+    //                 // console.log(err);
+    //             })
+    //
+    //     });
+    // });
 
     describe('#updateUser', () => {
         let userField;

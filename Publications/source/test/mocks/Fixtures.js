@@ -3,7 +3,7 @@ export const PublicationMock = {
     "productID": "5ba01a4a-d140-4853-b927-254e9df58140",
     "publicationDetail": "Here should be a detail",
     "name": "Sell MacBook Original ",
-    "status": 1,
+    "status": 0,
     "comments":[]
 }
 

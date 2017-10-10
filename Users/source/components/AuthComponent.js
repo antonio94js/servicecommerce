@@ -20,6 +20,9 @@ class AuthComponent {
 //return a new instance from your Microservices component
 const authComponent = Studio.serviceClass(AuthComponent);
 
-ErrorLoggerHanlder.setErrorLogger(authComponent)
-registerMicroservice(authComponent);
+
+if (process.env.NODE_ENV !== 'test') {
+    ErrorLoggerHanlder.setErrorLogger(authComponent)
+    registerMicroservice(authComponent);
+}
 // UserObject.getUserProfile.timeout(3000);

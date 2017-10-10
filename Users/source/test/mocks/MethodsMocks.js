@@ -1,10 +1,10 @@
 import PromiseHandler from '../Promise';
 const UnhandledError = new Error();
 
-const StudioModule = function (serviceName) {
+const StudioModule = function (serviceName = null) {
 
-    return function (serviceCall) {
-        return PromiseHandler.resolver(true);
+    return function (serviceMethod) {
+        return PromiseHandler.resolver(!serviceName ? true : serviceName);
     };
 };
 

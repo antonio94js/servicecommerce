@@ -46,18 +46,28 @@ app.use(function(err, req, res, next) {
     res.status(500).json(err);
 });
 
-const server = app.listen(port,'0.0.0.0', (error) => {
-    if (error)
-        throw error;
-    else
-        console.info(`sever running on port ${port}`);
+const serverInstancesArray = [];
 
-});
+for (let i = 3000; i < 3003; i++) {
+    const server = app.listen(i,'0.0.0.0', (error) => {
+        if (error)
+            throw error;
+        else
+            console.info(`sever running on port ${i}`);
+
+    });
+
+    serverInstancesArray.push(server)
+}
+
+
 
 /*Graceful Shutdown our Http Server*/
 
 const gracefulShutdown = () => {
-    server.close(() => {process.exit(0)})
+    for (const server of serverInstancesArray) {
+        server.close(() => {process.exit(0)})
+    }
 };
 
 process
