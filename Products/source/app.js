@@ -26,7 +26,7 @@ clientStatsD.socket.on('error', (error) => {
 config.loadClusterConfig();
 
 mongodb.connecToMongo();
-RabbitQueueHandler.popMessages('product_queue');
+// RabbitQueueHandler.popMessages('product_queue');
 
 const gracefulShutdown = () => {
     mongodb.closeConnection()

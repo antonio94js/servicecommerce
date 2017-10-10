@@ -41,7 +41,7 @@ class OrderController {
                             component: 'OrderComponent',
                             service: 'changeOrderStatus'
                         }
-                        RabbitQueueHandler.pushMessage(orderPreferenceID, 'order_queue');
+                        RabbitQueueHandler.pushMessage(orderMessage, 'order_queue');
                     });
             }
         }

@@ -267,10 +267,12 @@ class PublicationService {
     }
 
    checkPaymentMethod({paymentMethod, userID}) {
-        const UserComponent = Studio.module('UserComponent');
-        const checkSellerPaymentMethods = UserComponent('checkSellerPaymentMethods');
+    //    console.log("asdfasd");
+        const SellerComponent = Studio.module('SellerComponent');
+        // console.log("asdasdasd");
+        const checkSellerPaymentMethods = SellerComponent('checkSellerPaymentMethods');
         return checkSellerPaymentMethods(paymentMethod, userID)
-    };
+    }
 
 }
 
